@@ -24,7 +24,7 @@ async function getAnswerForListSelection(page: Page) {
     const answers = await page.$(".answer-inner > div.content > div.select-substance")
     if (!answers) throw new Error("answersが存在しません!");
     return await answers.$$eval("dl > dd", element => {
-        return element.map(elem => elem.innerText)
+        return element.map(elem => elem.innerText.split("(")[0])
     })
 }
 

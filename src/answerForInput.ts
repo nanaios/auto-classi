@@ -2,8 +2,8 @@ import type { Page } from "puppeteer";
 import { clickFinishButton, clickStudyProgram, clickSubmitButton, wait } from "./utility";
 
 export async function isInput(page: Page) {
-    const correct = page.$(".answer-inner > div.content > div.correct-page-input")
-    return Boolean(correct)
+    const correct = await page.$$(".answer-inner > div.content > div.correct-page-input")
+    return (correct.length === 1)
 }
 
 export async function answerForInput(page: Page, index: number) {
@@ -24,10 +24,10 @@ export async function answerForInput(page: Page, index: number) {
 }
 
 async function setAnswerForInput(page: Page, answer: string) {
-    page.type(".spen-mod-input-label-list > li > input", answer)
+    await page.type(".spen-mod-input-label-list > li > input", answer)
 }
 
 async function getAnswerForInput(page: Page) {
     const answer = await page.$eval(".answer-inner > div.content > div > dl > dd", element => element.innerText)
-    return answer
+    return answer.split("(")[0]
 }

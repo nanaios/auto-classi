@@ -20,9 +20,45 @@ async function main() {
     await page.bringToFront();
     console.log(`${(await page.title())}に接続しました。`)
     await wait()
+    await runTasks(page)
+    //runClassi(page)
+    return 0
+}
+
+async function runTasks(page: Page) {
+    const tasksLength = (await page.$$(".task-list > a")).length
+
+    for (let i = 0; i < tasksLength; i++) {
+        const tasks = await page.$$(".task-list > a")
+        await wait()
+        await Promise.all(
+            [
+                await tasks[i].click(),
+                await page.waitForNavigation({ waitUntil: ['load', 'networkidle2'] })
+            ]
+        )
+        await wait()
+
+        await runClassi(page)
+        await wait()
+
+        const leftButton = await page.$(".left")
+        if (!leftButton) throw new Error("leftButtonが見つかりません!");
+        await Promise.all(
+            [
+                await leftButton.click(),
+                await page.waitForNavigation({ waitUntil: ['load', 'networkidle2'] })
+            ]
+        )
+        await wait()
+    }
+}
+
+
+async function runClassi(page: Page) {
     const listLength = (await getStudyProgramList(page)).length
 
-    for (let i = 0; i < listLength; i++) {
+    for (let i = 4; i < listLength; i++) {
         const list = (await getStudyProgramList(page))[i]
         if (await isStudyPrograms(list)) {
             await clickStudyProgram(page, i)
@@ -41,7 +77,6 @@ async function main() {
             await wait()
         }
     }
-    return 0
 }
 
 
