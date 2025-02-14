@@ -1,5 +1,5 @@
 import type { Page } from "puppeteer"
-import { clickFinishButton, wait, clickStudyProgram, clickSubmitButton } from "./utility"
+import { clickFinishButton, wait, clickStudyProgram, clickSubmitButton, formatAns } from "./utility"
 
 export async function answerForSelection(page: Page, index: number) {
     const answer = await getAnswerForSelection(page)
@@ -38,7 +38,7 @@ const ANSWER_INDEXS = [
 
 async function getAnswerForSelection(page: Page) {
     const answer = await page.$eval(".answer-inner > div.content > ul.spen-mod-label-text-list > li > dl.clearfix > dd", element => {
-        return element.innerHTML
+        return formatAns(element.innerHTML)
     })
     return ANSWER_INDEXS.indexOf(answer)
 }

@@ -1,5 +1,5 @@
 import type { Page } from "puppeteer"
-import { clickFinishButton, wait, clickStudyProgram, clickSubmitButton } from "./utility"
+import { clickFinishButton, wait, clickStudyProgram, clickSubmitButton, formatAns } from "./utility"
 
 export async function isMultiInput(page: Page) {
     const correct = await page.$$(".answer-inner > div.content > div.correct-page-input")
@@ -26,7 +26,7 @@ export async function answerForMultiInput(page: Page, index: number) {
 
 async function getAnswerMultiForInput(page: Page) {
     const answers = await page.$$eval(".answer-inner > div.content > div > dl > dd", elements => elements.map(element => {
-        return element.innerText.split("(")[0]
+        return formatAns(element.innerText)
     }))
     return answers
 }

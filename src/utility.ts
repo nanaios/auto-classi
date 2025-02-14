@@ -52,3 +52,7 @@ export function wait(ms: number = BASE_WAIT_TIME) {
         })
     })
 }
+
+export function formatAns(rawAns: string) {
+    return rawAns.replace(/\n/g, "").replace(/\t/g, "").split("(")[0]
+}
