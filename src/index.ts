@@ -4,6 +4,7 @@ import { answerForSelection, isSelection } from "./answerForSelection";
 import { answerForSelf, isSelf } from "./answerForSelf";
 import { anserForListSelection } from "./answerForListSelection";
 import { answerForInput, isInput } from "./answerForInput";
+import { answerForMultiInput, isMultiInput } from "./answerForMultiInput";
 
 
 async function main() {
@@ -21,8 +22,8 @@ async function main() {
     console.log(`${(await page.title())}に接続しました。`)
     await wait()
     await runTasks(page)
-    //runClassi(page)
-    return 0
+
+    process.exit(0)
 }
 
 async function runTasks(page: Page) {
@@ -58,7 +59,7 @@ async function runTasks(page: Page) {
 async function runClassi(page: Page) {
     const listLength = (await getStudyProgramList(page)).length
 
-    for (let i = 4; i < listLength; i++) {
+    for (let i = 0; i < listLength; i++) {
         const list = (await getStudyProgramList(page))[i]
         if (await isStudyPrograms(list)) {
             await clickStudyProgram(page, i)
@@ -71,6 +72,8 @@ async function runClassi(page: Page) {
                 await answerForSelection(page, i)
             } else if (await isInput(page)) {
                 await answerForInput(page, i)
+            } else if (await isMultiInput(page)) {
+                await answerForMultiInput(page, i)
             } else {
                 await anserForListSelection(page, i)
             }
