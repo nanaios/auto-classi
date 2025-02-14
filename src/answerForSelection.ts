@@ -1,23 +1,22 @@
 import type { Page } from "puppeteer"
 import { clickFinishButton, wait, clickStudyProgram, clickSubmitButton } from "./utility"
 
-export async function anserForSelection(page: Page, index: number) {
-    const answer = await getAnswerSelection(page)
+export async function answerForSelection(page: Page, index: number) {
+    const answer = await getAnswerForSelection(page)
     if (answer === -1) throw Error("定義されていない解答です!")
     await clickFinishButton(page)
-    await wait(1000)
+    await wait()
 
     await clickStudyProgram(page, index)
-    await wait(1000)
+    await wait()
 
     await clickInput(page, answer)
-    await wait(1000)
+    await wait()
 
     await clickSubmitButton(page)
-    await wait(1000)
+    await wait()
 
     await clickFinishButton(page)
-
 }
 
 async function clickInput(page: Page, index: number) {
@@ -37,9 +36,14 @@ const ANSWER_INDEXS = [
     "ケ"
 ]
 
-async function getAnswerSelection(page: Page) {
+async function getAnswerForSelection(page: Page) {
     const answer = await page.$eval(".answer-inner > div.content > ul.spen-mod-label-text-list > li > dl.clearfix > dd", element => {
         return element.innerHTML
     })
     return ANSWER_INDEXS.indexOf(answer)
+}
+
+export async function isSelection(page: Page) {
+    const textList = await page.$(".answer-inner > div.content > ul.spen-mod-label-text-list")
+    return Boolean(textList)
 }

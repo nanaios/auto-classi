@@ -1,7 +1,8 @@
 import puppeteer, { type Page } from "puppeteer"
 import { getStudyProgramList, isStudyPrograms, clickStudyProgram, clickSubmitButton, wait } from "./utility"
-import { anserForSelection } from "./answerForSelection";
+import { answerForSelection, isSelection } from "./answerForSelection";
 import { answerForSelf, isSelf } from "./answerForSelf";
+import { anserForListSelection } from "./answerForListSelection";
 
 
 async function main() {
@@ -17,24 +18,24 @@ async function main() {
     const page = pageList[0];
     await page.bringToFront();
     console.log(`${(await page.title())}に接続しました。`)
-    await wait(1000)
-
-    return 0
+    await wait()
     const listLength = (await getStudyProgramList(page)).length
 
     for (let i = 0; i < listLength; i++) {
         const list = (await getStudyProgramList(page))[i]
         if (await isStudyPrograms(list)) {
             await clickStudyProgram(page, i)
-            await wait(1000)
+            await wait()
             await clickSubmitButton(page)
-            await wait(1000)
+            await wait()
             if (await isSelf(page)) {
                 await answerForSelf(page)
+            } else if (await isSelection(page)) {
+                await answerForSelection(page, i)
             } else {
-                await anserForSelection(page, i)
+                await anserForListSelection(page, i)
             }
-            await wait(1000)
+            await wait()
         }
     }
     return 0

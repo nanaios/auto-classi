@@ -1,5 +1,7 @@
 import type { Page, ElementHandle } from "puppeteer";
 
+const BASE_WAIT_TIME = 500
+
 export async function getStudyProgramList(page: Page) {
     const lilsts = await page.$(".spen-mod-item-list.is-column-1.spen.spen-util-mb-24.lecture-flow")
     if (!lilsts) throw Error("listsが存在しません!");
@@ -42,7 +44,7 @@ export async function clickFinishButton(page: Page) {
     )
 }
 
-export function wait(ms: number) {
+export function wait(ms: number = BASE_WAIT_TIME) {
     return new Promise<void>(res => {
         const id = setTimeout(() => {
             clearTimeout(id)
