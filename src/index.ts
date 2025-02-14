@@ -3,6 +3,7 @@ import { getStudyProgramList, isStudyPrograms, clickStudyProgram, clickSubmitBut
 import { answerForSelection, isSelection } from "./answerForSelection";
 import { answerForSelf, isSelf } from "./answerForSelf";
 import { anserForListSelection } from "./answerForListSelection";
+import { answerForInput, isInput } from "./answerForInput";
 
 
 async function main() {
@@ -32,6 +33,8 @@ async function main() {
                 await answerForSelf(page)
             } else if (await isSelection(page)) {
                 await answerForSelection(page, i)
+            } else if (await isInput(page)) {
+                await answerForInput(page, i)
             } else {
                 await anserForListSelection(page, i)
             }
