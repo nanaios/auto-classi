@@ -88,3 +88,9 @@ export async function clickTask(page: Page, task: ElementHandle<HTMLElement>) {
 export function random(max: number) {
     return Math.floor(Math.random() * max);
 }
+
+export async function copyPage(page: Page) {
+    const copy = await page.browser().newPage()
+    await copy.goto(page.url(), { waitUntil: ['load', 'networkidle2'] })
+    return copy
+}

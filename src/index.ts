@@ -1,5 +1,5 @@
 import puppeteer, { type Page } from "puppeteer"
-import { getStudyProgramList, isStudyPrograms, clickStudyProgram, clickSubmitButton, wait, clickFinishButton, clickLeftButton, clickTask, getStudyProgramName, getTaskName } from "./utility"
+import { getStudyProgramList, isStudyPrograms, clickStudyProgram, clickSubmitButton, wait, clickFinishButton, clickLeftButton, clickTask, getStudyProgramName, getTaskName, copyPage } from "./utility"
 import { getAnswerForSelection, isSelection, setAnswerForSelection, setRandomAnswerForSelection } from "./answerForSelection";
 import { isSelf, setAnswerForSelf } from "./answerForSelf";
 import { getAnswerForListSelection, isListSelection, setAnswerForList, setRandomAnswerForList } from "./answerForListSelection";
@@ -11,6 +11,7 @@ async function main() {
     const browser = await puppeteer.connect({
         browserURL: 'http://127.0.0.1:9222'
     });
+
     const pageList = await browser.pages();
 
     const page = pageList[0];
@@ -75,26 +76,14 @@ async function runClassi(page: Page) {
             await clickStudyProgram(page, i)
             await wait()
 
-            const answerType = await getAnswerType(page)
-            console.log(`問題タイプ：${answerType}`)
-
-            try {
-                switch (answerType) {
-                    case "listselection": {
-                        await setRandomAnswerForList(page)
-                        break;
-                    }
-                    case "selection": {
-                        await setRandomAnswerForSelection(page)
-                        break;
-                    }
-                }
-            } catch (error) {
-                console.log(error)
-            }
+            const newPage = await copyPage(page)
+            //await newPage.bringToFront()
             await wait()
 
-            await clickSubmitButton(page)
+            const answerType = await getAnswerType(newPage)
+            console.log(`問題タイプ：${answerType}`)
+
+            await clickSubmitButton(newPage)
             await wait()
 
             const answer: AnswerData = {
@@ -106,24 +95,20 @@ async function runClassi(page: Page) {
             //答えをゲットする処理
             try {
                 switch (answerType) {
-                    case "self": {
-                        await setAnswerForSelf(page)
-                        break;
-                    }
                     case "input": {
-                        answer.string = await getAnswerForInput(page)
+                        answer.string = await getAnswerForInput(newPage)
                         break;
                     }
                     case "listselection": {
-                        answer.strings = await getAnswerForListSelection(page)
+                        answer.strings = await getAnswerForListSelection(newPage)
                         break;
                     }
                     case "multiinput": {
-                        answer.strings = await getAnswerForMultiInput(page)
+                        answer.strings = await getAnswerForMultiInput(newPage)
                         break;
                     }
                     case "selection": {
-                        answer.number = await getAnswerForSelection(page)
+                        answer.string = await getAnswerForSelection(newPage)
                         break;
                     }
                 }
@@ -132,19 +117,24 @@ async function runClassi(page: Page) {
             }
             await wait()
 
+            //await page.bringToFront()
+            await newPage.close()
+            await wait()
+
+
+
             if (answerType === "self") {
+                await clickSubmitButton(page)
+                await wait()
+
+                await setAnswerForSelf(page)
+                await wait()
+
                 await clickFinishButton(page)
                 console.log(`設問[name:${name}]の解答を終了`)
                 await wait()
                 continue
             }
-
-            await clickFinishButton(page)
-            await wait()
-
-            await clickStudyProgram(page, i)
-            await wait()
-
 
             //答えをセットする処理
             try {
@@ -162,7 +152,7 @@ async function runClassi(page: Page) {
                         break;
                     }
                     case "selection": {
-                        await setAnswerForSelection(page, answer.number)
+                        await setAnswerForSelection(page, answer.string)
                         break;
                     }
                 }
