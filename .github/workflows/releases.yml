@@ -17,14 +17,9 @@ jobs:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
-      - name: Inspect files befoer checkout
-        run: ls
         
       - name: Checkout repository
         uses: actions/checkout@v4
-        
-      - name: Inspect files after checkout
-        run: ls
         
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -36,17 +31,22 @@ jobs:
 
       - name: build dependencies
         run: npm run build
-        
-      # リリースを作成し、生成されたZIPファイルをアップロードする
-      - name: Create Release and Upload Assets
+      
+      - name: Delete unnecessary files
+        run: |
+          rm esbuild.js
+          rm -r src
+          rm tsconfig.json
+          rm README.md
+
+      # リリースを作成する
+      - name: Create Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # PRのタイトルと内容をRELEASE_TAGに設定する
           RELEASE_TAG: ${{ github.event.pull_request.title }}
         uses: softprops/action-gh-release@v2
         with:
-          # dist内のZIPファイルを指定
-          files: dist/releases.zip
           tag_name: ${{ env.RELEASE_TAG }}
           name: ${{ env.RELEASE_TAG }}
           draft: false
