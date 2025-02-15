@@ -1,5 +1,5 @@
 import type { Page } from "puppeteer";
-import { clickFinishButton, clickStudyProgram, clickSubmitButton, formatAns, wait } from "./utility";
+import { clickFinishButton, clickStudyProgram, clickSubmitButton, formatClassiAns, wait } from "./utility";
 
 export async function isInput(page: Page) {
     const correct = await page.$$(".answer-inner > div.content > div.correct-page-input")
@@ -29,5 +29,5 @@ async function setAnswerForInput(page: Page, answer: string) {
 
 async function getAnswerForInput(page: Page) {
     const answer = await page.$eval(".answer-inner > div.content > div > dl > dd", element => element.innerText)
-    return formatAns(answer)
+    return formatClassiAns(answer)
 }

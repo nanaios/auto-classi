@@ -1,5 +1,5 @@
 import puppeteer, { type Page } from "puppeteer"
-import { getStudyProgramList, isStudyPrograms, clickStudyProgram, clickSubmitButton, wait } from "./utility"
+import { getStudyProgramList, isStudyPrograms, clickStudyProgram, clickSubmitButton, wait, formatClassiAns } from "./utility"
 import { answerForSelection, isSelection } from "./answerForSelection";
 import { answerForSelf, isSelf } from "./answerForSelf";
 import { anserForListSelection } from "./answerForListSelection";
@@ -60,24 +60,28 @@ async function runClassi(page: Page) {
     const listLength = (await getStudyProgramList(page)).length
 
     for (let i = 0; i < listLength; i++) {
-        const list = (await getStudyProgramList(page))[i]
-        if (await isStudyPrograms(list)) {
-            await clickStudyProgram(page, i)
-            await wait()
-            await clickSubmitButton(page)
-            await wait()
-            if (await isSelf(page)) {
-                await answerForSelf(page)
-            } else if (await isSelection(page)) {
-                await answerForSelection(page, i)
-            } else if (await isInput(page)) {
-                await answerForInput(page, i)
-            } else if (await isMultiInput(page)) {
-                await answerForMultiInput(page, i)
-            } else {
-                await anserForListSelection(page, i)
+        const list = await getStudyProgramList(page)
+        if (await isStudyPrograms(list[i])) {
+            try {
+                await clickStudyProgram(page, i)
+                await wait()
+                await clickSubmitButton(page)
+                await wait()
+                if (await isSelf(page)) {
+                    await answerForSelf(page)
+                } else if (await isSelection(page)) {
+                    await answerForSelection(page, i)
+                } else if (await isInput(page)) {
+                    await answerForInput(page, i)
+                } else if (await isMultiInput(page)) {
+                    await answerForMultiInput(page, i)
+                } else {
+                    await anserForListSelection(page, i)
+                }
+                await wait()
+            } catch (error) {
+                console.log(error)
             }
-            await wait()
         }
     }
 }

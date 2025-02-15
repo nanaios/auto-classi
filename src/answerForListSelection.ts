@@ -1,11 +1,9 @@
 import type { ElementHandle, Page } from "puppeteer";
-import { clickFinishButton, clickStudyProgram, clickSubmitButton, formatAns, wait } from "./utility";
-
-//TODO　バグ修正
+import { clickFinishButton, clickStudyProgram, clickSubmitButton, formatClassiAns, wait } from "./utility";
 
 export async function anserForListSelection(page: Page, index: number) {
     const answers = await getAnswerForListSelection(page)
-    console.log(answers)
+    //console.log(answers)
     await wait()
 
     await clickFinishButton(page)
@@ -26,9 +24,12 @@ export async function anserForListSelection(page: Page, index: number) {
 async function getAnswerForListSelection(page: Page) {
     const answers = await page.$(".answer-inner > div.content > div.select-substance")
     if (!answers) throw new Error("answersが存在しません!");
-    return await answers.$$eval("dl > dd", element => {
-        return element.map(elem => formatAns(elem.innerText))
+    const answerStrings = await answers.$$eval("dl > dd", element => {
+        return element.map(elem => {
+            return elem.innerText
+        })
     })
+    return answerStrings.map(answer => formatClassiAns(answer))
 }
 
 async function setAnswerForList(page: Page, answers: string[]) {
@@ -46,8 +47,8 @@ async function setAnswerForList(page: Page, answers: string[]) {
 async function setAnswerForUl(list: ElementHandle<HTMLElement>, answer: string) {
     const optionList = await list.$("li > div.image-select-box > ul.option-list")
     if (!optionList) throw new Error("optionListが存在しません!");
-    const options = await optionList.$$eval("li", elements => elements.map(element => formatAns(element.innerText)))
-    console.log(options)
+    const options = (await optionList.$$eval("li", elements => elements.map(element => element.innerText))).map(option => formatClassiAns(option))
+    //console.log(options)
     const lists = await optionList.$$("li")
     await lists[options.indexOf(answer)].click()
 }
