@@ -19,7 +19,10 @@ async function main() {
 
     const page = pageList[0];
     await page.bringToFront();
-    console.log(`${(await page.title())}に接続しました。`)
+
+    console.log("autoClassiを起動しました")
+
+    console.log(`${(await page.title())}に接続しました`)
     await wait()
     await runTasks(page)
 
