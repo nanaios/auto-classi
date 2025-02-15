@@ -1,10 +1,10 @@
 import puppeteer, { type Page } from "puppeteer"
-import { getStudyProgramList, isStudyPrograms, clickStudyProgram, clickSubmitButton, wait, formatClassiAns } from "./utility"
-import { answerForSelection, isSelection } from "./answerForSelection";
-import { answerForSelf, isSelf } from "./answerForSelf";
-import { anserForListSelection } from "./answerForListSelection";
-import { answerForInput, isInput } from "./answerForInput";
-import { answerForMultiInput, isMultiInput } from "./answerForMultiInput";
+import { getStudyProgramList, isStudyPrograms, clickStudyProgram, clickSubmitButton, wait, clickFinishButton } from "./utility"
+import { getAnswerForSelection, isSelection, setAnswerForSelection } from "./answerForSelection";
+import { isSelf, setAnswerForSelf } from "./answerForSelf";
+import { getAnswerForListSelection, isListSelection, setAnswerForList } from "./answerForListSelection";
+import { getAnswerForInput, isInput, setAnswerForInput } from "./answerForInput";
+import { getAnswerForMultiInput, isMultiInput, setAnswerForMultiInput } from "./answerForMultiInput";
 
 
 async function main() {
@@ -55,33 +55,110 @@ async function runTasks(page: Page) {
     }
 }
 
+async function getAnswerType(page: Page) {
+    if (await isSelf(page)) return "self";
+    if (await isSelection(page)) return "selection";
+    if (await isInput(page)) return "input";
+    if (await isMultiInput(page)) return "multiinput";
+    if (await isListSelection(page)) return "listselection";
+}
+
+interface AnswerData {
+    number: number,
+    string: string,
+    strings: string[]
+}
 
 async function runClassi(page: Page) {
     const listLength = (await getStudyProgramList(page)).length
 
-    for (let i = 0; i < listLength; i++) {
+    for (let i = 9; i < listLength; i++) {
         const list = await getStudyProgramList(page)
         if (await isStudyPrograms(list[i])) {
+
+            await clickStudyProgram(page, i)
+            await wait()
+
+            const answerType = await getAnswerType(page)
+            await clickSubmitButton(page)
+            await wait()
+
+            const answer: AnswerData = {
+                number: 0,
+                string: "",
+                strings: []
+            }
+
+            //答えをゲットする処理
             try {
-                await clickStudyProgram(page, i)
-                await wait()
-                await clickSubmitButton(page)
-                await wait()
-                if (await isSelf(page)) {
-                    await answerForSelf(page)
-                } else if (await isSelection(page)) {
-                    await answerForSelection(page, i)
-                } else if (await isInput(page)) {
-                    await answerForInput(page, i)
-                } else if (await isMultiInput(page)) {
-                    await answerForMultiInput(page, i)
-                } else {
-                    await anserForListSelection(page, i)
+                switch (answerType) {
+                    case "self": {
+                        await setAnswerForSelf(page)
+                        break;
+                    }
+                    case "input": {
+                        answer.string = await getAnswerForInput(page)
+                        break;
+                    }
+                    case "listselection": {
+                        answer.strings = await getAnswerForListSelection(page)
+                        break;
+                    }
+                    case "multiinput": {
+                        answer.strings = await getAnswerForMultiInput(page)
+                        break;
+                    }
+                    case "selection": {
+                        answer.number = await getAnswerForSelection(page)
+                        break;
+                    }
                 }
-                await wait()
             } catch (error) {
                 console.log(error)
             }
+            await wait()
+
+            await clickFinishButton(page)
+            await wait()
+
+            if (answerType === "self") {
+                continue
+            }
+
+            await clickStudyProgram(page, i)
+            await wait()
+
+
+            //答えをセットする処理
+            try {
+                switch (answerType) {
+                    case "input": {
+                        await setAnswerForInput(page, answer.string)
+                        break;
+                    }
+                    case "listselection": {
+                        await setAnswerForList(page, answer.strings)
+                        break;
+                    }
+                    case "multiinput": {
+                        await setAnswerForMultiInput(page, answer.strings)
+                        break;
+                    }
+                    case "selection": {
+                        await setAnswerForSelection(page, answer.number)
+                        break;
+                    }
+                }
+            } catch (error) {
+                console.log(error)
+            }
+            await wait()
+
+            await clickSubmitButton(page)
+            await wait()
+
+            await clickFinishButton(page)
+            await wait()
         }
     }
 }

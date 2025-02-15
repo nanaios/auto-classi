@@ -1,27 +1,12 @@
 import type { ElementHandle, Page } from "puppeteer";
-import { clickFinishButton, clickStudyProgram, clickSubmitButton, formatClassiAns, wait } from "./utility";
+import { clickFinishButton, clickStudyProgram, formatClassiAns, wait } from "./utility";
 
-export async function anserForListSelection(page: Page, index: number) {
-    const answers = await getAnswerForListSelection(page)
-    //console.log(answers)
-    await wait()
-
-    await clickFinishButton(page)
-    await wait()
-
-    await clickStudyProgram(page, index)
-    await wait()
-
-    await setAnswerForList(page, answers)
-    await wait()
-
-    await clickSubmitButton(page)
-    await wait()
-
-    await clickFinishButton(page)
+export async function isListSelection(page: Page) {
+    const list = await page.$(".spen-mod-select")
+    return Boolean(list)
 }
 
-async function getAnswerForListSelection(page: Page) {
+export async function getAnswerForListSelection(page: Page) {
     const answers = await page.$(".answer-inner > div.content > div.select-substance")
     if (!answers) throw new Error("answersが存在しません!");
     const answerStrings = await answers.$$eval("dl > dd", element => {
@@ -32,7 +17,7 @@ async function getAnswerForListSelection(page: Page) {
     return answerStrings.map(answer => formatClassiAns(answer))
 }
 
-async function setAnswerForList(page: Page, answers: string[]) {
+export async function setAnswerForList(page: Page, answers: string[]) {
     const lists = await page.$(".question-select")
     if (!lists) throw Error("listsが存在しません!");
     const list = await lists.$$("li > ul")

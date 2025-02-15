@@ -1,13 +1,12 @@
 import type { Page } from "puppeteer"
 import { wait, clickFinishButton } from "./utility"
 
-export async function answerForSelf(page: Page) {
+export async function setAnswerForSelf(page: Page) {
     const button = await page.$$(".radio.self_rating")
     await button[0].click()
     await wait()
-    await clickFinishButton(page)
 }
 export async function isSelf(page: Page) {
-    const isCorrect = await page.$(".text.is-correct")
-    return Boolean(isCorrect)
+    const text = await page.$eval(".question-select > p.supplement-text", elment => elment.innerText)
+    return (text === "解答完了後、自己採点をしてください。")
 }
