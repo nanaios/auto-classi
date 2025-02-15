@@ -9,15 +9,4 @@ esbuild.build({
     format: "esm",
     packages: "external",
     minify: true
-});
-
-tsup.build({
-    dts: {
-        entry: ['src/index.ts'],
-        only: true
-    },
-    bundle: true,
-    format: ["esm"],
-    outDir: "./types",
-    entry: ["./src/index.ts"]
 })
