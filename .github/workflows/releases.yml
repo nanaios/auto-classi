@@ -38,6 +38,8 @@ jobs:
           rm -r src
           rm tsconfig.json
           rm README.md
+      - name: Inspect files after checkout
+        run: ls
 
       # リリースを作成する
       - name: Create Release
