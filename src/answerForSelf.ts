@@ -7,6 +7,10 @@ export async function setAnswerForSelf(page: Page) {
     await wait()
 }
 export async function isSelf(page: Page) {
-    const text = await page.$eval(".question-select > p.supplement-text", elment => elment.innerText)
-    return (text === "解答完了後、自己採点をしてください。")
+    try {
+        const text = await page.$eval(".question-select > p.supplement-text", elment => elment.innerText)
+        return (text === "解答完了後、自己採点をしてください。")
+    } catch (error) {
+        return false
+    }
 }

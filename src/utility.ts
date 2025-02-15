@@ -13,7 +13,10 @@ export async function isStudyPrograms(list: ElementHandle<HTMLElement>) {
     return Boolean(icon)
 }
 
-
+export async function getStudyProgramName(list: ElementHandle<HTMLElement>) {
+    const name = await list.$eval("a", element => element.innerText)
+    return name
+}
 
 export async function clickStudyProgram(page: Page, index: number) {
     const li = (await getStudyProgramList(page))[index]
@@ -57,7 +60,7 @@ export function formatClassiAns(rawAns: string) {
     return rawAns.replace(/\n/g, "").replace(/\t/g, "").split("(")[0]
 }
 
-async function getTaskName(task: ElementHandle<HTMLElement>) {
+export async function getTaskName(task: ElementHandle<HTMLElement>) {
     const label = await task.$eval(".simple-task-name > p > span.lecture_name", element => element.innerText)
     return label
 }
@@ -74,9 +77,6 @@ export async function clickLeftButton(page: Page) {
 }
 
 export async function clickTask(page: Page, task: ElementHandle<HTMLElement>) {
-    const taskName = await getTaskName(task)
-    console.log(`講義[name:${taskName}]の処理を開始`)
-    await wait()
     await Promise.all(
         [
             await task.click(),

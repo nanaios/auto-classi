@@ -1,5 +1,5 @@
 import puppeteer, { type Page } from "puppeteer"
-import { getStudyProgramList, isStudyPrograms, clickStudyProgram, clickSubmitButton, wait, clickFinishButton, clickLeftButton, clickTask } from "./utility"
+import { getStudyProgramList, isStudyPrograms, clickStudyProgram, clickSubmitButton, wait, clickFinishButton, clickLeftButton, clickTask, getStudyProgramName, getTaskName } from "./utility"
 import { getAnswerForSelection, isSelection, setAnswerForSelection } from "./answerForSelection";
 import { isSelf, setAnswerForSelf } from "./answerForSelf";
 import { getAnswerForListSelection, isListSelection, setAnswerForList } from "./answerForListSelection";
@@ -33,6 +33,9 @@ async function runTasks(page: Page) {
 
     for (let i = 0; i < tasksLength; i++) {
         const tasks = await page.$$(".task-list > a")
+        const taskName = await getTaskName(tasks[i])
+        console.log(`\n講義[name:${taskName}]の処理を開始`)
+
         await clickTask(page, tasks[i])
         await wait()
 
@@ -40,6 +43,7 @@ async function runTasks(page: Page) {
         await wait()
 
         await clickLeftButton(page)
+        console.log(`\n講義[name:${taskName}]の処理を終了`)
         await wait()
     }
 }
@@ -64,6 +68,9 @@ async function runClassi(page: Page) {
     for (let i = 0; i < listLength; i++) {
         const list = await getStudyProgramList(page)
         if (await isStudyPrograms(list[i])) {
+
+            const name = await getStudyProgramName(list[i])
+            console.log(`\n設問[name:${name}]の解答を開始`)
 
             await clickStudyProgram(page, i)
             await wait()
@@ -108,12 +115,15 @@ async function runClassi(page: Page) {
             }
             await wait()
 
-            await clickFinishButton(page)
-            await wait()
-
             if (answerType === "self") {
+                await clickFinishButton(page)
+                console.log(`設問[name:${name}]の解答を終了`)
+                await wait()
                 continue
             }
+
+            await clickFinishButton(page)
+            await wait()
 
             await clickStudyProgram(page, i)
             await wait()
@@ -148,6 +158,7 @@ async function runClassi(page: Page) {
             await wait()
 
             await clickFinishButton(page)
+            console.log(`設問[name:${name}]の解答を終了`)
             await wait()
         }
     }
