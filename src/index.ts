@@ -9,11 +9,7 @@ import { getAnswerForMultiInput, isMultiInput, setAnswerForMultiInput } from "./
 
 async function main() {
     const browser = await puppeteer.connect({
-        browserURL: 'http://127.0.0.1:9222',
-        defaultViewport: {
-            width: 1920,
-            height: 1080
-        }
+        browserURL: 'http://127.0.0.1:9222'
     });
     const pageList = await browser.pages();
 
