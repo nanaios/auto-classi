@@ -1,1 +1,57 @@
+name: Create Release Note
 
+on:
+  pull_request:
+    # PRが閉じたタイミングで実行
+    types:
+      - closed
+    # mainブランチのみを対象とする
+    branches:
+      - main
+
+jobs:
+  build-and-release:
+    permissions:
+      contents: write
+      pull-requests: write
+    # リリースブランチからマージのみ実施
+    if: github.event.pull_request.merged == true && startsWith(github.head_ref, 'release')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: install dependencies
+        run: npm ci
+
+      - name: build dependencies
+        run: npm run build
+
+      # ZIPファイルを作成する（distディレクトリを対象）
+      - name: Archive Release
+        uses: thedoctor0/zip-release@main
+        with:
+          type: 'zip'
+          filename: releases.zip
+          # distディレクトリにZIPファイルを作成
+          directory: dist
+
+      # リリースを作成し、生成されたZIPファイルをアップロードする
+      - name: Create Release and Upload Assets
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # PRのタイトルと内容をRELEASE_TAGに設定する
+          RELEASE_TAG: ${{ github.event.pull_request.title }}
+        uses: softprops/action-gh-release@v2
+        with:
+          # dist内のZIPファイルを指定
+          files: dist/releases.zip
+          tag_name: ${{ env.RELEASE_TAG }}
+          name: ${{ env.RELEASE_TAG }}
+          draft: false
+          prerelease: false
