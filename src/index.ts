@@ -1,5 +1,5 @@
 import puppeteer, { type Page } from "puppeteer"
-import { getStudyProgramList, isStudyPrograms, clickStudyProgram, clickSubmitButton, wait, clickFinishButton } from "./utility"
+import { getStudyProgramList, isStudyPrograms, clickStudyProgram, clickSubmitButton, wait, clickFinishButton, clickLeftButton, clickTask } from "./utility"
 import { getAnswerForSelection, isSelection, setAnswerForSelection } from "./answerForSelection";
 import { isSelf, setAnswerForSelf } from "./answerForSelf";
 import { getAnswerForListSelection, isListSelection, setAnswerForList } from "./answerForListSelection";
@@ -29,28 +29,17 @@ async function main() {
 async function runTasks(page: Page) {
     const tasksLength = (await page.$$(".task-list > a")).length
 
+    console.log(`合計講義数：${tasksLength}個`)
+
     for (let i = 0; i < tasksLength; i++) {
         const tasks = await page.$$(".task-list > a")
-        await wait()
-        await Promise.all(
-            [
-                await tasks[i].click(),
-                await page.waitForNavigation({ waitUntil: ['load', 'networkidle2'] })
-            ]
-        )
+        await clickTask(page, tasks[i])
         await wait()
 
         await runClassi(page)
         await wait()
 
-        const leftButton = await page.$(".left")
-        if (!leftButton) throw new Error("leftButtonが見つかりません!");
-        await Promise.all(
-            [
-                await leftButton.click(),
-                await page.waitForNavigation({ waitUntil: ['load', 'networkidle2'] })
-            ]
-        )
+        await clickLeftButton(page)
         await wait()
     }
 }
@@ -72,7 +61,7 @@ interface AnswerData {
 async function runClassi(page: Page) {
     const listLength = (await getStudyProgramList(page)).length
 
-    for (let i = 9; i < listLength; i++) {
+    for (let i = 0; i < listLength; i++) {
         const list = await getStudyProgramList(page)
         if (await isStudyPrograms(list[i])) {
 
@@ -80,6 +69,7 @@ async function runClassi(page: Page) {
             await wait()
 
             const answerType = await getAnswerType(page)
+            console.log(`問題タイプ：${answerType}`)
             await clickSubmitButton(page)
             await wait()
 

@@ -1,5 +1,5 @@
 import type { Page } from "puppeteer"
-import { clickFinishButton, wait, clickStudyProgram, clickSubmitButton, formatClassiAns } from "./utility"
+import { formatClassiAns } from "./utility"
 
 export async function setAnswerForSelection(page: Page, index: number) {
     const inputs = await page.$$(".checkbox")

@@ -1,5 +1,5 @@
 import type { ElementHandle, Page } from "puppeteer";
-import { clickFinishButton, clickStudyProgram, formatClassiAns, wait } from "./utility";
+import { formatClassiAns, wait } from "./utility";
 
 export async function isListSelection(page: Page) {
     const list = await page.$(".spen-mod-select")

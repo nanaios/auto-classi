@@ -56,3 +56,31 @@ export function wait(ms: number = BASE_WAIT_TIME) {
 export function formatClassiAns(rawAns: string) {
     return rawAns.replace(/\n/g, "").replace(/\t/g, "").split("(")[0]
 }
+
+async function getTaskName(task: ElementHandle<HTMLElement>) {
+    const label = await task.$eval(".simple-task-name > p > span.lecture_name", element => element.innerText)
+    return label
+}
+
+export async function clickLeftButton(page: Page) {
+    const leftButton = await page.$(".left")
+    if (!leftButton) throw new Error("leftButtonが見つかりません!");
+    await Promise.all(
+        [
+            await leftButton.click(),
+            await page.waitForNavigation({ waitUntil: ['load', 'networkidle2'] })
+        ]
+    )
+}
+
+export async function clickTask(page: Page, task: ElementHandle<HTMLElement>) {
+    const taskName = await getTaskName(task)
+    console.log(`講義[name:${taskName}]の処理を開始`)
+    await wait()
+    await Promise.all(
+        [
+            await task.click(),
+            await page.waitForNavigation({ waitUntil: ['load', 'networkidle2'] })
+        ]
+    )
+}

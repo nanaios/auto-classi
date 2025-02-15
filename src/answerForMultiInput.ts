@@ -1,5 +1,5 @@
 import type { Page } from "puppeteer"
-import { clickFinishButton, wait, clickStudyProgram, clickSubmitButton, formatClassiAns } from "./utility"
+import { wait, formatClassiAns } from "./utility"
 
 export async function isMultiInput(page: Page) {
     const correct = await page.$$(".spen-mod-input-label-list > li")

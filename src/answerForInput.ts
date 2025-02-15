@@ -1,5 +1,5 @@
 import type { Page } from "puppeteer";
-import { clickFinishButton, clickStudyProgram, clickSubmitButton, formatClassiAns, wait } from "./utility";
+import { formatClassiAns } from "./utility";
 
 export async function isInput(page: Page) {
     const correct = await page.$$(".spen-mod-input-label-list > li")
