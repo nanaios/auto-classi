@@ -9,7 +9,7 @@
   "scripts": {
     "test": "npx vitest run",
     "build": "node esbuild.js",
-    "open": ".\\test.bat",
+    "open": ".\\open.bat",
     "start": "node dist/index.js"
   },
   "devDependencies": {
