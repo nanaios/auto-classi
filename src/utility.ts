@@ -57,7 +57,7 @@ export function wait(ms: number = BASE_WAIT_TIME) {
 }
 
 export function formatClassiAns(rawAns: string) {
-    return rawAns.replace(/\n/g, "").replace(/\t/g, "").split("(")[0]
+    return rawAns.replace(/\n/g, "").replace(/\t/g, "").split("(")[0].trim()
 }
 
 export async function getTaskName(task: ElementHandle<HTMLElement>) {

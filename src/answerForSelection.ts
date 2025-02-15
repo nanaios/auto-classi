@@ -1,5 +1,5 @@
 import type { Page } from "puppeteer"
-import { formatClassiAns } from "./utility"
+import { clickFinishButton, wait, clickStudyProgram, clickSubmitButton, formatClassiAns } from "./utility"
 
 export async function setAnswerForSelection(page: Page, index: number) {
     const inputs = await page.$$(".checkbox")
@@ -18,11 +18,28 @@ const ANSWER_INDEXS = [
     "ケ"
 ]
 
+const ANSWER_INDEXS2 = [
+    "①",
+    "②",
+    "③",
+    "④",
+    "⑤",
+    "⑥",
+    "⑦",
+    "⑧",
+    "⑨"
+]
+
 export async function getAnswerForSelection(page: Page) {
     const answer = await page.$eval(".answer-inner > div.content > ul.spen-mod-label-text-list > li > dl.clearfix > dd", element => {
         return element.innerHTML
     })
-    return ANSWER_INDEXS.indexOf(formatClassiAns(answer))
+    let index = ANSWER_INDEXS.indexOf(formatClassiAns(answer))
+    if (index !== -1) {
+        return index
+    } else {
+        return ANSWER_INDEXS2.indexOf(formatClassiAns(answer))
+    }
 }
 
 export async function isSelection(page: Page) {
