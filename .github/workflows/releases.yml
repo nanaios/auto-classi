@@ -17,9 +17,15 @@ jobs:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
+      - name: Inspect files befoer checkout
+        run: ls
+        
       - name: Checkout repository
         uses: actions/checkout@v4
-
+        
+      - name: Inspect files after checkout
+        run: ls
+        
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -30,16 +36,7 @@ jobs:
 
       - name: build dependencies
         run: npm run build
-
-      # ZIPファイルを作成する（distディレクトリを対象）
-      - name: Archive Release
-        uses: thedoctor0/zip-release@main
-        with:
-          type: 'zip'
-          filename: releases.zip
-          # distディレクトリにZIPファイルを作成
-          directory: dist
-
+        
       # リリースを作成し、生成されたZIPファイルをアップロードする
       - name: Create Release and Upload Assets
         env:
