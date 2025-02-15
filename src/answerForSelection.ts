@@ -1,9 +1,13 @@
 import type { Page } from "puppeteer"
-import { clickFinishButton, wait, clickStudyProgram, clickSubmitButton, formatClassiAns, random } from "./utility"
+import { formatClassiAns, random } from "./utility"
 
-export async function setAnswerForSelection(page: Page, index: number) {
+export async function setAnswerForSelection(page: Page, answer: string) {
     const inputs = await page.$$(".checkbox")
-    await inputs[index].click()
+    const selections = (await page.$$eval(".select-substance", inputs => {
+        return (inputs as unknown as HTMLElement[]).map(input => input.innerText)
+    })).map(selection => formatClassiAns(selection))
+
+    await inputs[selections.indexOf(answer)].click()
 }
 
 export async function setRandomAnswerForSelection(page: Page) {
@@ -11,40 +15,11 @@ export async function setRandomAnswerForSelection(page: Page) {
     await inputs[random(inputs.length)].click()
 }
 
-const ANSWER_INDEXS = [
-    "ア",
-    "イ",
-    "ウ",
-    "エ",
-    "オ",
-    "カ",
-    "キ",
-    "ク",
-    "ケ"
-]
-
-const ANSWER_INDEXS2 = [
-    "①",
-    "②",
-    "③",
-    "④",
-    "⑤",
-    "⑥",
-    "⑦",
-    "⑧",
-    "⑨"
-]
-
 export async function getAnswerForSelection(page: Page) {
     const answer = await page.$eval(".answer-inner > div.content > ul.spen-mod-label-text-list > li > dl.clearfix > dd", element => {
         return element.innerHTML
     })
-    let index = ANSWER_INDEXS.indexOf(formatClassiAns(answer))
-    if (index !== -1) {
-        return index
-    } else {
-        return ANSWER_INDEXS2.indexOf(formatClassiAns(answer))
-    }
+    return answer
 }
 
 export async function isSelection(page: Page) {
