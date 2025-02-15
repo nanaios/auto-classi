@@ -41,15 +41,14 @@ jobs:
       - name: Inspect files after checkout
         run: ls
 
-      # リリースを作成する
-      - name: Create Release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # PRのタイトルと内容をRELEASE_TAGに設定する
-          RELEASE_TAG: ${{ github.event.pull_request.title }}
-        uses: softprops/action-gh-release@v2
+      - name: Archive Release
+        uses: thedoctor0/zip-release@0.7.5
         with:
-          tag_name: ${{ env.RELEASE_TAG }}
-          name: ${{ env.RELEASE_TAG }}
-          draft: false
-          prerelease: false
+          type: 'zip'
+          filename: 'release.zip'
+
+      - name: Upload Release
+        uses: ncipollo/release-action@v1.12.0
+        with:
+          artifacts: "release.zip"
+          token: ${{ secrets.GITHUB_TOKEN }}
