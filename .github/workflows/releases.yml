@@ -7,15 +7,14 @@ on:
       - closed
     # mainブランチのみを対象とする
     branches:
-      - dev
+      - main
 
 jobs:
   build-and-release:
     permissions:
       contents: write
       pull-requests: write
-    # リリースブランチからマージのみ実施
-    if: github.event.pull_request.merged == true && startsWith(github.head_ref, 'release')
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
