@@ -26,6 +26,7 @@ async function main() {
     await wait()
     await runTasks(page)
 
+    console.log("autoClassiを終了します")
     process.exit(0)
 }
 
