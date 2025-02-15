@@ -1,5 +1,4 @@
 import * as esbuild from "esbuild"
-import * as tsup from "tsup"
 
 esbuild.build({
     entryPoints: ["src/index.ts"],
