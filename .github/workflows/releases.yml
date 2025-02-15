@@ -7,7 +7,7 @@ on:
       - closed
     # mainブランチのみを対象とする
     branches:
-      - main
+      - dev
 
 jobs:
   build-and-release:
