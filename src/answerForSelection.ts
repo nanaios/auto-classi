@@ -1,9 +1,14 @@
 import type { Page } from "puppeteer"
-import { clickFinishButton, wait, clickStudyProgram, clickSubmitButton, formatClassiAns } from "./utility"
+import { clickFinishButton, wait, clickStudyProgram, clickSubmitButton, formatClassiAns, random } from "./utility"
 
 export async function setAnswerForSelection(page: Page, index: number) {
     const inputs = await page.$$(".checkbox")
     await inputs[index].click()
+}
+
+export async function setRandomAnswerForSelection(page: Page) {
+    const inputs = await page.$$(".checkbox")
+    await inputs[random(inputs.length)].click()
 }
 
 const ANSWER_INDEXS = [
