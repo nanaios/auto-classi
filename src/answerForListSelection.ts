@@ -1,5 +1,5 @@
 import type { ElementHandle, Page } from "puppeteer";
-import { formatClassiAns, wait } from "./utility";
+import { formatClassiAns, random, wait } from "./utility";
 
 export async function isListSelection(page: Page) {
     const list = await page.$(".spen-mod-select")
@@ -36,4 +36,25 @@ async function setAnswerForUl(list: ElementHandle<HTMLElement>, answer: string) 
     //console.log(options)
     const lists = await optionList.$$("li")
     await lists[options.indexOf(answer)].click()
+}
+
+export async function setRandomAnswerForList(page: Page) {
+    const lists = await page.$(".question-select")
+    if (!lists) throw Error("listsが存在しません!");
+    const list = await lists.$$("li > ul")
+
+    for (let i = 0; i < list.length; i++) {
+        await list[i].click()
+        await wait()
+        await setRandomAnswerForUl(list[i])
+        await wait()
+    }
+}
+
+
+async function setRandomAnswerForUl(list: ElementHandle<HTMLElement>) {
+    const optionList = await list.$("li > div.image-select-box > ul.option-list")
+    if (!optionList) throw new Error("optionListが存在しません!");
+    const lists = await optionList.$$("li")
+    await lists[random(lists.length)].click()
 }

@@ -84,3 +84,7 @@ export async function clickTask(page: Page, task: ElementHandle<HTMLElement>) {
         ]
     )
 }
+
+export function random(max: number) {
+    return Math.floor(Math.random() * max);
+}

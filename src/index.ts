@@ -1,8 +1,8 @@
 import puppeteer, { type Page } from "puppeteer"
 import { getStudyProgramList, isStudyPrograms, clickStudyProgram, clickSubmitButton, wait, clickFinishButton, clickLeftButton, clickTask, getStudyProgramName, getTaskName } from "./utility"
-import { getAnswerForSelection, isSelection, setAnswerForSelection } from "./answerForSelection";
+import { getAnswerForSelection, isSelection, setAnswerForSelection, setRandomAnswerForSelection } from "./answerForSelection";
 import { isSelf, setAnswerForSelf } from "./answerForSelf";
-import { getAnswerForListSelection, isListSelection, setAnswerForList } from "./answerForListSelection";
+import { getAnswerForListSelection, isListSelection, setAnswerForList, setRandomAnswerForList } from "./answerForListSelection";
 import { getAnswerForInput, isInput, setAnswerForInput } from "./answerForInput";
 import { getAnswerForMultiInput, isMultiInput, setAnswerForMultiInput } from "./answerForMultiInput";
 
@@ -77,6 +77,23 @@ async function runClassi(page: Page) {
 
             const answerType = await getAnswerType(page)
             console.log(`問題タイプ：${answerType}`)
+
+            try {
+                switch (answerType) {
+                    case "listselection": {
+                        await setRandomAnswerForList(page)
+                        break;
+                    }
+                    case "selection": {
+                        await setRandomAnswerForSelection(page)
+                        break;
+                    }
+                }
+            } catch (error) {
+                console.log(error)
+            }
+            await wait()
+
             await clickSubmitButton(page)
             await wait()
 
