@@ -10,6 +10,8 @@ export async function setAnswerForInput(page: Page, answer: string) {
 }
 
 export async function getAnswerForInput(page: Page) {
-    const answer = await page.$eval(".answer-inner > div.content > div > dl > dd", element => element.innerText)
-    return formatClassiAns(answer)
+    const rawAnswer = await page.$eval(".answer-inner > div.content > div > dl > dd", element => element.innerText)
+    const answer = formatClassiAns(rawAnswer)
+    console.log(`答え:${answer}`)
+    return answer
 }
