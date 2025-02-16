@@ -1,10 +1,8 @@
 import puppeteer, { type Page } from "puppeteer"
-import { getStudyProgramList, isStudyPrograms, clickStudyProgram, clickSubmitButton, wait, clickFinishButton, clickLeftButton, clickTask, getStudyProgramName, getTaskName, copyPage, random, argToNumber } from "./utility"
-import { getAnswerForSelection, isSelection, setAnswerForSelection } from "./answerForSelection";
-import { isSelf, setAnswerForSelf } from "./answerForSelf";
-import { getAnswerForListSelection, isListSelection, setAnswerForList } from "./answerForListSelection";
-import { getAnswerForInput, isInput, setAnswerForInput } from "./answerForInput";
-import { getAnswerForMultiInput, isMultiInput, setAnswerForMultiInput } from "./answerForMultiInput";
+import { getStudyProgramList, isStudyPrograms, wait, getStudyProgramName, getTaskName, copyPage, random, argToNumber } from "./utility"
+import { setAnswerForSelf } from "./answerForSelf";
+import { clickFinishButton, clickTask, clickLeftButton, clickStudyProgram, clickSubmitButton } from "./clickButton";
+import { getAnswer, getAnswerType, setAnswer, type AnswerData } from "./answer";
 
 
 const RANDOM_PER = argToNumber(0) ?? 100
@@ -63,20 +61,6 @@ async function runTasks(page: Page) {
     }
 }
 
-async function getAnswerType(page: Page) {
-    if (await isSelf(page)) return "self";
-    if (await isSelection(page)) return "selection";
-    if (await isInput(page)) return "input";
-    if (await isMultiInput(page)) return "multiinput";
-    if (await isListSelection(page)) return "listselection";
-}
-
-interface AnswerData {
-    number: number,
-    string: string,
-    strings: string[]
-}
-
 async function runClassi(page: Page) {
     const listLength = (await getStudyProgramList(page)).length
 
@@ -101,51 +85,34 @@ async function runClassi(page: Page) {
             await wait()
 
             const answer: AnswerData = {
-                number: 0,
                 string: "",
                 strings: []
             }
 
-            //答えをゲットする処理
-            try {
-                switch (answerType) {
-                    case "input": {
-                        answer.string = await getAnswerForInput(newPage)
-                        break;
-                    }
-                    case "listselection": {
-                        answer.strings = await getAnswerForListSelection(newPage)
-                        break;
-                    }
-                    case "multiinput": {
-                        answer.strings = await getAnswerForMultiInput(newPage)
-                        break;
-                    }
-                    case "selection": {
-                        answer.string = await getAnswerForSelection(newPage)
-                        break;
-                    }
-                }
-            } catch (error) {
-                console.log(error)
-            }
-            await wait()
+            await getAnswer(newPage, answer, answerType)
 
-            const rans = random(100)
-            console.log(`正解分岐乱数:${rans}`)
+            //1～100までの乱数を生成
+            const rans = random(100) + 1
 
-            if (rans >= RANDOM_PER) {
-                console.log(`乱数[${rans}]が初手正解率以下のため、不正解を実行します`)
-                if (answerType === "self") {
-                    await setAnswerForSelf(newPage, false)
-                    await wait()
-                }
-                await clickFinishButton(newPage)
-                console.log("初手不正解を実行しました")
-                notCorrectAnswerFirstCount++
-                await wait()
-            } else {
+            if (rans <= RANDOM_PER) {
+                console.log(`(1d100<=${RANDOM_PER}) > ${rans} > 成功`)
                 correctAnswerFirstCount++
+            } else {
+                console.log(`(1d100<=${RANDOM_PER}) > ${rans} > 失敗`)
+                console.log("初手の解答を不正解にします")
+                try {
+                    if (answerType === "self") {
+                        await setAnswerForSelf(newPage, false)
+                        await wait()
+                    } else {
+                        await clickFinishButton(newPage)
+                    }
+                    console.log("初手の解答を終了しました")
+                    notCorrectAnswerFirstCount++
+                    await wait()
+                } catch (error) {
+                    console.log(error)
+                }
             }
 
             await newPage.close()
@@ -158,39 +125,12 @@ async function runClassi(page: Page) {
                 await wait()
 
                 await setAnswerForSelf(page, true)
-                await wait()
-
-                await clickFinishButton(page)
                 console.log(`設問[name:${name}]の解答を終了`)
                 await wait()
                 continue
             }
 
-            //答えをセットする処理
-            console.log("答えをセットします")
-            try {
-                switch (answerType) {
-                    case "input": {
-                        await setAnswerForInput(page, answer.string)
-                        break;
-                    }
-                    case "listselection": {
-                        await setAnswerForList(page, answer.strings)
-                        break;
-                    }
-                    case "multiinput": {
-                        await setAnswerForMultiInput(page, answer.strings)
-                        break;
-                    }
-                    case "selection": {
-                        await setAnswerForSelection(page, answer.string)
-                        break;
-                    }
-                }
-            } catch (error) {
-                console.log(error)
-            }
-            await wait()
+            await setAnswer(page, answer, answerType)
 
             await clickSubmitButton(page)
             await wait()
