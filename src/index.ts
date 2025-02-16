@@ -3,6 +3,7 @@ import { getStudyProgramList, isStudyPrograms, wait, getStudyProgramName, getTas
 import { setAnswerForSelf } from "./answerForSelf";
 import { clickFinishButton, clickTask, clickLeftButton, clickStudyProgram, clickSubmitButton } from "./clickButton";
 import { getAnswer, getAnswerType, setAnswer, type AnswerData } from "./answer";
+import { notifyFinishSearch, playVideo } from "./video";
 
 
 const RANDOM_PER = argToNumber(0) ?? 100
@@ -11,32 +12,37 @@ console.log(`推定初手正解率:${RANDOM_PER}`)
 let questionCount = 0
 let correctAnswerFirstCount = 0
 let notCorrectAnswerFirstCount = 0
+let videoIndex = 0
 
 async function main() {
     const browser = await puppeteer.connect({
         browserURL: 'http://127.0.0.1:9222'
     });
 
-
-
     const pageList = await browser.pages();
 
     const page = pageList[0];
     await page.bringToFront();
 
+    await wait()
     console.log("autoClassiを起動しました")
 
     console.log(`${(await page.title())}に接続しました`)
     await wait()
     await runTasks(page)
+    console.log("\n全設問の探索が終了しました\n")
+    notifyFinishSearch()
+}
 
+export function finish() {
     console.log(`解答した問題数:${questionCount}`)
     console.log(`初手正解率:${correctAnswerFirstCount / questionCount}`)
     console.log(`初手不正解率:${notCorrectAnswerFirstCount / questionCount}`)
+    console.log(`再生したビデオ数:${videoIndex}`)
 
-
-    console.log("autoClassiを終了します")
+    console.log("AutoClassiを終了します")
     process.exit(0)
+
 }
 
 async function runTasks(page: Page) {
@@ -76,6 +82,7 @@ async function runClassi(page: Page) {
             await wait()
 
             const newPage = await copyPage(page)
+            newPage.bringToFront()
             await wait()
 
             const answerType = await getAnswerType(newPage)
@@ -116,6 +123,7 @@ async function runClassi(page: Page) {
             }
 
             await newPage.close()
+            await page.bringToFront()
             await wait()
 
 
@@ -137,6 +145,21 @@ async function runClassi(page: Page) {
 
             await clickFinishButton(page)
             console.log(`設問[name:${name}]の解答を終了`)
+            await wait()
+        } else {
+            const name = await getStudyProgramName(list[i])
+            console.log(`\nビデオ[name:${name}]の再生を開始`)
+
+            await clickStudyProgram(page, i)
+            await wait()
+
+            await playVideo(page, videoIndex, name)
+            videoIndex++
+
+            await page.bringToFront()
+            await wait()
+
+            await page.goBack()
             await wait()
         }
     }
