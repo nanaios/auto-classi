@@ -64,7 +64,7 @@ async function runTasks(page: Page) {
 async function runClassi(page: Page) {
     const listLength = (await getStudyProgramList(page)).length
 
-    for (let i = 0; i < listLength; i++) {
+    for (let i = 10; i < listLength; i++) {
         const list = await getStudyProgramList(page)
         if (await isStudyPrograms(list[i])) {
 
@@ -95,19 +95,24 @@ async function runClassi(page: Page) {
             const rans = random(100) + 1
 
             if (rans <= RANDOM_PER) {
-                console.log(`(1d100<=${RANDOM_PER}) > ${rans} > 失敗`)
-                console.log("初手の解答を不正解にします")
-                if (answerType === "self") {
-                    await setAnswerForSelf(newPage, false)
-                    await wait()
-                }
-                await clickFinishButton(newPage)
-                console.log("初手の解答を終了しました")
-                notCorrectAnswerFirstCount++
-                await wait()
-            } else {
                 console.log(`(1d100<=${RANDOM_PER}) > ${rans} > 成功`)
                 correctAnswerFirstCount++
+            } else {
+                console.log(`(1d100<=${RANDOM_PER}) > ${rans} > 失敗`)
+                console.log("初手の解答を不正解にします")
+                try {
+                    if (answerType === "self") {
+                        await setAnswerForSelf(newPage, false)
+                        await wait()
+                    } else {
+                        await clickFinishButton(newPage)
+                    }
+                    console.log("初手の解答を終了しました")
+                    notCorrectAnswerFirstCount++
+                    await wait()
+                } catch (error) {
+                    console.log(error)
+                }
             }
 
             await newPage.close()
@@ -120,9 +125,6 @@ async function runClassi(page: Page) {
                 await wait()
 
                 await setAnswerForSelf(page, true)
-                await wait()
-
-                await clickFinishButton(page)
                 console.log(`設問[name:${name}]の解答を終了`)
                 await wait()
                 continue
