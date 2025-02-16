@@ -17,10 +17,10 @@ export async function clearVideoQueue() {
         await wait()
 
         await clickFinishButton(videoPage)
-        await wait()
+        await wait(500)
 
         await videoPage.close()
-        await wait()
+        await wait(500)
     }
 }
 
