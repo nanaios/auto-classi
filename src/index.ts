@@ -7,7 +7,7 @@ import { getAnswerForInput, isInput, setAnswerForInput } from "./answerForInput"
 import { getAnswerForMultiInput, isMultiInput, setAnswerForMultiInput } from "./answerForMultiInput";
 
 
-const RANDOM_PER = argToNumber(0) ?? 0
+const RANDOM_PER = argToNumber(0) ?? 100
 console.log(`推定初手正解率:${RANDOM_PER}`)
 
 let questionCount = 0
