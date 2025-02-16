@@ -14,7 +14,9 @@ export async function getAnswerForListSelection(page: Page) {
             return elem.innerText
         })
     })
-    return answerStrings.map(answer => formatClassiAns(answer))
+    const formatAnswers = answerStrings.map(answer => formatClassiAns(answer))
+    console.log(`答え:${formatAnswers}`)
+    return formatAnswers
 }
 
 export async function setAnswerForList(page: Page, answers: string[]) {

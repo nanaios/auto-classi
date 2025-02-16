@@ -6,7 +6,6 @@ export async function setAnswerForSelection(page: Page, answer: string) {
     const selections = (await page.$$eval(".select-substance", inputs => {
         return (inputs as unknown as HTMLElement[]).map(input => input.innerText)
     })).map(selection => formatClassiAns(selection))
-
     await inputs[selections.indexOf(answer)].click()
 }
 
@@ -19,6 +18,7 @@ export async function getAnswerForSelection(page: Page) {
     const answer = await page.$eval(".answer-inner > div.content > ul.spen-mod-label-text-list > li > dl.clearfix > dd", element => {
         return element.innerHTML
     })
+    console.log(`答え:${answer}`)
     return answer
 }
 

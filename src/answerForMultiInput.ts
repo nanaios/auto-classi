@@ -10,7 +10,9 @@ export async function getAnswerForMultiInput(page: Page) {
     const answers = await page.$$eval(".answer-inner > div.content > div > dl > dd", elements => elements.map(element => {
         return element.innerText
     }))
-    return answers.map(answer => formatClassiAns(answer))
+    const formatAnswers = answers.map(answer => formatClassiAns(answer))
+    console.log(`答え:${formatAnswers}`)
+    return formatAnswers
 }
 
 export async function setAnswerForMultiInput(page: Page, answers: string[]) {

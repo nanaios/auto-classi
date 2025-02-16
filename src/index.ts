@@ -1,16 +1,25 @@
 import puppeteer, { type Page } from "puppeteer"
-import { getStudyProgramList, isStudyPrograms, clickStudyProgram, clickSubmitButton, wait, clickFinishButton, clickLeftButton, clickTask, getStudyProgramName, getTaskName, copyPage } from "./utility"
-import { getAnswerForSelection, isSelection, setAnswerForSelection, setRandomAnswerForSelection } from "./answerForSelection";
+import { getStudyProgramList, isStudyPrograms, clickStudyProgram, clickSubmitButton, wait, clickFinishButton, clickLeftButton, clickTask, getStudyProgramName, getTaskName, copyPage, random, argToNumber } from "./utility"
+import { getAnswerForSelection, isSelection, setAnswerForSelection } from "./answerForSelection";
 import { isSelf, setAnswerForSelf } from "./answerForSelf";
-import { getAnswerForListSelection, isListSelection, setAnswerForList, setRandomAnswerForList } from "./answerForListSelection";
+import { getAnswerForListSelection, isListSelection, setAnswerForList } from "./answerForListSelection";
 import { getAnswerForInput, isInput, setAnswerForInput } from "./answerForInput";
 import { getAnswerForMultiInput, isMultiInput, setAnswerForMultiInput } from "./answerForMultiInput";
 
+
+const RANDOM_PER = argToNumber(0) ?? 0
+console.log(`推定初手正解率:${RANDOM_PER}`)
+
+let questionCount = 0
+let correctAnswerFirstCount = 0
+let notCorrectAnswerFirstCount = 0
 
 async function main() {
     const browser = await puppeteer.connect({
         browserURL: 'http://127.0.0.1:9222'
     });
+
+
 
     const pageList = await browser.pages();
 
@@ -22,6 +31,11 @@ async function main() {
     console.log(`${(await page.title())}に接続しました`)
     await wait()
     await runTasks(page)
+
+    console.log(`解答した問題数:${questionCount}`)
+    console.log(`初手正解率:${correctAnswerFirstCount / questionCount}`)
+    console.log(`初手不正解率:${notCorrectAnswerFirstCount / questionCount}`)
+
 
     console.log("autoClassiを終了します")
     process.exit(0)
@@ -72,12 +86,12 @@ async function runClassi(page: Page) {
 
             const name = await getStudyProgramName(list[i])
             console.log(`\n設問[name:${name}]の解答を開始`)
+            questionCount++
 
             await clickStudyProgram(page, i)
             await wait()
 
             const newPage = await copyPage(page)
-            //await newPage.bringToFront()
             await wait()
 
             const answerType = await getAnswerType(newPage)
@@ -117,7 +131,23 @@ async function runClassi(page: Page) {
             }
             await wait()
 
-            //await page.bringToFront()
+            const rans = random(100)
+            console.log(`正解分岐乱数:${rans}`)
+
+            if (rans >= RANDOM_PER) {
+                console.log(`乱数[${rans}]が初手正解率以下のため、不正解を実行します`)
+                if (answerType === "self") {
+                    await setAnswerForSelf(newPage, false)
+                    await wait()
+                }
+                await clickFinishButton(newPage)
+                console.log("初手不正解を実行しました")
+                notCorrectAnswerFirstCount++
+                await wait()
+            } else {
+                correctAnswerFirstCount++
+            }
+
             await newPage.close()
             await wait()
 
@@ -127,7 +157,7 @@ async function runClassi(page: Page) {
                 await clickSubmitButton(page)
                 await wait()
 
-                await setAnswerForSelf(page)
+                await setAnswerForSelf(page, true)
                 await wait()
 
                 await clickFinishButton(page)
@@ -137,6 +167,7 @@ async function runClassi(page: Page) {
             }
 
             //答えをセットする処理
+            console.log("答えをセットします")
             try {
                 switch (answerType) {
                     case "input": {
@@ -174,4 +205,4 @@ async function runClassi(page: Page) {
 
 
 
-main()
+await main()
