@@ -64,7 +64,7 @@ async function runTasks(page: Page) {
 async function runClassi(page: Page) {
     const listLength = (await getStudyProgramList(page)).length
 
-    for (let i = 10; i < listLength; i++) {
+    for (let i = 0; i < listLength; i++) {
         const list = await getStudyProgramList(page)
         if (await isStudyPrograms(list[i])) {
 
