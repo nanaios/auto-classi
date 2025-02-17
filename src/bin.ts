@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import path from "path";
 import { main } from ".";
-import { exec, execSync } from 'child_process';
+import { exec } from 'child_process';
 
 const is_windows = process.platform === 'win32'
 const is_mac = process.platform === 'darwin'
@@ -25,13 +25,24 @@ async function cli() {
 
 async function openChrome() {
     console.log("chromeを起動する")
+    const timeout = (() => {
+        const num = Number(process.argv[3])
+        if (Number.isNaN(num)) {
+            return undefined
+        } else {
+            return num
+        }
+    })() ?? 2000
+
     const cwd = path.join(import.meta.dirname, "../")
     if (is_windows) {
-        execSync(path.join(cwd, "open.bat"))
+        exec(path.join(cwd, "open.bat"))
     } else if (is_mac) {
-        execSync(path.join(cwd, "open.sh"))
+        exec(path.join(cwd, "open.sh"))
     }
-    console.log("chromeを起動した")
+    setTimeout(() => {
+        process.exit()
+    }, timeout)
 }
 
 await cli()
