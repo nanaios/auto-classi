@@ -1,14 +1,13 @@
 import type { Page } from "puppeteer";
 import { argToNumber, copyPage, wait } from "./utility";
-import { checkFinish, setVideoStatus } from ".";
+import { addPlayingVideoCount } from ".";
 
 const PLAY_RATE = argToNumber(2) ?? 1
 console.log(`ビデオの再生倍率:${PLAY_RATE}`)
 const videoPages: Page[] = []
-const finishVideoDatas: Array<{ index: number, name: string }> = []
 
 export async function playVideo(page: Page, index: number, name: string) {
-    setVideoStatus(false)
+    addPlayingVideoCount(1)
     const newPage = await copyPage(page)
     videoPages[index] = newPage
     newPage.bringToFront()
@@ -28,11 +27,9 @@ export async function playVideo(page: Page, index: number, name: string) {
         await wait()
 
         await page.bringToFront()
+        await wait()
 
-        if ((videoPages.length - 1) === index) {
-            setVideoStatus(true)
-            checkFinish()
-        }
+        addPlayingVideoCount(-1)
     });
 
     const videoArea = await newPage.$("#video_area")

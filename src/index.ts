@@ -5,7 +5,6 @@ import { clickFinishButton, clickLeftButton, clickStudyProgram, clickSubmitButto
 import { getAnswer, getAnswerType, setAnswer, type AnswerData } from "./answer";
 import { playVideo } from "./video";
 
-
 const RANDOM_PER = argToNumber(0) ?? 100
 console.log(`推定初手正解率:${RANDOM_PER}`)
 
@@ -13,11 +12,13 @@ let questionCount = 0
 let correctAnswerFirstCount = 0
 let notCorrectAnswerFirstCount = 0
 let videoIndex = 0
+let playingVideoCount = 0
 
-let isFinishPlayVideo = false
 let isSearchFinish = false
-export function setVideoStatus(bool: boolean) {
-    isFinishPlayVideo = bool
+
+export function addPlayingVideoCount(value: number) {
+    playingVideoCount += value
+    checkFinish()
 }
 
 async function main() {
@@ -42,7 +43,7 @@ async function main() {
 }
 
 export function checkFinish() {
-    if ((isFinishPlayVideo || (videoIndex === 0)) && isSearchFinish) {
+    if ((playingVideoCount === 0 || videoIndex === 0) && isSearchFinish) {
         console.log(`解答した問題数:${questionCount}個`)
         console.log(`初手正解率:${correctAnswerFirstCount / questionCount}%`)
         console.log(`初手不正解率:${notCorrectAnswerFirstCount / questionCount}%`)
