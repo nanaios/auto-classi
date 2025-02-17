@@ -29,9 +29,6 @@ async function openChrome() {
     } else if (is_mac) {
         exec(".\\open.sh")
     }
-    setTimeout(() => {
-        process.exit(0)
-    }, 2000);
 }
 
 await cli()
