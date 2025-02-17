@@ -14,6 +14,11 @@ export async function isStudyPrograms(list: ElementHandle<HTMLElement>) {
     return Boolean(icon)
 }
 
+export async function isVideoPrograms(list: ElementHandle<HTMLElement>) {
+    const icon = await list.$(".fa-film")
+    return Boolean(icon)
+}
+
 export async function getStudyProgramName(list: ElementHandle<HTMLElement>) {
     const name = await list.$eval("a", element => element.innerText)
     return name
@@ -54,4 +59,9 @@ export function argToNumber(index: number) {
     } else {
         return arg
     }
+}
+
+export async function isInCorrectProgram(list: ElementHandle<HTMLElement>) {
+    const correctIconSrc = await list.$eval("a > p > img", img => img.src)
+    return correctIconSrc.includes("incorrect")
 }

@@ -1,5 +1,5 @@
 import puppeteer, { type Page } from "puppeteer"
-import { getStudyProgramList, isStudyPrograms, wait, getStudyProgramName, getTaskName, copyPage, random, argToNumber } from "./utility"
+import { getStudyProgramList, isStudyPrograms, wait, getStudyProgramName, getTaskName, copyPage, random, argToNumber, isInCorrectProgram, isVideoPrograms } from "./utility"
 import { setAnswerForSelf } from "./answerForSelf";
 import { clickFinishButton, clickLeftButton, clickStudyProgram, clickSubmitButton, waitForTransition } from "./clickButton";
 import { getAnswer, getAnswerType, setAnswer, type AnswerData } from "./answer";
@@ -42,7 +42,7 @@ async function main() {
 }
 
 export function checkFinish() {
-    if (isFinishPlayVideo && isSearchFinish) {
+    if ((isFinishPlayVideo || (videoIndex === 0)) && isSearchFinish) {
         console.log(`解答した問題数:${questionCount}個`)
         console.log(`初手正解率:${correctAnswerFirstCount / questionCount}%`)
         console.log(`初手不正解率:${notCorrectAnswerFirstCount / questionCount}%`)
@@ -80,8 +80,7 @@ async function runClassi(page: Page) {
 
     for (let i = 0; i < listLength; i++) {
         const list = await getStudyProgramList(page)
-        if (await isStudyPrograms(list[i])) {
-
+        if (await isStudyPrograms(list[i]) && await isInCorrectProgram(list[i])) {
             const name = await getStudyProgramName(list[i])
             console.log(`\n設問[name:${name}]の解答を開始`)
             questionCount++
@@ -162,7 +161,7 @@ async function runClassi(page: Page) {
             await clickFinishButton(page)
             console.log(`設問[name:${name}]の解答を終了`)
             await wait()
-        } else {
+        } else if (await isVideoPrograms(list[i])) {
             const name = await getStudyProgramName(list[i])
             console.log(`\nビデオ[name:${name}]の再生を開始`)
 

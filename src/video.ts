@@ -39,7 +39,6 @@ export async function playVideo(page: Page, index: number, name: string) {
     if (!videoArea) throw new Error("videoAreaが存在しません!");
     await videoArea.click()
     await newPage.waitForSelector("#vjs_video_3 > video")
-    await wait()
 
     await newPage.$eval("#vjs_video_3 > video", (element, index, rate) => {
         return new Promise<void>(res => {
@@ -52,6 +51,10 @@ export async function playVideo(page: Page, index: number, name: string) {
                 //@ts-ignore
                 window.onNotifyEndVideoToAutoClassi(index)
             })
+            if (!element.paused) {
+                element.playbackRate = rate
+                res()
+            }
         })
     }, index, PLAY_RATE)
 
