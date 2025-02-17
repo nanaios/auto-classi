@@ -2,8 +2,7 @@ import type { Page } from "puppeteer";
 import { argToNumber, copyPage, wait } from "./utility";
 import { addPlayingVideoCount } from ".";
 
-const PLAY_RATE = argToNumber(2) ?? 1
-console.log(`ビデオの再生倍率:${PLAY_RATE}`)
+export const PLAY_RATE = argToNumber(2) ?? 1
 const videoPages: Page[] = []
 
 export async function playVideo(page: Page, index: number, name: string) {
