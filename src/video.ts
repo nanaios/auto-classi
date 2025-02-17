@@ -1,34 +1,14 @@
 import type { Page } from "puppeteer";
 import { argToNumber, copyPage, wait } from "./utility";
-import { finish } from ".";
+import { checkFinish, setVideoStatus } from ".";
 
 const PLAY_RATE = argToNumber(2) ?? 1
 console.log(`ビデオの再生倍率:${PLAY_RATE}`)
 const videoPages: Page[] = []
 const finishVideoDatas: Array<{ index: number, name: string }> = []
 
-let isSearchFinish = false
-export async function clearVideoQueue() {
-    for (const data of finishVideoDatas) {
-        console.log(`ビデオ[name:${data.name}]の再生が終了しました`);
-        const videoPage = videoPages[data.index]
-
-        await videoPage.bringToFront()
-        await wait()
-
-        await clickFinishButton(videoPage)
-        await wait(500)
-
-        await videoPage.close()
-        await wait(500)
-    }
-}
-
-function setVideoQueue(index: number, name: string) {
-    finishVideoDatas.push({ index: index, name: name })
-}
-
 export async function playVideo(page: Page, index: number, name: string) {
+    setVideoStatus(false)
     const newPage = await copyPage(page)
     videoPages[index] = newPage
     newPage.bringToFront()
@@ -47,34 +27,35 @@ export async function playVideo(page: Page, index: number, name: string) {
         await videoPage.close()
         await wait()
 
-        page.bringToFront()
+        await page.bringToFront()
 
-        if (isSearchFinish && (videoPages.length - 1) === index) {
-            console.log("\n全ビデオの再生が終了しました\n")
-            finish()
+        if ((videoPages.length - 1) === index) {
+            setVideoStatus(true)
+            checkFinish()
         }
     });
 
     const videoArea = await newPage.$("#video_area")
     if (!videoArea) throw new Error("videoAreaが存在しません!");
     await videoArea.click()
-    await newPage.waitForSelector("#vjs_video_3")
-    await wait(1000)
+    await newPage.waitForSelector("#vjs_video_3 > video")
+    await wait()
 
     await newPage.$eval("#vjs_video_3 > video", (element, index, rate) => {
-        console.log(`video index = ${index}`)
-        element.volume = 0
-        element.addEventListener("ended", () => {
-            //@ts-ignore
-            window.onNotifyEndVideoToAutoClassi(index)
+        return new Promise<void>(res => {
+            element.volume = 0
+            element.addEventListener("playing", () => {
+                element.playbackRate = rate
+                res()
+            })
+            element.addEventListener("ended", () => {
+                //@ts-ignore
+                window.onNotifyEndVideoToAutoClassi(index)
+            })
         })
-        setTimeout(() => {
-            element.playbackRate = rate
-        }, 1000);
-
     }, index, PLAY_RATE)
 
-    await wait(2000)
+    await wait()
 }
 
 async function clickFinishButton(page: Page) {
@@ -86,8 +67,4 @@ async function clickFinishButton(page: Page) {
             await page.waitForNavigation({ waitUntil: ['load', 'networkidle2'] })
         ]
     )
-}
-
-export function notifyFinishSearch() {
-    isSearchFinish = true
 }

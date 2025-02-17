@@ -21,7 +21,17 @@ export async function clickSubmitButton(page: Page) {
 
 export async function clickFinishButton(page: Page) {
     const button = await page.$(".btn-area.clearfix.no-interval > li.right > input.navy-btn")
-    if (!button) throw Error("buttonが存在しません!");
+    if (!button) {
+        const button2 = await page.$(".btn-area.clearfix.no-interval > li.right > i > input.navy-btn")
+        if (!button2) throw Error("buttonが存在しません!");
+        await Promise.all(
+            [
+                await button2.click(),
+                await page.waitForNavigation({ waitUntil: ['load', 'networkidle2'] })
+            ]
+        )
+        return
+    }
     await Promise.all(
         [
             await button.click(),
