@@ -1,12 +1,13 @@
 import puppeteer, { type Page } from "puppeteer"
-import { getStudyProgramList, isStudyPrograms, wait, getStudyProgramName, getTaskName, copyPage, random, argToNumber, isCorrectProgram, isVideoPrograms, isChecked } from "./utility"
+import { getStudyProgramList, isStudyPrograms, wait, getStudyProgramName, getTaskName, copyPage, random, argToNumber, isCorrectProgram, isVideoPrograms, isChecked, isDev, BASE_WAIT_TIME } from "./utility"
 import { setAnswerForSelf } from "./answerForSelf";
 import { clickFinishButton, clickLeftButton, clickStudyProgram, clickSubmitButton, waitForTransition } from "./clickButton";
 import { getAnswer, getAnswerType, setAnswer, type AnswerData } from "./answer";
-import { playVideo } from "./video";
+import { PLAY_RATE, playVideo } from "./video";
 
 const RANDOM_PER = argToNumber(0) ?? 100
-console.log(`推定初手正解率:${RANDOM_PER}`)
+
+let controlingPage: Page
 
 let questionCount = 0
 let correctAnswerFirstCount = 0
@@ -21,7 +22,11 @@ export function addPlayingVideoCount(value: number) {
     checkFinish()
 }
 
-async function main() {
+export async function bringContorolPage() {
+    await controlingPage.bringToFront()
+}
+
+export async function main() {
     const browser = await puppeteer.connect({
         browserURL: 'http://127.0.0.1:9222'
     });
@@ -29,10 +34,17 @@ async function main() {
     const pageList = await browser.pages();
 
     const page = pageList[0];
+    controlingPage = page
     await page.bringToFront();
 
     await wait()
+    if (isDev) {
+        console.log("開発者モード状態に移行しました")
+    }
     console.log("autoClassiを起動しました")
+    console.log(`ビデオの再生倍率:${PLAY_RATE}`)
+    console.log(`推定初手正解率:${RANDOM_PER}`)
+    console.log(`デフォルトの待機時間:${BASE_WAIT_TIME}`)
 
     console.log(`${(await page.title())}に接続しました`)
     await wait()
@@ -45,8 +57,8 @@ async function main() {
 export function checkFinish() {
     if ((playingVideoCount === 0 || videoIndex === 0) && isSearchFinish) {
         console.log(`解答した問題数:${questionCount}個`)
-        console.log(`初手正解率:${correctAnswerFirstCount / questionCount}%`)
-        console.log(`初手不正解率:${notCorrectAnswerFirstCount / questionCount}%`)
+        console.log(`初手正解率:${correctAnswerFirstCount / questionCount * 100}%`)
+        console.log(`初手不正解率:${notCorrectAnswerFirstCount / questionCount * 100}%`)
         console.log(`再生したビデオ数:${videoIndex}個`)
 
         console.log("AutoClassiを終了します")
@@ -97,6 +109,7 @@ async function runClassi(page: Page) {
 
             const newPage = await copyPage(page)
             newPage.bringToFront()
+            controlingPage = newPage
             await wait()
 
             const answerType = await getAnswerType(newPage)
@@ -138,6 +151,7 @@ async function runClassi(page: Page) {
 
             await newPage.close()
             await page.bringToFront()
+            controlingPage = page
             await wait()
 
 
@@ -190,5 +204,3 @@ async function runClassi(page: Page) {
         }
     }
 }
-
-await main()

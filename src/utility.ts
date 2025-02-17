@@ -1,12 +1,8 @@
 import type { Page, ElementHandle } from "puppeteer";
 
-const BASE_WAIT_TIME = argToNumber(1) ?? 500
-console.log(`デフォルトの待機時間:${BASE_WAIT_TIME}`)
+export const BASE_WAIT_TIME = argToNumber(1) ?? 500
 
 export const isDev = process.argv[process.argv.length - 1] === "dev"
-if (isDev) {
-    console.log("開発者モード状態に移行しました")
-}
 
 export async function getStudyProgramList(page: Page) {
     const lilsts = await page.$(".spen-mod-item-list.is-column-1.spen.spen-util-mb-24.lecture-flow")
@@ -58,7 +54,7 @@ export async function copyPage(page: Page) {
 }
 
 export function argToNumber(index: number) {
-    const arg = Number(process.argv[index + 2])
+    const arg = Number(process.argv[index + 3])
     if (Number.isNaN(arg)) {
         return undefined
     } else {

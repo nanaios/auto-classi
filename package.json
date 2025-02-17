@@ -1,21 +1,21 @@
 {
   "name": "auto-classi",
-  "version": "0.1.0",
+  "version": "4.0.5",
   "description": "",
-  "license": "ISC",
-  "author": "",
+  "license": "MIT",
+  "author": "nanaios",
   "type": "module",
-  "main": "dist/index.js",
+  "main": "dist/bin.js",
+  "bin": {
+    "autoclassi": "dist/bin.js"
+  },
   "scripts": {
-    "test": "npx vitest run",
     "build": "node esbuild.js",
-    "open": ".\\open.bat",
-    "start": "node dist/index.js"
+    "prepublish": "npm run build"
   },
   "devDependencies": {
     "esbuild": "^0.25.0",
-    "typescript": "^5.7.3",
-    "vitest": "^3.0.5"
+    "typescript": "^5.7.3"
   },
   "dependencies": {
     "puppeteer": "^24.2.0"

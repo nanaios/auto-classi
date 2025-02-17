@@ -1,8 +1,8 @@
 import * as esbuild from "esbuild"
 
 esbuild.build({
-    entryPoints: ["src/index.ts"],
-    outfile: "dist/index.js",
+    entryPoints: ["src/bin.ts"],
+    outfile: "dist/bin.js",
     bundle: true,
     platform: "node",
     format: "esm",
