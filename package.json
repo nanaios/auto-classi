@@ -10,7 +10,8 @@
     "autoclassi": "dist/bin.js"
   },
   "scripts": {
-    "build": "node esbuild.js"
+    "build": "node esbuild.js",
+    "prepublish": "npm run build"
   },
   "devDependencies": {
     "esbuild": "^0.25.0",
