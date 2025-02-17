@@ -3,7 +3,7 @@ import { getStudyProgramList, isStudyPrograms, wait, getStudyProgramName, getTas
 import { setAnswerForSelf } from "./answerForSelf";
 import { clickFinishButton, clickTask, clickLeftButton, clickStudyProgram, clickSubmitButton } from "./clickButton";
 import { getAnswer, getAnswerType, setAnswer, type AnswerData } from "./answer";
-import { notifyFinishSearch, playVideo } from "./video";
+import { playVideo } from "./video";
 
 
 const RANDOM_PER = argToNumber(0) ?? 100
@@ -13,6 +13,12 @@ let questionCount = 0
 let correctAnswerFirstCount = 0
 let notCorrectAnswerFirstCount = 0
 let videoIndex = 0
+
+let isFinishPlayVideo = false
+let isSearchFinish = false
+export function setVideoStatus(bool: boolean) {
+    isFinishPlayVideo = bool
+}
 
 async function main() {
     const browser = await puppeteer.connect({
@@ -30,19 +36,21 @@ async function main() {
     console.log(`${(await page.title())}に接続しました`)
     await wait()
     await runTasks(page)
+    isSearchFinish = true
     console.log("\n全設問の探索が終了しました\n")
-    notifyFinishSearch()
+    checkFinish()
 }
 
-export function finish() {
-    console.log(`解答した問題数:${questionCount}`)
-    console.log(`初手正解率:${correctAnswerFirstCount / questionCount}`)
-    console.log(`初手不正解率:${notCorrectAnswerFirstCount / questionCount}`)
-    console.log(`再生したビデオ数:${videoIndex}`)
+export function checkFinish() {
+    if (isFinishPlayVideo && isSearchFinish) {
+        console.log(`解答した問題数:${questionCount}個`)
+        console.log(`初手正解率:${correctAnswerFirstCount / questionCount}%`)
+        console.log(`初手不正解率:${notCorrectAnswerFirstCount / questionCount}%`)
+        console.log(`再生したビデオ数:${videoIndex}個`)
 
-    console.log("AutoClassiを終了します")
-    process.exit(0)
-
+        console.log("AutoClassiを終了します")
+        process.exit(0)
+    }
 }
 
 async function runTasks(page: Page) {
@@ -129,11 +137,19 @@ async function runClassi(page: Page) {
 
 
             if (answerType === "self") {
-                await clickSubmitButton(page)
-                await wait()
+                try {
+                    await clickSubmitButton(page)
+                    await wait()
 
-                await setAnswerForSelf(page, true)
+                    await setAnswerForSelf(page, true)
+                    await wait()
+
+                } catch (e) {
+                    console.log(e)
+                }
+
                 console.log(`設問[name:${name}]の解答を終了`)
+                await clickFinishButton(page)
                 await wait()
                 continue
             }
