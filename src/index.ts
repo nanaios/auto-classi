@@ -1,7 +1,7 @@
 import puppeteer, { type Page } from "puppeteer"
 import { getStudyProgramList, isStudyPrograms, wait, getStudyProgramName, getTaskName, copyPage, random, argToNumber } from "./utility"
 import { setAnswerForSelf } from "./answerForSelf";
-import { clickFinishButton, clickTask, clickLeftButton, clickStudyProgram, clickSubmitButton } from "./clickButton";
+import { clickFinishButton, clickLeftButton, clickStudyProgram, clickSubmitButton, waitForTransition } from "./clickButton";
 import { getAnswer, getAnswerType, setAnswer, type AnswerData } from "./answer";
 import { playVideo } from "./video";
 
@@ -63,7 +63,7 @@ async function runTasks(page: Page) {
         const taskName = await getTaskName(tasks[i])
         console.log(`\n講義[name:${taskName}]の処理を開始`)
 
-        await clickTask(page, tasks[i])
+        await waitForTransition(page, tasks[i])
         await wait()
 
         await runClassi(page)
@@ -180,8 +180,5 @@ async function runClassi(page: Page) {
         }
     }
 }
-
-
-
 
 await main()
