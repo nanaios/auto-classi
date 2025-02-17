@@ -61,7 +61,12 @@ export function argToNumber(index: number) {
     }
 }
 
-export async function isInCorrectProgram(list: ElementHandle<HTMLElement>) {
+export async function isCorrectProgram(list: ElementHandle<HTMLElement>) {
     const correctIconSrc = await list.$eval("a > p > img", img => img.src)
-    return correctIconSrc.includes("incorrect")
+    return !(correctIconSrc.includes("incorrect"))
+}
+
+export async function isChecked(list: ElementHandle<HTMLElement>) {
+    const chekeMark = list.$(".check-mark")
+    return Boolean(chekeMark)
 }

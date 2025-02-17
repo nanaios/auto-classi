@@ -1,5 +1,5 @@
 import puppeteer, { type Page } from "puppeteer"
-import { getStudyProgramList, isStudyPrograms, wait, getStudyProgramName, getTaskName, copyPage, random, argToNumber, isInCorrectProgram, isVideoPrograms } from "./utility"
+import { getStudyProgramList, isStudyPrograms, wait, getStudyProgramName, getTaskName, copyPage, random, argToNumber, isCorrectProgram, isVideoPrograms, isChecked } from "./utility"
 import { setAnswerForSelf } from "./answerForSelf";
 import { clickFinishButton, clickLeftButton, clickStudyProgram, clickSubmitButton, waitForTransition } from "./clickButton";
 import { getAnswer, getAnswerType, setAnswer, type AnswerData } from "./answer";
@@ -80,8 +80,14 @@ async function runClassi(page: Page) {
 
     for (let i = 0; i < listLength; i++) {
         const list = await getStudyProgramList(page)
-        if (await isStudyPrograms(list[i]) && await isInCorrectProgram(list[i])) {
-            const name = await getStudyProgramName(list[i])
+        const name = await getStudyProgramName(list[i])
+
+        if (await isStudyPrograms(list[i])) {
+            if (await isChecked(list[i]) && await isCorrectProgram(list[i])) {
+                console.log(`\n設問[name:${name}]は正解済みなのでスキップします\n`)
+                continue
+            }
+
             console.log(`\n設問[name:${name}]の解答を開始`)
             questionCount++
 
@@ -162,7 +168,11 @@ async function runClassi(page: Page) {
             console.log(`設問[name:${name}]の解答を終了`)
             await wait()
         } else if (await isVideoPrograms(list[i])) {
-            const name = await getStudyProgramName(list[i])
+            if (await isChecked(list[i])) {
+                console.log(`\nビデオ[name:${name}]は再生済みのためスキップします\n`)
+                continue
+            }
+
             console.log(`\nビデオ[name:${name}]の再生を開始`)
 
             await clickStudyProgram(page, i)

@@ -1,5 +1,4 @@
 import type { Page } from "puppeteer"
-import { wait } from "./utility"
 
 export async function setAnswerForSelf(page: Page, isCollect: boolean) {
     const button = await page.$$(".radio.self_rating")
