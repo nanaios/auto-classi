@@ -36,9 +36,12 @@ async function openChrome() {
 
     const cwd = path.join(import.meta.dirname, "../")
     if (is_windows) {
+        console.log(path.join(cwd, "open.bat") + "を実行します")
         exec(path.join(cwd, "open.bat"))
     } else if (is_mac) {
-        exec(path.join(cwd, "open.sh"))
+        console.log(path.join(cwd, "open.command") + "を実行します")
+        console.info(`Info:Macで実行できない場合、'chmod 755 ${path.join(cwd, "open.command")}'を実行して下さい`)
+        exec(path.join(cwd, "open.command"))
     }
     setTimeout(() => {
         process.exit()
