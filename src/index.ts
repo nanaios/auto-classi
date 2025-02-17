@@ -7,6 +7,8 @@ import { PLAY_RATE, playVideo } from "./video";
 
 const RANDOM_PER = argToNumber(0) ?? 100
 
+let controlingPage: Page
+
 let questionCount = 0
 let correctAnswerFirstCount = 0
 let notCorrectAnswerFirstCount = 0
@@ -20,6 +22,10 @@ export function addPlayingVideoCount(value: number) {
     checkFinish()
 }
 
+export async function bringContorolPage() {
+    await controlingPage.bringToFront()
+}
+
 export async function main() {
     const browser = await puppeteer.connect({
         browserURL: 'http://127.0.0.1:9222'
@@ -28,6 +34,7 @@ export async function main() {
     const pageList = await browser.pages();
 
     const page = pageList[0];
+    controlingPage = page
     await page.bringToFront();
 
     await wait()
@@ -50,8 +57,8 @@ export async function main() {
 export function checkFinish() {
     if ((playingVideoCount === 0 || videoIndex === 0) && isSearchFinish) {
         console.log(`解答した問題数:${questionCount}個`)
-        console.log(`初手正解率:${correctAnswerFirstCount / questionCount}%`)
-        console.log(`初手不正解率:${notCorrectAnswerFirstCount / questionCount}%`)
+        console.log(`初手正解率:${correctAnswerFirstCount / questionCount * 100}%`)
+        console.log(`初手不正解率:${notCorrectAnswerFirstCount / questionCount * 100}%`)
         console.log(`再生したビデオ数:${videoIndex}個`)
 
         console.log("AutoClassiを終了します")
@@ -102,6 +109,7 @@ async function runClassi(page: Page) {
 
             const newPage = await copyPage(page)
             newPage.bringToFront()
+            controlingPage = newPage
             await wait()
 
             const answerType = await getAnswerType(newPage)
@@ -143,6 +151,7 @@ async function runClassi(page: Page) {
 
             await newPage.close()
             await page.bringToFront()
+            controlingPage = page
             await wait()
 
 
