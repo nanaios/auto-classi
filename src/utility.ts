@@ -3,6 +3,11 @@ import type { Page, ElementHandle } from "puppeteer";
 const BASE_WAIT_TIME = argToNumber(1) ?? 500
 console.log(`デフォルトの待機時間:${BASE_WAIT_TIME}`)
 
+export const isDev = process.argv[process.argv.length - 1] === "dev"
+if (isDev) {
+    console.log("開発者モード状態に移行しました")
+}
+
 export async function getStudyProgramList(page: Page) {
     const lilsts = await page.$(".spen-mod-item-list.is-column-1.spen.spen-util-mb-24.lecture-flow")
     if (!lilsts) throw Error("listsがありません!!");
@@ -11,6 +16,11 @@ export async function getStudyProgramList(page: Page) {
 
 export async function isStudyPrograms(list: ElementHandle<HTMLElement>) {
     const icon = await list.$(".fa-pencil-square-o")
+    return Boolean(icon)
+}
+
+export async function isVideoPrograms(list: ElementHandle<HTMLElement>) {
+    const icon = await list.$(".fa-film")
     return Boolean(icon)
 }
 
@@ -54,4 +64,16 @@ export function argToNumber(index: number) {
     } else {
         return arg
     }
+}
+
+export async function isCorrectProgram(list: ElementHandle<HTMLElement>) {
+    if (isDev) return false
+    const correctIconSrc = await list.$eval("a > p > img", img => img.src)
+    return !(correctIconSrc.includes("incorrect"))
+}
+
+export async function isChecked(list: ElementHandle<HTMLElement>) {
+    if (isDev) return false
+    const chekeMark = await list.$(".check-mark")
+    return Boolean(chekeMark)
 }

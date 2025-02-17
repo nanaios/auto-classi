@@ -29,7 +29,7 @@ export async function getAnswer(page: Page, data: AnswerData, type: AnswerType |
                 break;
             }
             case "selection": {
-                data.string = await getAnswerForSelection(page)
+                data.strings = await getAnswerForSelection(page)
                 break;
             }
         }
@@ -56,7 +56,7 @@ export async function setAnswer(page: Page, data: AnswerData, type: AnswerType |
                 break;
             }
             case "selection": {
-                await setAnswerForSelection(page, data.string)
+                await setAnswerForSelection(page, data.strings)
                 break;
             }
         }
