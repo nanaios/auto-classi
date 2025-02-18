@@ -74,7 +74,11 @@ export async function* getAssignments(page: Page) {
     console.log(`合計課題数:${assignments.length}`)
     for (let i = 0; i < assignments.length; i++) {
         const assignments = await page.$$(".task-list > a")
-        yield assignments[i]
+        if (isDev) {
+            yield assignments[i]
+        } else {
+            yield assignments[0]
+        }
     }
 }
 
