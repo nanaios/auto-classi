@@ -1,8 +1,8 @@
 import puppeteer, { type Page } from "puppeteer"
-import { getStudyPrograms, isStudyPrograms, wait, getLectureName, isVideoPrograms, getAssignmentName, getAssignments } from "./utility"
+import { getStudyPrograms, isStudyPrograms, wait, getLectureName, isVideoPrograms, getAssignmentName, getAssignments, getLectures } from "./utility"
 import { clickLeftButton, clickStartAssignmentButton, waitForTransition } from "./clickButton";
-import { playVideo } from "./video";
-import { checkFinish, setControlingPage } from "./status";
+import { clearVideoQueue, playVideo } from "./video";
+import { checkFinish, setControlingPage, showProgramStatus } from "./status";
 import { status } from "./status";
 import { solveQuestion } from "./answer";
 
@@ -25,6 +25,7 @@ export async function main() {
 
     await wait()
     console.log("autoClassiを起動しました")
+    showProgramStatus(basePageUrl)
 
     for await (const assignment of getAssignments(page)) {
         await waitForTransition(page, assignment)
@@ -51,24 +52,19 @@ async function solveAssignment(page: Page) {
     await clickStartAssignmentButton(page)
     await wait()
 
-    const lecturesLength = (await page.$$(".task-list > a")).length
+    for await (const lecture of getLectures(page)) {
+        const lectureName = await getLectureName(lecture);
+        console.log(`\n講義[name:${lectureName}]の解答を開始\n`);
 
-    console.log(`合計講義数：${lecturesLength}個`)
+        await waitForTransition(page, lecture);
+        await wait();
 
-    for (let i = 0; i < lecturesLength; i++) {
-        const lectures = await page.$$(".task-list > a")
-        const lectureName = await getLectureName(lectures[i])
-        console.log(`\n講義[name:${lectureName}]の解答を開始\n`)
+        await solveLectures(page);
+        await wait();
 
-        await waitForTransition(page, lectures[i])
-        await wait()
-
-        await solveLectures(page)
-        await wait()
-
-        await clickLeftButton(page)
-        console.log(`\n講義[name:${lectureName}]の解答を終了\n`)
-        await wait()
+        await clickLeftButton(page);
+        console.log(`\n講義[name:${lectureName}]の解答を終了\n`);
+        await wait();
     }
     await clickLeftButton(page)
     console.log(`\n課題[name:${assignmentName}]の解答を終了\n`)
@@ -86,5 +82,9 @@ async function solveLectures(page: Page) {
             await playVideo(page, status.videoIndex, list)
             await wait()
         }
+        await clearVideoQueue()
+        await wait()
+
+        await page.bringToFront()
     }
 }
