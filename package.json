@@ -1,6 +1,6 @@
 {
   "name": "auto-classi",
-  "version": "4.1.4",
+  "version": "4.1.5",
   "description": "",
   "license": "MIT",
   "author": "nanaios",
@@ -11,7 +11,7 @@
   },
   "scripts": {
     "build": "node esbuild.ts",
-    "prepublish": "npm install esbuild && npm run build"
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
     "puppeteer": "24.2.1"
