@@ -1,31 +1,15 @@
 import puppeteer, { type Page } from "puppeteer"
-import { getStudyProgramList, isStudyPrograms, wait, getStudyProgramName, getTaskName, copyPage, random, argToNumber, isCorrectProgram, isVideoPrograms, isChecked, isDev, BASE_WAIT_TIME } from "./utility"
-import { setAnswerForSelf } from "./answerForSelf";
-import { clickFinishButton, clickLeftButton, clickStudyProgram, clickSubmitButton, waitForTransition } from "./clickButton";
-import { getAnswer, getAnswerType, setAnswer, type AnswerData } from "./answer";
-import { PLAY_RATE, playVideo } from "./video";
-
-const RANDOM_PER = argToNumber(0) ?? 100
-
-let controlingPage: Page
-
-let questionCount = 0
-let correctAnswerFirstCount = 0
-let notCorrectAnswerFirstCount = 0
-let videoIndex = 0
-let playingVideoCount = 0
-
-let isSearchFinish = false
+import { getStudyPrograms, isStudyPrograms, wait, getLectureName, isVideoPrograms, getAssignmentName, getAssignments } from "./utility"
+import { clickLeftButton, clickStartAssignmentButton, waitForTransition } from "./clickButton";
+import { playVideo } from "./video";
+import { checkFinish, setControlingPage } from "./status";
+import { status } from "./status";
+import { solveQuestion } from "./answer";
 
 export function addPlayingVideoCount(value: number) {
-    playingVideoCount += value
+    status.playingVideoCount += value
     checkFinish()
 }
-
-export async function bringContorolPage() {
-    await controlingPage.bringToFront()
-}
-
 export async function main() {
     const browser = await puppeteer.connect({
         browserURL: 'http://127.0.0.1:9222'
@@ -34,172 +18,72 @@ export async function main() {
     const pageList = await browser.pages();
 
     const page = pageList[0];
-    controlingPage = page
     await page.bringToFront();
+    setControlingPage(page)
+
+    const basePageUrl = page.url()
 
     await wait()
-    if (isDev) {
-        console.log("開発者モード状態に移行しました")
-    }
     console.log("autoClassiを起動しました")
-    console.log(`ビデオの再生倍率:${PLAY_RATE}`)
-    console.log(`推定初手正解率:${RANDOM_PER}`)
-    console.log(`デフォルトの待機時間:${BASE_WAIT_TIME}`)
 
-    console.log(`${(await page.title())}に接続しました`)
+    for await (const assignment of getAssignments(page)) {
+        await waitForTransition(page, assignment)
+        await wait()
+
+        await solveAssignment(page)
+        await wait()
+
+        await page.goto(basePageUrl, { waitUntil: ['load', 'networkidle2'] })
+        await wait()
+    }
+
     await wait()
-    await runTasks(page)
-    isSearchFinish = true
+    await solveAssignment(page)
+    status.isSearchFinish = true
     console.log("\n全設問の探索が終了しました\n")
     checkFinish()
 }
 
-export function checkFinish() {
-    if ((playingVideoCount === 0 || videoIndex === 0) && isSearchFinish) {
-        console.log(`解答した問題数:${questionCount}個`)
-        console.log(`初手正解率:${correctAnswerFirstCount / questionCount * 100}%`)
-        console.log(`初手不正解率:${notCorrectAnswerFirstCount / questionCount * 100}%`)
-        console.log(`再生したビデオ数:${videoIndex}個`)
+async function solveAssignment(page: Page) {
+    const assignmentName = await getAssignmentName(page)
+    console.log(`\n課題[name:${assignmentName}]の解答を開始\n`)
 
-        console.log("AutoClassiを終了します")
-        process.exit(0)
-    }
-}
+    await clickStartAssignmentButton(page)
+    await wait()
 
-async function runTasks(page: Page) {
-    const tasksLength = (await page.$$(".task-list > a")).length
+    const lecturesLength = (await page.$$(".task-list > a")).length
 
-    console.log(`合計講義数：${tasksLength}個`)
+    console.log(`合計講義数：${lecturesLength}個`)
 
-    for (let i = 0; i < tasksLength; i++) {
-        const tasks = await page.$$(".task-list > a")
-        const taskName = await getTaskName(tasks[i])
-        console.log(`\n講義[name:${taskName}]の処理を開始`)
+    for (let i = 0; i < lecturesLength; i++) {
+        const lectures = await page.$$(".task-list > a")
+        const lectureName = await getLectureName(lectures[i])
+        console.log(`\n講義[name:${lectureName}]の解答を開始\n`)
 
-        await waitForTransition(page, tasks[i])
+        await waitForTransition(page, lectures[i])
         await wait()
 
-        await runClassi(page)
+        await solveLectures(page)
         await wait()
 
         await clickLeftButton(page)
-        console.log(`\n講義[name:${taskName}]の処理を終了`)
+        console.log(`\n講義[name:${lectureName}]の解答を終了\n`)
         await wait()
     }
+    await clickLeftButton(page)
+    console.log(`\n課題[name:${assignmentName}]の解答を終了\n`)
+    await wait()
 }
 
-async function runClassi(page: Page) {
-    const listLength = (await getStudyProgramList(page)).length
+async function solveLectures(page: Page) {
+    for await (const list of getStudyPrograms(page)) {
+        if (await isStudyPrograms(list)) {
 
-    for (let i = 0; i < listLength; i++) {
-        const list = await getStudyProgramList(page)
-        const name = await getStudyProgramName(list[i])
-
-        if (await isStudyPrograms(list[i])) {
-            if (await isChecked(list[i]) && await isCorrectProgram(list[i])) {
-                console.log(`\n設問[name:${name}]は正解済みなのでスキップします\n`)
-                continue
-            }
-
-            console.log(`\n設問[name:${name}]の解答を開始`)
-            questionCount++
-
-            await clickStudyProgram(page, i)
+            await solveQuestion(page, list)
             await wait()
 
-            const newPage = await copyPage(page)
-            newPage.bringToFront()
-            controlingPage = newPage
-            await wait()
-
-            const answerType = await getAnswerType(newPage)
-            console.log(`問題タイプ：${answerType}`)
-
-            await clickSubmitButton(newPage)
-            await wait()
-
-            const answer: AnswerData = {
-                string: "",
-                strings: []
-            }
-
-            await getAnswer(newPage, answer, answerType)
-
-            //1～100までの乱数を生成
-            const rans = random(100) + 1
-
-            if (rans <= RANDOM_PER) {
-                console.log(`(1d100<=${RANDOM_PER}) > ${rans} > 成功`)
-                correctAnswerFirstCount++
-            } else {
-                console.log(`(1d100<=${RANDOM_PER}) > ${rans} > 失敗`)
-                console.log("初手の解答を不正解にします")
-                try {
-                    if (answerType === "self") {
-                        await setAnswerForSelf(newPage, false)
-                        await wait()
-                    } else {
-                        await clickFinishButton(newPage)
-                    }
-                    console.log("初手の解答を終了しました")
-                    notCorrectAnswerFirstCount++
-                    await wait()
-                } catch (error) {
-                    console.log(error)
-                }
-            }
-
-            await newPage.close()
-            await page.bringToFront()
-            controlingPage = page
-            await wait()
-
-
-
-            if (answerType === "self") {
-                try {
-                    await clickSubmitButton(page)
-                    await wait()
-
-                    await setAnswerForSelf(page, true)
-                    await wait()
-
-                } catch (e) {
-                    console.log(e)
-                }
-
-                console.log(`設問[name:${name}]の解答を終了`)
-                await clickFinishButton(page)
-                await wait()
-                continue
-            }
-
-            await setAnswer(page, answer, answerType)
-
-            await clickSubmitButton(page)
-            await wait()
-
-            await clickFinishButton(page)
-            console.log(`設問[name:${name}]の解答を終了`)
-            await wait()
-        } else if (await isVideoPrograms(list[i])) {
-            if (await isChecked(list[i])) {
-                console.log(`\nビデオ[name:${name}]は再生済みのためスキップします\n`)
-                continue
-            }
-
-            console.log(`\nビデオ[name:${name}]の再生を開始`)
-
-            await clickStudyProgram(page, i)
-            await wait()
-
-            await playVideo(page, videoIndex, name)
-            videoIndex++
-
-            await page.bringToFront()
-            await wait()
-
-            await page.goBack()
+        } else if (await isVideoPrograms(list)) {
+            await playVideo(page, status.videoIndex, list)
             await wait()
         }
     }

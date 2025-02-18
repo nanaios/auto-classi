@@ -1,10 +1,12 @@
-import type { Page } from "puppeteer";
+import type { ElementHandle, Page } from "puppeteer";
 import { getAnswerForInput, isInput, setAnswerForInput } from "./answerForInput";
 import { getAnswerForListSelection, isListSelection, setAnswerForList } from "./answerForListSelection";
 import { getAnswerForMultiInput, isMultiInput, setAnswerForMultiInput } from "./answerForMultiInput";
 import { getAnswerForSelection, isSelection, setAnswerForSelection } from "./answerForSelection";
-import { isSelf } from "./answerForSelf";
-import { wait } from "./utility";
+import { isSelf, setAnswerForSelf } from "./answerForSelf";
+import { copyPage, getStudyProgramName, isChecked, isCorrectProgram, random, wait } from "./utility";
+import { clickSubmitButton, clickFinishButton, waitForTransition } from "./clickButton";
+import { RANDOM_PER, setControlingPage, status } from "./status";
 
 export interface AnswerData {
     string: string,
@@ -72,4 +74,94 @@ export async function getAnswerType(page: Page): Promise<AnswerType | undefined>
     if (await isInput(page)) return "input";
     if (await isMultiInput(page)) return "multiinput";
     if (await isListSelection(page)) return "listselection";
+}
+
+export async function solveQuestion(page: Page, list: ElementHandle<HTMLElement>) {
+    const name = await getStudyProgramName(list)
+    if (await isChecked(list) && await isCorrectProgram(list)) {
+        console.log(`\n設問[name:${name}]は正解済みなのでスキップします\n`)
+        return
+    }
+
+    console.log(`\n設問[name:${name}]の解答を開始`)
+    status.questionCount++
+
+    await waitForTransition(page, list)
+    await wait()
+
+    const newPage = await copyPage(page)
+    newPage.bringToFront()
+    setControlingPage(page)
+    await wait()
+
+    const answerType = await getAnswerType(newPage)
+    console.log(`問題タイプ：${answerType}`)
+
+    await clickSubmitButton(newPage)
+    await wait()
+
+    const answer: AnswerData = {
+        string: "",
+        strings: []
+    }
+
+    await getAnswer(newPage, answer, answerType)
+
+    //1～100までの乱数を生成
+    const rans = random(100) + 1
+
+    if (rans <= RANDOM_PER) {
+        console.log(`(1d100<=${RANDOM_PER}) > ${rans} > 成功`)
+        status.correctAnswerFirstCount++
+    } else {
+        console.log(`(1d100<=${RANDOM_PER}) > ${rans} > 失敗`)
+        console.log("初手の解答を不正解にします")
+        try {
+            if (answerType === "self") {
+                await setAnswerForSelf(newPage, false)
+                await wait()
+            } else {
+                await clickFinishButton(newPage)
+            }
+            console.log("初手の解答を終了しました")
+            status.notCorrectAnswerFirstCount++
+            await wait()
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    await newPage.close()
+    await page.bringToFront()
+    setControlingPage(page)
+    await wait()
+
+
+
+    if (answerType === "self") {
+        try {
+            await clickSubmitButton(page)
+            await wait()
+
+            await setAnswerForSelf(page, true)
+            await wait()
+
+        } catch (e) {
+            console.log(e)
+        }
+
+        console.log(`設問[name:${name}]の解答を終了`)
+        await clickFinishButton(page)
+        await wait()
+        return
+    }
+
+    await setAnswer(page, answer, answerType)
+
+    await clickSubmitButton(page)
+    await wait()
+
+    await clickFinishButton(page)
+    console.log(`設問[name:${name}]の解答を終了`)
+    await wait()
 }

@@ -1,13 +1,13 @@
 import type { Page, ElementHandle } from "puppeteer";
+import { BASE_WAIT_TIME, isDev } from "./status";
 
-export const BASE_WAIT_TIME = argToNumber(1) ?? 500
-
-export const isDev = process.argv[process.argv.length - 1] === "dev"
-
-export async function getStudyProgramList(page: Page) {
-    const lilsts = await page.$(".spen-mod-item-list.is-column-1.spen.spen-util-mb-24.lecture-flow")
-    if (!lilsts) throw Error("listsがありません!!");
-    return lilsts.$$("li")
+export async function* getStudyPrograms(page: Page) {
+    const lilsts = await page.$$(".spen-mod-item-list.is-column-1.spen.spen-util-mb-24.lecture-flow > li")
+    console.log(`合計問題数:${lilsts.length}`)
+    for (let i = 0; i < lilsts.length; i++) {
+        const lilsts = await page.$$(".spen-mod-item-list.is-column-1.spen.spen-util-mb-24.lecture-flow > li")
+        yield lilsts[i]
+    }
 }
 
 export async function isStudyPrograms(list: ElementHandle<HTMLElement>) {
@@ -38,7 +38,7 @@ export function formatClassiAns(rawAns: string) {
     return rawAns.replace(/\n/g, "").replace(/\t/g, "").split("(")[0].trim()
 }
 
-export async function getTaskName(task: ElementHandle<HTMLElement>) {
+export async function getLectureName(task: ElementHandle<HTMLElement>) {
     const label = await task.$eval(".simple-task-name > p > span.lecture_name", element => element.innerText)
     return label
 }
@@ -53,15 +53,6 @@ export async function copyPage(page: Page) {
     return copy
 }
 
-export function argToNumber(index: number) {
-    const arg = Number(process.argv[index + 3])
-    if (Number.isNaN(arg)) {
-        return undefined
-    } else {
-        return arg
-    }
-}
-
 export async function isCorrectProgram(list: ElementHandle<HTMLElement>) {
     if (isDev) return false
     const correctIconSrc = await list.$eval("a > p > img", img => img.src)
@@ -72,4 +63,17 @@ export async function isChecked(list: ElementHandle<HTMLElement>) {
     if (isDev) return false
     const chekeMark = await list.$(".check-mark")
     return Boolean(chekeMark)
+}
+
+export async function getAssignmentName(page: Page) {
+    return await page.$eval("dd.task-user-name", element => element.innerText)
+}
+
+export async function* getAssignments(page: Page) {
+    const assignments = await page.$$(".task-list > a")
+    console.log(`合計課題数:${assignments.length}`)
+    for (let i = 0; i < assignments.length; i++) {
+        const assignments = await page.$$(".task-list > a")
+        yield assignments[i]
+    }
 }

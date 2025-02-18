@@ -1,11 +1,33 @@
-import type { Page } from "puppeteer";
-import { argToNumber, copyPage, wait } from "./utility";
-import { addPlayingVideoCount, bringContorolPage } from ".";
+import type { ElementHandle, Page } from "puppeteer";
+import { copyPage, getStudyProgramName, isChecked, wait } from "./utility";
+import { addPlayingVideoCount } from ".";
+import { bringContorolPage, PLAY_RATE } from "./status";
+import { waitForTransition } from "./clickButton";
+import { status } from "./status";
 
-export const PLAY_RATE = argToNumber(2) ?? 1
+interface VideoData {
+    id: number,
+    name: string
+}
+
 const videoPages: Page[] = []
+const finishVideoDatas: VideoData[] = []
 
-export async function playVideo(page: Page, index: number, name: string) {
+async function clearVideoQueue() {
+
+}
+
+export async function playVideo(page: Page, index: number, list: ElementHandle<HTMLElement>) {
+    const name = await getStudyProgramName(list)
+    if (await isChecked(list)) {
+        console.log(`\nビデオ[name:${name}]は再生済みのためスキップします\n`)
+    }
+
+    console.log(`\nビデオ[name:${name}]の再生を開始`)
+
+    await waitForTransition(page, list)
+    await wait()
+
     addPlayingVideoCount(1)
     const newPage = await copyPage(page)
     videoPages[index] = newPage
@@ -54,6 +76,12 @@ export async function playVideo(page: Page, index: number, name: string) {
     }, index, PLAY_RATE)
 
     await wait()
+    status.videoIndex++
+
+    await page.bringToFront()
+    await wait()
+
+    await page.goBack()
 }
 
 async function clickFinishButton(page: Page) {

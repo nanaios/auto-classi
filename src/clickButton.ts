@@ -1,5 +1,5 @@
 import type { ElementHandle, Page } from "puppeteer"
-import { getStudyProgramList } from "./utility"
+import { getStudyPrograms } from "./utility"
 
 export async function waitForTransition<T extends Element>(page: Page, element: ElementHandle<T>) {
     await Promise.all([
@@ -9,7 +9,7 @@ export async function waitForTransition<T extends Element>(page: Page, element: 
 }
 
 export async function clickStudyProgram(page: Page, index: number) {
-    const li = await getStudyProgramList(page)
+    const li = await getStudyPrograms(page)
     await waitForTransition(page, li[index])
 }
 
@@ -35,11 +35,8 @@ export async function clickLeftButton(page: Page) {
     await waitForTransition(page, leftButton)
 }
 
-export async function clickTask(page: Page, task: ElementHandle<HTMLElement>) {
-    await Promise.all(
-        [
-            await task.click(),
-            await page.waitForNavigation({ waitUntil: ['load', 'networkidle2'] })
-        ]
-    )
+export async function clickStartAssignmentButton(page: Page) {
+    const button = await page.$("li.right")
+    if (!button) throw new Error("buttonが存在しません!");
+    await waitForTransition(page, button)
 }
