@@ -7,20 +7,28 @@ export const status = {
     playingVideoCount: 0,
     isSearchFinish: false,
 }
-export const BASE_WAIT_TIME = argToNumber(1) ?? 500
-export const PLAY_RATE = argToNumber(2) ?? 1
-export const RANDOM_PER = argToNumber(0) ?? 100
-export const TIMEOUT = argToNumber(0) ?? 2000
-export const isDev = process.argv[process.argv.length - 1] === "dev"
+
+const optionArgs = process.argv.map(arg => arg.startsWith("--") ? arg : null).filter(val => val !== null)
+
+export const BASE_WAIT_TIME = argToNumber("wait") ?? 500
+export const PLAY_RATE = argToNumber("rate") ?? 1
+export const RANDOM_PER = argToNumber("per") ?? 100
+export const TIMEOUT = argToNumber("timeout") ?? 2000
+export const isDev = process.argv.includes("--dev")
+export const isSkipVideo = process.argv.includes("--skip-video")
 
 let controlingPage: Page
-function argToNumber(index: number) {
-    const arg = Number(process.argv[index + 3])
-    if (Number.isNaN(arg)) {
-        return undefined
-    } else {
-        return arg
-    }
+function argToNumber(name: string) {
+    let retVal: number | undefined
+    optionArgs.forEach(arg => {
+        if (arg.includes(name)) {
+            const value = Number(arg.split("=")[1])
+            if (!Number.isNaN(value)) {
+                retVal = value
+            }
+        }
+    })
+    return retVal
 }
 
 export function setControlingPage(page: Page) {

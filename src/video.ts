@@ -1,7 +1,7 @@
 import type { ElementHandle, Page } from "puppeteer";
 import { copyPage, getStudyProgramName, isChecked, wait } from "./utility";
 import { addPlayingVideoCount } from ".";
-import { bringContorolPage, PLAY_RATE } from "./status";
+import { bringContorolPage, isSkipVideo, PLAY_RATE } from "./status";
 import { waitForTransition } from "./clickButton";
 import { status } from "./status";
 
@@ -44,8 +44,9 @@ export async function clearVideoQueue() {
 
 export async function playVideo(page: Page, index: number, list: ElementHandle<HTMLElement>) {
     const name = await getStudyProgramName(list)
-    if (await isChecked(list)) {
+    if (await isChecked(list) || isSkipVideo) {
         console.log(`\nビデオ[name:${name}]は再生済みのためスキップします\n`)
+        return
     }
 
     console.log(`\nビデオ[name:${name}]の再生を開始\n`)

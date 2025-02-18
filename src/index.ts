@@ -37,9 +37,6 @@ export async function main() {
         await page.goto(basePageUrl, { waitUntil: ['load', 'networkidle2'] })
         await wait()
     }
-
-    await wait()
-    await solveAssignment(page)
     status.isSearchFinish = true
     console.log("\n全設問の探索が終了しました\n")
     checkFinish()
