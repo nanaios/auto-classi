@@ -1,5 +1,9 @@
 <img src="https://img.shields.io/badge/-Node.js-339933.svg?logo=node.js&style=flat-square" width="20%"><img src="https://img.shields.io/badge/-Typescript-000000.svg?logo=typescript&style=popout-square" width="20%">
 
+  
+<img src="logo2.png">
+
+
 ## 注意
 **事前にnode.jsをインストールする必要があります。ご注意ください。**  
 **Chromeを複数開いていると上手く作動しない場合があります。Chromeをすべて閉じたうえでもう一度試してください。**
