@@ -1,9 +1,16 @@
 {
   "name": "auto-classi",
-  "version": "5.0.2",
+  "version": "5.0.3",
   "description": "Classiを自動で解いてくれるプログラムです",
   "license": "MIT",
   "author": "nanaios",
+  "keywords": [
+    "cli",
+    "automation",
+    "puppeteer",
+    "chrome",
+    "classi"
+  ],
   "type": "module",
   "main": "dist/bin.js",
   "bin": {
