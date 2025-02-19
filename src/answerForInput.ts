@@ -1,4 +1,4 @@
-import type { Page } from "puppeteer";
+import type { Page } from "puppeteer-core";
 import { formatClassiAns } from "./utility";
 
 export async function isInput(page: Page) {

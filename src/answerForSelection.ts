@@ -1,4 +1,4 @@
-import type { Page } from "puppeteer"
+import type { Page } from "puppeteer-core"
 import { formatClassiAns, random, wait } from "./utility"
 
 export async function setAnswerForSelection(page: Page, answers: string[]) {

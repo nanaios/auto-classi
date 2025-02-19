@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { main } from ".";
 import { exec } from 'child_process';
-import { argToNumber } from "./utility";
+import { TIMEOUT } from "./status";
 
 const is_windows = process.platform === 'win32'
 const is_mac = process.platform === 'darwin'
@@ -24,8 +24,6 @@ async function cli() {
 }
 
 async function openChrome() {
-    const timeout = argToNumber(0) ?? 2000
-
     let chromePath: string
 
     if (is_windows) {
@@ -40,7 +38,7 @@ async function openChrome() {
 
     setTimeout(() => {
         process.exit()
-    }, timeout)
+    }, TIMEOUT)
 }
 
 await cli()

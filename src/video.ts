@@ -1,20 +1,23 @@
-import type { Page } from "puppeteer";
-import { argToNumber, copyPage, wait } from "./utility";
-import { addPlayingVideoCount, bringContorolPage } from ".";
+import type { ElementHandle, Page } from "puppeteer-core";
+import { copyPage, getStudyProgramName, isChecked, wait } from "./utility";
+import { addPlayingVideoCount } from ".";
+import { bringContorolPage, isSkipVideo, PLAY_RATE } from "./status";
+import { waitForTransition } from "./clickButton";
+import { status } from "./status";
 
-export const PLAY_RATE = argToNumber(2) ?? 1
+interface VideoData {
+    index: number,
+    name: string
+}
+
 const videoPages: Page[] = []
+const finishVideoDatas: (VideoData | null)[] = []
 
-export async function playVideo(page: Page, index: number, name: string) {
-    addPlayingVideoCount(1)
-    const newPage = await copyPage(page)
-    videoPages[index] = newPage
-    newPage.bringToFront()
-    await newPage.exposeFunction('onNotifyEndVideoToAutoClassi', async (index: number) => {
-        //setVideoQueue(index, name)
-
-        console.log(`\nビデオ[name:${name}]の再生が終了しました\n`);
-        const videoPage = videoPages[index]
+export async function clearVideoQueue() {
+    const indexs: number[] = []
+    for (const data of finishVideoDatas) {
+        if (!data) continue
+        const videoPage = videoPages[data.index]
 
         await videoPage.bringToFront()
         await wait()
@@ -28,6 +31,40 @@ export async function playVideo(page: Page, index: number, name: string) {
         await bringContorolPage()
 
         addPlayingVideoCount(-1)
+        console.log(`ビデオタブ[name:${data.name}]が正常に閉じられました`);
+        indexs.push(data.index)
+    }
+    finishVideoDatas.forEach((data, index) => {
+        if (!data) return
+        if (indexs.includes(data.index)) {
+            finishVideoDatas[index] = null
+        }
+    })
+}
+
+export async function playVideo(page: Page, index: number, list: ElementHandle<HTMLElement>) {
+    const name = await getStudyProgramName(list)
+    if (await isChecked(list) || isSkipVideo) {
+        console.log(`\nビデオ[name:${name}]は再生済みのためスキップします\n`)
+        return
+    }
+
+    console.log(`\nビデオ[name:${name}]の再生を開始\n`)
+
+    await waitForTransition(page, list)
+    await wait()
+
+    addPlayingVideoCount(1)
+    const newPage = await copyPage(page)
+    videoPages[index] = newPage
+    newPage.bringToFront()
+    await newPage.exposeFunction('onNotifyEndVideoToAutoClassi', async (index: number) => {
+        finishVideoDatas.push({
+            name: name,
+            index: index
+        })
+
+        console.log(`\nビデオ[name:${name}]の再生が終了しました\n`);
     });
 
     const videoArea = await newPage.$("#video_area")
@@ -54,6 +91,12 @@ export async function playVideo(page: Page, index: number, name: string) {
     }, index, PLAY_RATE)
 
     await wait()
+    status.videoIndex++
+
+    await page.bringToFront()
+    await wait()
+
+    await page.goBack()
 }
 
 async function clickFinishButton(page: Page) {
