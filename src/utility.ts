@@ -1,4 +1,4 @@
-import type { Page, ElementHandle } from "puppeteer";
+import type { Page, ElementHandle } from "puppeteer-core";
 import { BASE_WAIT_TIME, isDev } from "./status";
 
 export async function* getStudyPrograms(page: Page) {

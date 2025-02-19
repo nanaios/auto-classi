@@ -1,4 +1,4 @@
-import type { Page } from "puppeteer"
+import type { Page } from "puppeteer-core"
 export const status = {
     questionCount: 0,
     correctAnswerFirstCount: 0,

@@ -1,7 +1,7 @@
 {
   "name": "auto-classi",
   "version": "5.0.0",
-  "description": "",
+  "description": "Classiを自動で解いてくれるプログラムです",
   "license": "MIT",
   "author": "nanaios",
   "type": "module",
@@ -13,7 +13,11 @@
     "build": "node esbuild.ts",
     "prepublishOnly": "npm run build"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nanaios/auto-classi"
+  },
   "dependencies": {
-    "puppeteer": "24.2.1"
+    "puppeteer-core": "24.2.1"
   }
 }

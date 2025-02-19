@@ -1,4 +1,4 @@
-import puppeteer, { type Page } from "puppeteer"
+import puppeteer, { type Page } from "puppeteer-core"
 import { getStudyPrograms, isStudyPrograms, wait, getLectureName, isVideoPrograms, getAssignmentName, getAssignments, getLectures } from "./utility"
 import { clickLeftButton, clickStartAssignmentButton, waitForTransition } from "./clickButton";
 import { clearVideoQueue, playVideo } from "./video";
@@ -8,7 +8,6 @@ import { solveQuestion } from "./answer";
 
 export function addPlayingVideoCount(value: number) {
     status.playingVideoCount += value
-    checkFinish()
 }
 export async function main() {
     const browser = await puppeteer.connect({
@@ -62,6 +61,11 @@ async function solveAssignment(page: Page) {
         await clickLeftButton(page);
         console.log(`\n講義[name:${lectureName}]の解答を終了\n`);
         await wait();
+    }
+    console.log("\n全てのビデオの再生終了を待機します\n")
+    while (status.playingVideoCount !== 0) {
+        await clearVideoQueue()
+        await wait(1000)
     }
     await clickLeftButton(page)
     console.log(`\n課題[name:${assignmentName}]の解答を終了\n`)

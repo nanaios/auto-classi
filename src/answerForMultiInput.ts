@@ -1,4 +1,4 @@
-import type { Page } from "puppeteer"
+import type { Page } from "puppeteer-core"
 import { wait, formatClassiAns } from "./utility"
 
 export async function isMultiInput(page: Page) {

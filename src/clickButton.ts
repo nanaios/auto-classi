@@ -1,4 +1,4 @@
-import type { ElementHandle, Page } from "puppeteer"
+import type { ElementHandle, Page } from "puppeteer-core"
 import { getStudyPrograms } from "./utility"
 
 export async function waitForTransition<T extends Element>(page: Page, element: ElementHandle<T>) {

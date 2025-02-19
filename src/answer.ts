@@ -1,4 +1,4 @@
-import type { ElementHandle, Page } from "puppeteer";
+import type { ElementHandle, Page } from "puppeteer-core";
 import { getAnswerForInput, isInput, setAnswerForInput } from "./answerForInput";
 import { getAnswerForListSelection, isListSelection, setAnswerForList } from "./answerForListSelection";
 import { getAnswerForMultiInput, isMultiInput, setAnswerForMultiInput } from "./answerForMultiInput";
