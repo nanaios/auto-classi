@@ -69,16 +69,23 @@ export async function getAssignmentName(page: Page) {
     return await page.$eval("dd.task-user-name", element => element.innerText)
 }
 
+const finishedAssignmentNames: string[] = []
+
 export async function* getAssignments(page: Page) {
     const assignments = await page.$$(".task-list > a")
     console.log(`合計課題数:${assignments.length}`)
     for (let i = 0; i < assignments.length; i++) {
         const assignments = await page.$$(".task-list > a")
-        if (isDev) {
-            yield assignments[i]
-        } else {
-            yield assignments[0]
+        let k: number
+        for (k = 0; k < assignments.length; k++) {
+            const name = await assignments[k].$eval("p.subject", element => element.innerText)
+            if (!finishedAssignmentNames.includes(name)) {
+                console.log(`課題名:${name}`)
+                finishedAssignmentNames.push(name)
+                break
+            }
         }
+        yield assignments[k]
     }
 }
 

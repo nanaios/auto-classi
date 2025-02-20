@@ -3,5 +3,5 @@
 /test
 .gitignore
 tsconfig.json
-esbuild.ts
+esbuild.js
 /.github

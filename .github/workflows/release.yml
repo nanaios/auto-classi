@@ -1,0 +1,40 @@
+name: Create Release Note
+
+on:
+  pull_request:
+    # PRが閉じたタイミングで実行
+    types:
+      - closed
+    # mainブランチのみを対象とする
+    branches:
+      - main
+
+jobs:
+  build-and-release:
+    permissions:
+      contents: write
+      pull-requests: write
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+        
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: install esbuild
+        run: npm install esbuild
+
+      - name: install dependencies
+        run: npm ci
+
+      - name: build dependencies
+        run: npm run build
+
+      - name: Publish
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

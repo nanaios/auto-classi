@@ -2,19 +2,25 @@
 import { main } from ".";
 import { exec } from 'child_process';
 import { TIMEOUT } from "./status";
+import packageJson from "../package.json"
 
-const is_windows = process.platform === 'win32'
-const is_mac = process.platform === 'darwin'
+const CHROME_PATHS: { [x in NodeJS.Platform]?: string } = {
+    win32: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+    darwin: "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+}
 
 async function cli() {
     switch (process.argv[2]) {
         case "run": {
-            await main()
+            await main(packageJson.version)
             break;
         }
         case "open": {
             openChrome()
             break
+        }
+        case "--version": {
+            console.log(`v${packageJson.version}`)
         }
         default: {
             console.error("Error:不明なコマンドです")
@@ -24,17 +30,7 @@ async function cli() {
 }
 
 async function openChrome() {
-    let chromePath: string
-
-    if (is_windows) {
-        chromePath = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
-    } else if (is_mac) {
-        chromePath = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
-    } else {
-        throw new Error("Error:不明なOSです")
-    }
-
-    exec(`"${chromePath}" --remote-debugging-port=9222`)
+    exec(`"${CHROME_PATHS[process.platform]}" --remote-debugging-port=9222`)
 
     setTimeout(() => {
         process.exit()

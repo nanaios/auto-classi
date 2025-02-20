@@ -9,7 +9,7 @@ import { solveQuestion } from "./answer";
 export function addPlayingVideoCount(value: number) {
     status.playingVideoCount += value
 }
-export async function main() {
+export async function main(vewsion: string) {
     const browser = await puppeteer.connect({
         browserURL: 'http://127.0.0.1:9222'
     });
@@ -23,8 +23,8 @@ export async function main() {
     const basePageUrl = page.url()
 
     await wait()
-    console.log("autoClassiを起動しました")
-    showProgramStatus(basePageUrl)
+    console.log(`AutoClassi v${vewsion}`)
+    showProgramStatus()
 
     for await (const assignment of getAssignments(page)) {
         await waitForTransition(page, assignment)
@@ -38,6 +38,13 @@ export async function main() {
     }
     status.isSearchFinish = true
     console.log("\n全設問の探索が終了しました\n")
+    if (status.playingVideoCount !== 0) {
+        console.log("\n全てのビデオの再生終了を待機します\n")
+        while (status.playingVideoCount !== 0) {
+            await clearVideoQueue()
+            await wait(1000)
+        }
+    }
     checkFinish()
 }
 
@@ -61,11 +68,6 @@ async function solveAssignment(page: Page) {
         await clickLeftButton(page);
         console.log(`\n講義[name:${lectureName}]の解答を終了\n`);
         await wait();
-    }
-    console.log("\n全てのビデオの再生終了を待機します\n")
-    while (status.playingVideoCount !== 0) {
-        await clearVideoQueue()
-        await wait(1000)
     }
     await clickLeftButton(page)
     console.log(`\n課題[name:${assignmentName}]の解答を終了\n`)
