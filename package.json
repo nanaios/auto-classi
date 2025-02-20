@@ -24,6 +24,9 @@
     "type": "git",
     "url": "https://github.com/nanaios/auto-classi"
   },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
   "dependencies": {
     "puppeteer-core": "24.2.1"
   }
