@@ -1,6 +1,6 @@
 {
   "name": "auto-classi",
-  "version": "5.0.3",
+  "version": "5.1.0",
   "description": "Classiを自動で解いてくれるプログラムです",
   "license": "MIT",
   "author": "nanaios",
@@ -17,7 +17,7 @@
     "autoclassi": "dist/bin.js"
   },
   "scripts": {
-    "build": "node esbuild.ts",
+    "build": "node esbuild.js",
     "prepublishOnly": "npm run build"
   },
   "repository": {
