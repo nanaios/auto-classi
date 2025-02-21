@@ -27,8 +27,6 @@ jobs:
         with:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org'
-      - name: install esbuild
-        run: npm install esbuild
 
       - name: install dependencies
         run: npm ci
