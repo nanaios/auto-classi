@@ -1,6 +1,6 @@
 {
   "name": "auto-classi",
-  "version": "5.1.4",
+  "version": "5.1.5",
   "description": "Classiを自動で解いてくれるプログラムです。",
   "license": "MIT",
   "author": "nanaios",
@@ -22,7 +22,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/nanaios/auto-classi"
+    "url": "git+https://github.com/nanaios/auto-classi.git"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"

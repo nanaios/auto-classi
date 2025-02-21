@@ -1,16 +1,10 @@
 import type { ElementHandle, Page } from "puppeteer-core"
-import { getStudyPrograms } from "./utility"
 
 export async function waitForTransition<T extends Element>(page: Page, element: ElementHandle<T>) {
     await Promise.all([
         await element.click(),
         await page.waitForNavigation({ waitUntil: ['load', 'networkidle2'] })
     ])
-}
-
-export async function clickStudyProgram(page: Page, index: number) {
-    const li = await getStudyPrograms(page)
-    await waitForTransition(page, li[index])
 }
 
 export async function clickSubmitButton(page: Page) {

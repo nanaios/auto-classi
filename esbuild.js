@@ -7,5 +7,5 @@ esbuild.build({
     platform: "node",
     format: "esm",
     packages: "external",
-    minify: false
+    minify: true
 })
