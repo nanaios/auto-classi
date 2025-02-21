@@ -4,7 +4,7 @@ import { clickLeftButton, clickStartAssignmentButton, waitForTransition } from "
 import { clearVideoQueue, playVideo } from "./video";
 import { checkFinish, setControlingPage, showProgramStatus } from "./status";
 import { status } from "./status";
-import { solveQuestion } from "./answer/answer";
+import { solveQuestion } from "./answer";
 
 export function addPlayingVideoCount(value: number) {
     status.playingVideoCount += value
