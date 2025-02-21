@@ -1,5 +1,5 @@
 import type { Page } from "puppeteer-core"
-import { formatClassiAns, random, wait } from "../utilitys/utility"
+import { formatClassiAns, random, wait } from "../../utilitys/utility"
 
 export async function setAnswerForSelection(page: Page, answers: string[]) {
     const inputs = await page.$$(".checkbox")

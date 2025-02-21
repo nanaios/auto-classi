@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-import { main } from "./classi";
+import { main } from "./classi/classi";
 import { exec } from 'child_process';
-import { TIMEOUT } from "./utilitys/status";
+import { TIMEOUT } from "./classi/status";
 import packageJson from "../package.json"
 
 const CHROME_PATHS: { [x in NodeJS.Platform]?: string } = {

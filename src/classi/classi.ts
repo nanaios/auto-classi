@@ -1,9 +1,9 @@
 import puppeteer, { type Page } from "puppeteer-core"
-import { getStudyPrograms, isStudyPrograms, wait, getLectureName, isVideoPrograms, getAssignmentName, getAssignments, getLectures } from "./utilitys/utility"
-import { clickLeftButton, clickStartAssignmentButton, waitForTransition } from "./utilitys/clickButton";
+import { getStudyPrograms, isStudyPrograms, wait, getLectureName, isVideoPrograms, getAssignmentName, getAssignments, getLectures } from "../utilitys/utility"
+import { clickLeftButton, clickStartAssignmentButton, waitForTransition } from "./clickButton";
 import { clearVideoQueue, playVideo } from "./video";
-import { checkFinish, setControlingPage, showProgramStatus } from "./utilitys/status";
-import { status } from "./utilitys/status";
+import { checkFinish, setControlingPage, showProgramStatus } from "./status";
+import { status } from "./status";
 import { solveQuestion } from "./answer/answer";
 
 export function addPlayingVideoCount(value: number) {

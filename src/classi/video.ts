@@ -1,9 +1,9 @@
 import type { ElementHandle, Page } from "puppeteer-core";
-import { copyPage, getStudyProgramName, isChecked, wait } from "./utilitys/utility";
+import { copyPage, getStudyProgramName, isChecked, wait } from "../utilitys/utility";
 import { addPlayingVideoCount } from "./classi";
-import { bringContorolPage, isSkipVideo, PLAY_RATE } from "./utilitys/status";
-import { waitForTransition } from "./utilitys/clickButton";
-import { status } from "./utilitys/status";
+import { bringContorolPage, isSkipVideo, PLAY_RATE } from "./status";
+import { waitForTransition } from "./clickButton";
+import { status } from "./status";
 
 interface VideoData {
     index: number,
