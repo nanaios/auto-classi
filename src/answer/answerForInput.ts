@@ -1,5 +1,5 @@
 import type { Page } from "puppeteer-core";
-import { formatClassiAns } from "./utility";
+import { formatClassiAns } from "../utilitys/utility";
 
 export async function isInput(page: Page) {
     const correct = await page.$$(".spen-mod-input-label-list > li")
