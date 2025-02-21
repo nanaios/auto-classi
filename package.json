@@ -28,9 +28,11 @@
     "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
+    "iconv-lite": "^0.6.3",
     "puppeteer-core": "24.2.1"
   },
   "devDependencies": {
+    "@types/encoding-japanese": "^2.2.1",
     "esbuild": "^0.25.0"
   }
 }
