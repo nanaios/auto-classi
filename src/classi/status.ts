@@ -8,7 +8,7 @@ export const status = {
     isSearchFinish: false,
 }
 
-const optionArgs = process.argv.map(arg => arg.startsWith("--") ? arg : null).filter(val => val !== null)
+export const optionArgs = process.argv.map(arg => arg.startsWith("--") ? arg : null).filter(val => val !== null)
 
 export const BASE_WAIT_TIME = argToNumber("wait") ?? 500
 export const PLAY_RATE = argToNumber("rate") ?? 1
@@ -18,7 +18,8 @@ export const isDev = process.argv.includes("--dev")
 export const isSkipVideo = process.argv.includes("--skip-video")
 
 let controlingPage: Page
-function argToNumber(name: string) {
+
+export function argToNumber(name: string) {
     let retVal: number | undefined
     optionArgs.forEach(arg => {
         if (arg.includes(name)) {

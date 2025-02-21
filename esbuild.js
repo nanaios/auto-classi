@@ -7,5 +7,6 @@ esbuild.build({
     platform: "node",
     format: "esm",
     packages: "external",
-    minify: true
+    minify: true,
+    charset: "utf8"
 })
