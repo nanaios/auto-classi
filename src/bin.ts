@@ -5,7 +5,6 @@ import packageJson from "../package.json"
 import { config, configJson } from "./config";
 import iconv from "iconv-lite";
 import cac from "cac"
-import { wait } from "./utilitys";
 
 const DEFAULT_CHROME_PATHS: { [x in NodeJS.Platform]?: string } = {
     win32: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
@@ -34,7 +33,7 @@ cli.command("open", "専用のChromeを開きます")
 
 cli.command("config <name>", "configを操作します")
     .action(input => {
-        console.log(input)
+        config(input)
     })
 
 cli.help()
