@@ -1,7 +1,7 @@
 import type { Page, ElementHandle } from "puppeteer-core";
-import { BASE_WAIT_TIME, isDev } from "@/classi";
+import { arg } from "@/classi";
 
-export function wait(ms: number = BASE_WAIT_TIME) {
+export function wait(ms: number = arg.wait) {
     return new Promise<void>(res => {
         const id = setTimeout(() => {
             clearTimeout(id)
@@ -25,13 +25,13 @@ export async function copyPage(page: Page) {
 }
 
 export async function isCorrectProgram(list: ElementHandle<HTMLElement>) {
-    if (isDev) return false
+    if (arg.dev) return false
     const correctIconSrc = await list.$eval("a > p > img", img => img.src)
     return !(correctIconSrc.includes("incorrect"))
 }
 
 export async function isChecked(list: ElementHandle<HTMLElement>) {
-    if (isDev) return false
+    if (arg.dev) return false
     const chekeMark = await list.$(".check-mark")
     return Boolean(chekeMark)
 }
