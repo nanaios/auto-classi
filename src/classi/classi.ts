@@ -1,5 +1,5 @@
 import puppeteer, { type Page } from "puppeteer-core"
-import { getStudyPrograms, isStudyPrograms, wait, getLectureName, isVideoPrograms, getAssignmentName, getAssignments, getLectures } from "../utilitys/utility"
+import { getStudyPrograms, isStudyPrograms, wait, getLectureName, isVideoPrograms, getAssignmentName, getAssignments, getLectures } from "@/utilitys"
 import { clickLeftButton, clickStartAssignmentButton, waitForTransition } from "./clickButton";
 import { clearVideoQueue, playVideo } from "./video";
 import { checkFinish, setControlingPage, showProgramStatus } from "./status";

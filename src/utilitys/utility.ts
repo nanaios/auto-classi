@@ -1,5 +1,5 @@
 import type { Page, ElementHandle } from "puppeteer-core";
-import { BASE_WAIT_TIME, isDev } from "../classi/status";
+import { BASE_WAIT_TIME, isDev } from "@/classi";
 
 export async function* getStudyPrograms(page: Page) {
     const lilsts = await page.$$(".spen-mod-item-list.is-column-1.spen.spen-util-mb-24.lecture-flow > li")
