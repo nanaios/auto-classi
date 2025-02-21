@@ -1,30 +1,6 @@
 import type { Page, ElementHandle } from "puppeteer-core";
 import { BASE_WAIT_TIME, isDev } from "@/classi";
 
-export async function* getStudyPrograms(page: Page) {
-    const lilsts = await page.$$(".spen-mod-item-list.is-column-1.spen.spen-util-mb-24.lecture-flow > li")
-    console.log(`合計問題数:${lilsts.length}`)
-    for (let i = 0; i < lilsts.length; i++) {
-        const lilsts = await page.$$(".spen-mod-item-list.is-column-1.spen.spen-util-mb-24.lecture-flow > li")
-        yield lilsts[i]
-    }
-}
-
-export async function isStudyPrograms(list: ElementHandle<HTMLElement>) {
-    const icon = await list.$(".fa-pencil-square-o")
-    return Boolean(icon)
-}
-
-export async function isVideoPrograms(list: ElementHandle<HTMLElement>) {
-    const icon = await list.$(".fa-film")
-    return Boolean(icon)
-}
-
-export async function getStudyProgramName(list: ElementHandle<HTMLElement>) {
-    const name = await list.$eval("a", element => element.innerText)
-    return name
-}
-
 export function wait(ms: number = BASE_WAIT_TIME) {
     return new Promise<void>(res => {
         const id = setTimeout(() => {
@@ -36,11 +12,6 @@ export function wait(ms: number = BASE_WAIT_TIME) {
 
 export function formatClassiAns(rawAns: string) {
     return rawAns.replace(/\n/g, "").replace(/\t/g, "").split("(")[0].trim()
-}
-
-export async function getLectureName(task: ElementHandle<HTMLElement>) {
-    const label = await task.$eval(".simple-task-name > p > span.lecture_name", element => element.innerText)
-    return label
 }
 
 export function random(max: number) {
@@ -65,35 +36,9 @@ export async function isChecked(list: ElementHandle<HTMLElement>) {
     return Boolean(chekeMark)
 }
 
-export async function getAssignmentName(page: Page) {
-    return await page.$eval("dd.task-user-name", element => element.innerText)
-}
-
-const finishedAssignmentNames: string[] = []
-
-export async function* getAssignments(page: Page) {
-    const assignments = await page.$$(".task-list > a")
-    console.log(`合計課題数:${assignments.length}`)
-    for (let i = 0; i < assignments.length; i++) {
-        const assignments = await page.$$(".task-list > a")
-        let k: number
-        for (k = 0; k < assignments.length; k++) {
-            const name = await assignments[k].$eval("p.subject", element => element.innerText)
-            if (!finishedAssignmentNames.includes(name)) {
-                console.log(`課題名:${name}`)
-                finishedAssignmentNames.push(name)
-                break
-            }
-        }
-        yield assignments[k]
-    }
-}
-
-export async function* getLectures(page: Page) {
-    const lectures = await page.$$(".task-list > a")
-    console.log(`合計講義数：${lectures.length}個`)
-    for (let i = 0; i < lectures.length; i++) {
-        const lectures = await page.$$(".task-list > a")
-        yield lectures[i]
-    }
+export async function waitForTransition<T extends Element>(page: Page, element: ElementHandle<T>) {
+    await Promise.all([
+        await element.click(),
+        await page.waitForNavigation({ waitUntil: ['load', 'networkidle2'] })
+    ])
 }

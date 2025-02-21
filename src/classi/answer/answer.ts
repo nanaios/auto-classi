@@ -4,9 +4,10 @@ import { getAnswerForListSelection, isListSelection, setAnswerForList } from "./
 import { getAnswerForMultiInput, isMultiInput, setAnswerForMultiInput } from "./answerForMultiInput";
 import { getAnswerForSelection, isSelection, setAnswerForSelection } from "./answerForSelection";
 import { isSelf, setAnswerForSelf } from "./answerForSelf";
-import { copyPage, getStudyProgramName, isChecked, isCorrectProgram, random, wait } from "../../utilitys/utility";
-import { clickSubmitButton, clickFinishButton, waitForTransition } from "../clickButton";
-import { RANDOM_PER, setControlingPage, status } from "../status";
+import { copyPage, isChecked, isCorrectProgram, random, wait, waitForTransition } from "@/utilitys";
+import { clickSubmitButton, clickFinishButton } from "../control/clickButton";
+import { RANDOM_PER, setControlingPage, status } from "@/classi";
+import { getStudyProgramName } from "../control/studyPrograms";
 
 export interface AnswerData {
     string: string,

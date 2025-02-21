@@ -5,7 +5,7 @@ import path from "path"
 const configPath = path.join(process.argv[1], "../../", "config.json")
 export const configJson = JSON.parse(fs.readFileSync(configPath, "utf-8"))
 
-const CONFIG_NAMES = ["win32-chrome-path", "darwin-chrome-path"]
+const CONFIG_NAMES = ["chrome-path"]
 
 export function config() {
     CONFIG_NAMES.forEach(name => {

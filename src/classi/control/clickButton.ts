@@ -1,11 +1,5 @@
-import type { ElementHandle, Page } from "puppeteer-core"
-
-export async function waitForTransition<T extends Element>(page: Page, element: ElementHandle<T>) {
-    await Promise.all([
-        await element.click(),
-        await page.waitForNavigation({ waitUntil: ['load', 'networkidle2'] })
-    ])
-}
+import { waitForTransition } from "@/utilitys/utility"
+import type { Page } from "puppeteer-core"
 
 export async function clickSubmitButton(page: Page) {
     const button = await page.$$(".navt-btn, .submit-button")

@@ -36,7 +36,7 @@ async function cli() {
 }
 
 async function openChrome() {
-    const path = configJson[process.platform + "-chrome-path"] || DEFAULT_CHROME_PATHS[process.platform]
+    const path = configJson["chrome-path"] || DEFAULT_CHROME_PATHS[process.platform]
     if (isDev) {
         console.log(`chrome path="${path}"`)
     }

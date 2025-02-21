@@ -1,9 +1,10 @@
 import type { ElementHandle, Page } from "puppeteer-core";
-import { copyPage, getStudyProgramName, isChecked, wait } from "../utilitys/utility";
+import { copyPage, isChecked, wait } from "@/utilitys";
 import { addPlayingVideoCount } from "./classi";
-import { bringContorolPage, isSkipVideo, PLAY_RATE } from "./status";
-import { waitForTransition } from "./clickButton";
-import { status } from "./status";
+import { bringContorolPage, isSkipVideo, PLAY_RATE } from "@/classi";
+import { waitForTransition } from "@/utilitys/utility";
+import { status } from "../status";
+import { getStudyProgramName } from "./studyPrograms";
 
 interface VideoData {
     index: number,
@@ -12,6 +13,11 @@ interface VideoData {
 
 const videoPages: Page[] = []
 const finishVideoDatas: (VideoData | null)[] = []
+
+export async function isVideoPrograms(list: ElementHandle<HTMLElement>) {
+    const icon = await list.$(".fa-film")
+    return Boolean(icon)
+}
 
 export async function clearVideoQueue() {
     const indexs: number[] = []
