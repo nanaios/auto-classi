@@ -4,9 +4,10 @@ import { getAnswerForListSelection, isListSelection, setAnswerForList } from "./
 import { getAnswerForMultiInput, isMultiInput, setAnswerForMultiInput } from "./answerForMultiInput";
 import { getAnswerForSelection, isSelection, setAnswerForSelection } from "./answerForSelection";
 import { isSelf, setAnswerForSelf } from "./answerForSelf";
-import { copyPage, getStudyProgramName, isChecked, isCorrectProgram, random, wait } from "../../utilitys/utility";
-import { clickSubmitButton, clickFinishButton, waitForTransition } from "../clickButton";
-import { RANDOM_PER, setControlingPage, status } from "../status";
+import { copyPage, isChecked, isCorrectProgram, random, wait, waitForTransition } from "@/utilitys";
+import { clickSubmitButton, clickFinishButton } from "../control/clickButton";
+import { arg, setControlingPage, status } from "@/classi";
+import { getStudyProgramName } from "../control/studyPrograms";
 
 export interface AnswerData {
     string: string,
@@ -110,11 +111,11 @@ export async function solveQuestion(page: Page, list: ElementHandle<HTMLElement>
     //1～100までの乱数を生成
     const rans = random(100) + 1
 
-    if (rans <= RANDOM_PER) {
-        console.log(`(1d100<=${RANDOM_PER}) > ${rans} > 成功`)
+    if (rans <= arg.per) {
+        console.log(`(1d100<=${arg.per}) > ${rans} > 成功`)
         status.correctAnswerFirstCount++
     } else {
-        console.log(`(1d100<=${RANDOM_PER}) > ${rans} > 失敗`)
+        console.log(`(1d100<=${arg.per}) > ${rans} > 失敗`)
         console.log("初手の解答を不正解にします")
         try {
             if (answerType === "self") {

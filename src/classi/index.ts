@@ -1,2 +1,2 @@
-export * from "./classi"
+export * from "./control/classi"
 export * from "./status"

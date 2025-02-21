@@ -1,6 +1,6 @@
 {
   "name": "auto-classi",
-  "version": "5.2.1",
+  "version": "5.3.0",
   "description": "Classiを自動で解いてくれるプログラムです。",
   "license": "MIT",
   "author": "nanaios",
@@ -28,10 +28,11 @@
     "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
-    "iconv-lite": "^0.6.3",
+    "cac": "^6.7.14",
+    "iconv-lite": "0.6.3",
     "puppeteer-core": "24.2.1"
   },
   "devDependencies": {
-    "esbuild": "^0.25.0"
+    "esbuild": "0.25.0"
   }
 }

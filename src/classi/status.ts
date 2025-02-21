@@ -10,12 +10,19 @@ export const status = {
 
 export const optionArgs = process.argv.map(arg => arg.startsWith("--") ? arg : null).filter(val => val !== null)
 
-export const BASE_WAIT_TIME = argToNumber("wait") ?? 500
-export const PLAY_RATE = argToNumber("rate") ?? 1
-export const RANDOM_PER = argToNumber("per") ?? 100
-export const TIMEOUT = argToNumber("timeout") ?? 2000
-export const isDev = process.argv.includes("--dev")
-export const isSkipVideo = process.argv.includes("--skip-video")
+interface Arg {
+    dev: boolean
+    rate: number
+    wait: number
+    per: number
+    skipVideo: boolean
+}
+
+export let arg: Arg
+
+export function setArg(data: Arg) {
+    arg = data
+}
 
 let controlingPage: Page
 
@@ -41,10 +48,10 @@ export async function bringContorolPage() {
 }
 
 export function showProgramStatus() {
-    console.log(`待機時間:${BASE_WAIT_TIME}`)
-    console.log(`推定初手正解率:${RANDOM_PER}`)
-    console.log(`ビデオの再生倍率:${PLAY_RATE}`)
-    if (isDev) {
+    console.log(`待機時間:${arg.wait}`)
+    console.log(`推定初手正解率:${arg.per}`)
+    console.log(`ビデオの再生倍率:${arg.rate}`)
+    if (arg.dev) {
         console.log("開発者モード状態です")
     }
 

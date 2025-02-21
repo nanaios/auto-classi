@@ -8,5 +8,7 @@ esbuild.build({
     format: "esm",
     packages: "external",
     minify: true,
-    charset: "utf8"
+    charset: "utf8",
+    treeShaking: true,
+    sourcemap: true
 })

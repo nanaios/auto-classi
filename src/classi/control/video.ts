@@ -1,9 +1,10 @@
 import type { ElementHandle, Page } from "puppeteer-core";
-import { copyPage, getStudyProgramName, isChecked, wait } from "../utilitys/utility";
+import { copyPage, isChecked, wait } from "@/utilitys";
 import { addPlayingVideoCount } from "./classi";
-import { bringContorolPage, isSkipVideo, PLAY_RATE } from "./status";
-import { waitForTransition } from "./clickButton";
-import { status } from "./status";
+import { bringContorolPage } from "@/classi";
+import { waitForTransition } from "@/utilitys/utility";
+import { arg, status } from "../status";
+import { getStudyProgramName } from "./studyPrograms";
 
 interface VideoData {
     index: number,
@@ -12,6 +13,11 @@ interface VideoData {
 
 const videoPages: Page[] = []
 const finishVideoDatas: (VideoData | null)[] = []
+
+export async function isVideoPrograms(list: ElementHandle<HTMLElement>) {
+    const icon = await list.$(".fa-film")
+    return Boolean(icon)
+}
 
 export async function clearVideoQueue() {
     const indexs: number[] = []
@@ -44,7 +50,7 @@ export async function clearVideoQueue() {
 
 export async function playVideo(page: Page, index: number, list: ElementHandle<HTMLElement>) {
     const name = await getStudyProgramName(list)
-    if (await isChecked(list) || isSkipVideo) {
+    if (await isChecked(list) || arg.skipVideo) {
         console.log(`\nビデオ[name:${name}]は再生済みのためスキップします\n`)
         return
     }
@@ -88,7 +94,7 @@ export async function playVideo(page: Page, index: number, list: ElementHandle<H
                 res()
             }
         })
-    }, index, PLAY_RATE)
+    }, index, arg.rate)
 
     await wait()
     status.videoIndex++

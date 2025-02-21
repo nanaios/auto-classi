@@ -1,43 +1,56 @@
 #!/usr/bin/env node
-import { isDev, main, TIMEOUT } from "@/classi";
+import { arg, main, setArg } from "@/classi";
 import { exec } from 'child_process';
 import packageJson from "../package.json"
 import { config, configJson } from "./config";
 import iconv from "iconv-lite";
+import cac from "cac"
 
 const DEFAULT_CHROME_PATHS: { [x in NodeJS.Platform]?: string } = {
     win32: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
     darwin: "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 }
 
-async function cli() {
-    switch (process.argv[2]) {
-        case "run": {
-            await main(packageJson.version)
-            break;
-        }
-        case "open": {
-            openChrome()
-            break
-        }
-        case "config": {
-            config()
-            break
-        }
-        case "--version": {
-            console.log(`v${packageJson.version}`)
-            break
-        }
-        default: {
-            console.error("Error:不明なコマンドです")
-            break;
-        }
-    }
+const cli = cac()
+
+cli.option("--dev", "開発者モードでコマンドを実行する", { default: false })
+
+cli.command("run", "AutoClassiの起動")
+    .option("--rate <rate>", "ビデオの再生倍率", { default: 1 })
+    .option("--wait <wait>", "待機時間", { default: 500 })
+    .option("--per <per>", "推定初手正解率", { default: 100 })
+    .option("--skip-video", "ビデオを飛ばすかどうか", { default: false })
+    .action(async (inputs) => {
+        setArg(inputs)
+        await main(packageJson.version)
+    })
+
+cli.command("open", "専用のChromeを開きます")
+    .option("--timeout <timeout>", "コマンド終了までの時間", { default: 2000 })
+    .action(async (input) => {
+        await openChrome(input)
+    })
+
+cli.command("config <name>", "configを操作します")
+    .action(input => {
+        config(input)
+    })
+
+cli.help()
+cli.version(packageJson.version);
+cli.name = "AutoClassi"
+
+
+try {
+    cli.parse();
+} catch (error) {
+    console.log("Error:不明なコマンド及び引数")
+    process.exit(1)
 }
 
-async function openChrome() {
-    const path = configJson[process.platform + "-chrome-path"] || DEFAULT_CHROME_PATHS[process.platform]
-    if (isDev) {
+async function openChrome(arg: any) {
+    const path = configJson["chrome-path"] || DEFAULT_CHROME_PATHS[process.platform]
+    if (arg.dev) {
         console.log(`chrome path="${path}"`)
     }
 
@@ -50,7 +63,5 @@ async function openChrome() {
 
     setTimeout(() => {
         process.exit()
-    }, TIMEOUT)
+    }, arg.timeout)
 }
-
-await cli()
