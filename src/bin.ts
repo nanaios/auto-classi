@@ -5,6 +5,7 @@ import packageJson from "../package.json"
 import { config, configJson } from "./config";
 import iconv from "iconv-lite";
 import cac from "cac"
+import { inti } from "./init";
 
 const DEFAULT_CHROME_PATHS: { [x in NodeJS.Platform]?: string } = {
     win32: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
@@ -39,6 +40,11 @@ cli.command("config <name>", "configを操作します")
     .option("--clear", "指定した名前のconfigをリセットします", { default: false })
     .action((name, options) => {
         config(name, options)
+    })
+
+cli.command("init", "初期設定をします")
+    .action(async () => {
+        await inti()
     })
 
 

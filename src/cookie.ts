@@ -1,7 +1,6 @@
 import fs from "fs"
 import path from "path"
 import type { Page } from "puppeteer"
-import puppeteer from "puppeteer"
 
 const cookiePath = path.join(process.argv[1], "../../", "cookie.json")
 
