@@ -20,7 +20,7 @@ function showConfig(name: string) {
     console.log(`${name}="${configJson[name]}"`)
 }
 
-function setConfig(name: string, value: string) {
+export function setConfig(name: string, value: string) {
     configJson[name] = value
     const json = JSON.stringify(configJson)
     fs.writeFileSync(configPath, json)
