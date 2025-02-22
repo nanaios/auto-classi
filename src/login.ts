@@ -1,25 +1,11 @@
 import puppeteer, { type Page } from "puppeteer";
-import { checkElement, wait, waitForTransition } from "./utilitys";
+import { checkElement, log, wait } from "./utilitys";
+import { saveCookie } from "./cookie";
+import { configJson } from "./config";
 
 const LOGIN_URL = "https://id.classi.jp/login/identifier"
-const LOGIN_EMAIL = "f2024121@kawasaki.kst-h.ed.jp"
-const LOGIN_PASSWORD = "#Oq8Fa7#"
-
-async function clickNextButton(page: Page) {
-    const buttons = await page.$$("button")
-    const buttonIndex = await page.$$eval("button", buttons => {
-        let i = -1
-        buttons.forEach((button, index) => {
-            if (button.innerText === "次へ") {
-                i = index
-            }
-        })
-        return i
-    })
-    const button = buttons[buttonIndex]
-
-    await button.click()
-}
+const LOGIN_EMAIL = configJson["login-email"]
+const LOGIN_PASSWORD = configJson["login-password"]
 
 export async function login() {
 
@@ -46,19 +32,33 @@ export async function login() {
         await button.click()
     ])
 
+    await popup.bringToFront()
+
     const emailInput = checkElement(await popup.$("input[type=email]"))
 
     await emailInput.type(LOGIN_EMAIL)
+    log("メールアドレス入力")
     await emailInput.press("Enter")
 
     await popup.waitForSelector("input[type=password]")
+    await wait(5000)
 
     const passwordInput = checkElement(await popup.$("input[type=password]"))
     await wait()
     await passwordInput.type(LOGIN_PASSWORD)
+    log("パスワード入力")
     await wait()
     await passwordInput.press("Enter")
 
-    await page.waitForNavigation({ waitUntil: ['load', 'networkidle2'] })
+    await page.bringToFront()
 
+    await page.waitForNavigation({ waitUntil: ['load', 'networkidle2'] })
+    log("ログイン成功")
+    await wait()
+
+    await saveCookie(page)
+    log("cookie保存成功")
+    await wait()
+
+    await page.close()
 }

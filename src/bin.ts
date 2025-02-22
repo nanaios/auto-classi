@@ -5,7 +5,6 @@ import packageJson from "../package.json"
 import { config, configJson } from "./config";
 import iconv from "iconv-lite";
 import cac from "cac"
-import { login } from "./login";
 
 const DEFAULT_CHROME_PATHS: { [x in NodeJS.Platform]?: string } = {
     win32: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
@@ -26,7 +25,7 @@ cli.command("run", "AutoClassiの起動")
     .option("--load-cookie", "cookieを読み込むかどうか", { default: false })
     .action(async (inputs) => {
         setArg(inputs)
-        await main(packageJson.version, inputs)
+        await main(packageJson.version)
     })
 
 cli.command("open", "専用のChromeを開きます")
@@ -42,12 +41,6 @@ cli.command("config <name>", "configを操作します")
         config(name, options)
     })
 
-cli.command("login", "classiにloginします")
-    .option("--wait <wait>", "待機時間", { default: 5000 })
-    .action(async (inputs) => {
-        setArg(inputs)
-        await login()
-    })
 
 cli.help()
 cli.version(packageJson.version);
