@@ -1,5 +1,5 @@
 import { wait } from "@/utilitys"
-import type { ElementHandle, Page } from "puppeteer-core"
+import type { ElementHandle, Page } from "puppeteer"
 import { solveQuestion } from "@/classi/answer"
 import { playVideo, clearVideoQueue, isVideoPrograms } from "./video"
 import { status } from "@/classi"

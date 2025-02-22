@@ -1,26 +1,34 @@
-import puppeteer from "puppeteer-core"
+import puppeteer from "puppeteer"
 import { wait, waitForTransition } from "@/utilitys"
 import { clearVideoQueue } from "./video";
 import { checkFinish, setControlingPage, showProgramStatus, status } from "@/classi";
 import { getAssignments, solveAssignment } from "./assignment";
+import { loadCookie } from "@/cookie";
+import { login } from "@/login";
+
+const basePageUrl = "https://video.classi.jp/student/challenge_delivery_history/challenge_delivery_history_school_in_studying"
 
 export function addPlayingVideoCount(value: number) {
     status.playingVideoCount += value
 }
 export async function main(vewsion: string) {
-    const browser = await puppeteer.connect({
-        browserURL: 'http://127.0.0.1:9222'
-    });
 
+    await login()
+    await wait()
+
+    const browser = await puppeteer.launch({ headless: true })
     const pageList = await browser.pages();
 
     const page = pageList[0];
     await page.bringToFront();
     setControlingPage(page)
 
-    const basePageUrl = page.url()
-
+    await loadCookie(page)
     await wait()
+
+    await page.goto(basePageUrl, { waitUntil: ['load', 'networkidle2'] })
+    await wait()
+
     console.log(`AutoClassi v${vewsion}`)
     showProgramStatus()
 

@@ -1,4 +1,4 @@
-import type { Page } from "puppeteer-core"
+import type { Page } from "puppeteer"
 export const status = {
     questionCount: 0,
     correctAnswerFirstCount: 0,
@@ -16,6 +16,7 @@ interface Arg {
     wait: number
     per: number
     skipVideo: boolean
+    log: boolean
 }
 
 export let arg: Arg

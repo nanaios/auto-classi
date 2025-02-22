@@ -6,22 +6,13 @@
 
 ## 注意
 **事前にnode.jsをインストールする必要があります。ご注意ください。**  
-**Chromeを複数開いていると上手く作動しない場合があります。Chromeをすべて閉じたうえでもう一度試してください。**
 
 ## 使い方
-1. コンソール（PowerShell等）を開き、下記のコマンドを入力し実行します。  
-```bash
-npm install -g auto-classi
-```
-2. 下記のコマンドを入力して実行します。これによりChromeが開かれます。
-```bash
-autoclassi open
-```
-3. 開かれたChromeで、Classiにログインし先生課題の欄を開きます。取り組み中の欄を開いておいてください。
-4. 下記のコマンドで自動操作が始まります。
-```bash
-autoclassi run
-```
+1. コンソール（PowerShell等）を開き、`npm install -g auto-classi`を入力し実行します。  
+2. `autoclassi init`を実行して、Googleログインに使うメールアドレスとパスワードをセットしてください。
+3. `autoclassi run`で自動操作が始まります。
 
-## コマンドについて
-各コマンドは
+## configについて
+AutoClassiでは、`autoclassi config`コマンドで各設定の値を表示、変更できます。<br>
+例：`autoclassi config chrome-path` =>　コンフィグの"chrome-path"の値を表示<br>
+例：`autoclassi config chrome-path --value="your\chrome\path"` =>　コンフィグの"chrome-path"の値を変更
