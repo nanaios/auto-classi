@@ -1,4 +1,4 @@
-import puppeteer from "puppeteer-core"
+import puppeteer from "puppeteer"
 import { wait, waitForTransition } from "@/utilitys"
 import { clearVideoQueue } from "./video";
 import { checkFinish, setControlingPage, showProgramStatus, status } from "@/classi";

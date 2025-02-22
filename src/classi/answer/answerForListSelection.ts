@@ -1,4 +1,4 @@
-import type { ElementHandle, Page } from "puppeteer-core";
+import type { ElementHandle, Page } from "puppeteer";
 import { formatClassiAns, random, wait } from "../../utilitys/utility";
 
 export async function isListSelection(page: Page) {

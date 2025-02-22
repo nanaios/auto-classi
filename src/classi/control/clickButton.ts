@@ -1,5 +1,5 @@
 import { waitForTransition } from "@/utilitys/utility"
-import type { Page } from "puppeteer-core"
+import type { Page } from "puppeteer"
 
 export async function clickSubmitButton(page: Page) {
     const button = await page.$$(".navt-btn, .submit-button")

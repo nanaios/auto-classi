@@ -1,4 +1,4 @@
-import type { ElementHandle, Page } from "puppeteer-core";
+import type { ElementHandle, Page } from "puppeteer";
 import { copyPage, isChecked, wait } from "@/utilitys";
 import { addPlayingVideoCount } from "./classi";
 import { bringContorolPage } from "@/classi";

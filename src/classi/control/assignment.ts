@@ -1,5 +1,5 @@
 import { wait, waitForTransition } from "@/utilitys";
-import type { Page } from "puppeteer-core";
+import type { Page } from "puppeteer";
 import { clickStartAssignmentButton, clickLeftButton } from "./clickButton";
 import { getLectures, getLectureName, solveLectures } from "./lecture";
 async function getAssignmentName(page: Page) {

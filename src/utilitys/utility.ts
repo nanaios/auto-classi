@@ -1,4 +1,4 @@
-import type { Page, ElementHandle } from "puppeteer-core";
+import type { Page, ElementHandle } from "puppeteer";
 import { arg } from "@/classi";
 
 export function wait(ms: number = arg.wait) {
