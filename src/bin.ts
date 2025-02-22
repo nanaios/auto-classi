@@ -5,6 +5,7 @@ import packageJson from "../package.json"
 import { config, configJson } from "./config";
 import iconv from "iconv-lite";
 import cac from "cac"
+import { login } from "./login";
 
 const DEFAULT_CHROME_PATHS: { [x in NodeJS.Platform]?: string } = {
     win32: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
@@ -14,15 +15,18 @@ const DEFAULT_CHROME_PATHS: { [x in NodeJS.Platform]?: string } = {
 const cli = cac()
 
 cli.option("--dev", "開発者モードでコマンドを実行する", { default: false })
+cli.option("--log", "詳細なログを出力します", { default: false })
 
 cli.command("run", "AutoClassiの起動")
     .option("--rate <rate>", "ビデオの再生倍率", { default: 1 })
     .option("--wait <wait>", "待機時間", { default: 500 })
     .option("--per <per>", "推定初手正解率", { default: 100 })
-    .option("---skip-video", "ビデオを飛ばすかどうか", { default: false })
+    .option("--skip-video", "ビデオを飛ばすかどうか", { default: false })
+    .option("--set-cookie", "cookieを保存するかどうか", { default: true })
+    .option("--load-cookie", "cookieを読み込むかどうか", { default: false })
     .action(async (inputs) => {
         setArg(inputs)
-        await main(packageJson.version)
+        await main(packageJson.version, inputs)
     })
 
 cli.command("open", "専用のChromeを開きます")
@@ -38,13 +42,20 @@ cli.command("config <name>", "configを操作します")
         config(name, options)
     })
 
+cli.command("login", "classiにloginします")
+    .option("--wait <wait>", "待機時間", { default: 5000 })
+    .action(async (inputs) => {
+        setArg(inputs)
+        await login()
+    })
+
 cli.help()
 cli.version(packageJson.version);
 cli.name = "AutoClassi"
 
 
 try {
-    cli.parse();
+    cli.parse()
 } catch (error) {
     console.log("Error:不明なコマンド及び引数")
     process.exit(1)

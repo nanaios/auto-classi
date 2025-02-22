@@ -38,7 +38,21 @@ export async function isChecked(list: ElementHandle<HTMLElement>) {
 
 export async function waitForTransition<T extends Element>(page: Page, element: ElementHandle<T>) {
     await Promise.all([
-        await element.click(),
-        await page.waitForNavigation({ waitUntil: ['load', 'networkidle2'] })
+        element.click(),
+        page.waitForNavigation({ waitUntil: ['load', 'networkidle2'] })
     ])
+}
+
+export function checkElement<T extends HTMLElement>(element: ElementHandle<T> | null) {
+    if (element) {
+        return element
+    } else {
+        throw new Error("elementが存在しません")
+    }
+}
+
+export function log(msg: string) {
+    if (arg.log || arg.dev) {
+        console.log(msg)
+    }
 }

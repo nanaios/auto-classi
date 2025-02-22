@@ -3,11 +3,15 @@ import { wait, waitForTransition } from "@/utilitys"
 import { clearVideoQueue } from "./video";
 import { checkFinish, setControlingPage, showProgramStatus, status } from "@/classi";
 import { getAssignments, solveAssignment } from "./assignment";
+import { cookie } from "@/cookie";
 
 export function addPlayingVideoCount(value: number) {
     status.playingVideoCount += value
 }
-export async function main(vewsion: string) {
+export async function main(vewsion: string, inputs: any) {
+
+
+
     const browser = await puppeteer.connect({
         browserURL: 'http://127.0.0.1:9222'
     });
@@ -19,6 +23,10 @@ export async function main(vewsion: string) {
     setControlingPage(page)
 
     const basePageUrl = page.url()
+
+    await cookie(page, inputs, basePageUrl)
+
+    return 0
 
     await wait()
     console.log(`AutoClassi v${vewsion}`)

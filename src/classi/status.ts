@@ -16,6 +16,7 @@ interface Arg {
     wait: number
     per: number
     skipVideo: boolean
+    log: boolean
 }
 
 export let arg: Arg
