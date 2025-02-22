@@ -19,7 +19,7 @@ cli.command("run", "AutoClassiの起動")
     .option("--rate <rate>", "ビデオの再生倍率", { default: 1 })
     .option("--wait <wait>", "待機時間", { default: 500 })
     .option("--per <per>", "推定初手正解率", { default: 100 })
-    .option("--skip-video", "ビデオを飛ばすかどうか", { default: false })
+    .option("---skip-video", "ビデオを飛ばすかどうか", { default: false })
     .action(async (inputs) => {
         setArg(inputs)
         await main(packageJson.version)
@@ -32,8 +32,10 @@ cli.command("open", "専用のChromeを開きます")
     })
 
 cli.command("config <name>", "configを操作します")
-    .action(input => {
-        config(input)
+    .option("--value <value>", "指定した名前のconfigに値をセットします", { default: undefined })
+    .option("--clear", "指定した名前のconfigをリセットします", { default: false })
+    .action((name, options) => {
+        config(name, options)
     })
 
 cli.help()
