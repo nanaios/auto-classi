@@ -4,11 +4,13 @@ import path from "path"
 const configPath = path.join(process.argv[1], "../../", "config.json")
 export const configJson = JSON.parse(fs.readFileSync(configPath, "utf-8"))
 
-export function config(arg: string) {
-    const name = arg.split("=")[0]
-    const value = arg.split("=")[1]
-    if (typeof value === "string") {
-        setConfig(name, value)
+export function config(name: string, options: any) {
+    if (options.clear) {
+        setConfig(name, "")
+        return
+    }
+    if (options.value) {
+        setConfig(name, options.value)
     } else {
         showConfig(name)
     }
