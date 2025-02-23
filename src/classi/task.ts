@@ -1,13 +1,14 @@
 import type { ElementHandle, Page } from "puppeteer";
-import { detailedLog } from "../utility";
+import { detailedLog, getElement, wait, waitForClickTransition } from "../utility";
+import { solveLectures } from "./lecture";
 
 const solvedTaskNames: string[] = []
 
-export async function getTaskName(element: ElementHandle<HTMLElement>) {
+async function getTaskName(element: ElementHandle<HTMLElement>) {
     return element.$eval("p.subject", p => p.innerText)
 }
 
-export async function* getTasks(page: Page) {
+async function* getTasks(page: Page) {
     //最初に課題を取得するための変数
     const tasks = await page.$$(".task-list > a")
     let i: number, k: number
@@ -29,9 +30,37 @@ export async function* getTasks(page: Page) {
             } else {
                 detailedLog(`\n未回答の課題[name:${name}]を発見しました\n`)
                 solvedTaskNames.push(name)
-                yield tasks[k]
                 break
             }
         }
+        yield tasks[k]
+    }
+}
+
+async function solveTask(page: Page, task: ElementHandle<HTMLElement>) {
+    const name = await getTaskName(task)
+    console.log(`課題[name:${name}]の解答を開始`)
+
+    //課題の詳細ページへ遷移
+    await waitForClickTransition(page, task)
+    await wait()
+
+    //"課題に取り組む"ボタンを押す
+    const startTaskButton = await getElement(page, ".right > a.navy-btn")
+    await waitForClickTransition(page, startTaskButton)
+    await wait()
+
+    await solveLectures(page)
+}
+
+export async function solveTasks(page: Page, url: string) {
+    for await (const task of getTasks(page)) {
+        //課題の解答を開始
+        await solveTask(page, task);
+        await wait()
+
+        //元のページへ戻る
+        await page.goto(url, { waitUntil: ['load', 'networkidle2'] })
+        await wait()
     }
 }

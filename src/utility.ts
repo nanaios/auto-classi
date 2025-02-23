@@ -1,4 +1,4 @@
-import type { ElementHandle, Page } from "puppeteer";
+import { ElementHandle, Page } from "puppeteer";
 
 let isDetailedLog = false
 DEV: isDetailedLog = true
@@ -9,8 +9,24 @@ export async function getElement<S extends string>(parent: Page | ElementHandle<
     return element
 }
 
+export async function waitForClickTransition(page: Page, element: ElementHandle<HTMLElement>) {
+    Promise.all([
+        element.click(),
+        page.waitForNavigation({ waitUntil: ['load', 'networkidle2'] })
+    ])
+}
+
 export function detailedLog(data: any) {
     if (isDetailedLog) {
         console.log(data)
     }
+}
+
+export async function wait(ms: number = 500) {
+    return new Promise<void>(res => {
+        const id = setTimeout(() => {
+            clearTimeout(id)
+            res()
+        }, ms)
+    })
 }
