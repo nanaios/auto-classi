@@ -1,5 +1,5 @@
 import type { Page } from "puppeteer"
-import { wait, formatClassiAns } from "../../utilitys/utility"
+import { wait, formatClassiAns, log } from "@/utilitys"
 
 export async function isMultiInput(page: Page) {
     const correct = await page.$$(".spen-mod-input-label-list > li")
@@ -11,7 +11,7 @@ export async function getAnswerForMultiInput(page: Page) {
         return element.innerText
     }))
     const formatAnswers = answers.map(answer => formatClassiAns(answer))
-    console.info(`答え:${formatAnswers}`)
+    log(`答え:${formatAnswers}`)
     return formatAnswers
 }
 

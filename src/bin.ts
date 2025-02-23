@@ -6,6 +6,7 @@ import { config, configJson } from "./config";
 import iconv from "iconv-lite";
 import cac from "cac"
 import { inti } from "./init";
+import { log } from "./utilitys";
 
 const DEFAULT_CHROME_PATHS: { [x in NodeJS.Platform]?: string } = {
     win32: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
@@ -56,19 +57,19 @@ cli.name = "AutoClassi"
 try {
     cli.parse()
 } catch (error) {
-    console.info("Error:不明なコマンド及び引数")
+    log("Error:不明なコマンド及び引数")
     process.exit(1)
 }
 
 async function openChrome(arg: any) {
     const path = configJson["chrome-path"] || DEFAULT_CHROME_PATHS[process.platform]
     if (arg.dev) {
-        console.info(`chrome path="${path}"`)
+        log(`chrome path="${path}"`)
     }
 
     //@ts-ignore
     exec(`"${path}" --remote-debugging-port=9222`, { encoding: 'Shift_JIS' }, (_: any, __: any, stderr: Buffer) => {
-        console.info(iconv.decode(stderr, "Shift_JIS"))
+        log(iconv.decode(stderr, "Shift_JIS"))
         process.exit(1)
     }
     )

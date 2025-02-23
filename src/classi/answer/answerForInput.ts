@@ -1,5 +1,5 @@
 import type { Page } from "puppeteer";
-import { formatClassiAns } from "../../utilitys/utility";
+import { formatClassiAns, log } from "@/utilitys";
 
 export async function isInput(page: Page) {
     const correct = await page.$$(".spen-mod-input-label-list > li")
@@ -12,6 +12,6 @@ export async function setAnswerForInput(page: Page, answer: string) {
 export async function getAnswerForInput(page: Page) {
     const rawAnswer = await page.$eval(".answer-inner > div.content > div > dl > dd", element => element.innerText)
     const answer = formatClassiAns(rawAnswer)
-    console.info(`答え:${answer}`)
+    log(`答え:${answer}`)
     return answer
 }

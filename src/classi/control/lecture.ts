@@ -1,4 +1,4 @@
-import { wait } from "@/utilitys"
+import { log, wait } from "@/utilitys"
 import type { ElementHandle, Page } from "puppeteer"
 import { solveQuestion } from "@/classi/answer"
 import { playVideo, clearVideoQueue, isVideoPrograms } from "./video"
@@ -7,7 +7,7 @@ import { getStudyPrograms, isStudyPrograms } from "./studyPrograms"
 
 export async function* getLectures(page: Page) {
     const lectures = await page.$$(".task-list > a")
-    console.info(`合計講義数：${lectures.length}個`)
+    log(`合計講義数：${lectures.length}個`)
     for (let i = 0; i < lectures.length; i++) {
         const lectures = await page.$$(".task-list > a")
         yield lectures[i]

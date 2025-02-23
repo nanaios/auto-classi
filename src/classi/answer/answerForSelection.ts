@@ -1,5 +1,5 @@
 import type { Page } from "puppeteer"
-import { formatClassiAns, random, wait } from "../../utilitys/utility"
+import { formatClassiAns, log, random, wait } from "@/utilitys"
 
 export async function setAnswerForSelection(page: Page, answers: string[]) {
     const inputs = await page.$$(".checkbox")
@@ -21,7 +21,7 @@ export async function getAnswerForSelection(page: Page) {
     const answer = await page.$$eval(".answer-inner > div.content > ul.spen-mod-label-text-list > li > dl.clearfix > dd", elements => {
         return elements.map(element => element.innerText)
     })
-    console.info(`答え:${answer}`)
+    log(`答え:${answer}`)
     return answer
 }
 

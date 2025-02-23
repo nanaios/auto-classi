@@ -1,3 +1,4 @@
+import { log } from "@/utilitys"
 import type { Page } from "puppeteer"
 export const status = {
     questionCount: 0,
@@ -33,22 +34,22 @@ export async function bringContorolPage() {
 }
 
 export function showProgramStatus() {
-    console.info(`待機時間:${arg.wait}`)
-    console.info(`推定初手正解率:${arg.per}`)
-    console.info(`ビデオの再生倍率:${arg.rate}`)
+    log(`待機時間:${arg.wait}`)
+    log(`推定初手正解率:${arg.per}`)
+    log(`ビデオの再生倍率:${arg.rate}`)
     console.log("開発者モードです")
 }
 
 export function checkFinish() {
     const { correctAnswerFirstCount, notCorrectAnswerFirstCount, questionCount, videoIndex } = status
-    console.info(`解答した問題数:${questionCount}個`)
+    log(`解答した問題数:${questionCount}個`)
     if (questionCount !== 0) {
-        console.info(`初手正解率:${correctAnswerFirstCount / questionCount * 100}%`)
-        console.info(`初手不正解率:${notCorrectAnswerFirstCount / questionCount * 100}%`)
+        log(`初手正解率:${correctAnswerFirstCount / questionCount * 100}%`)
+        log(`初手不正解率:${notCorrectAnswerFirstCount / questionCount * 100}%`)
     }
-    console.info(`再生したビデオ数:${videoIndex}個`)
+    log(`再生したビデオ数:${videoIndex}個`)
 
-    console.info("AutoClassiを終了します")
+    log("AutoClassiを終了します")
     process.exit(0)
 
 }

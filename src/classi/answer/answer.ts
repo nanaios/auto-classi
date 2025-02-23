@@ -4,7 +4,7 @@ import { getAnswerForListSelection, isListSelection, setAnswerForList } from "./
 import { getAnswerForMultiInput, isMultiInput, setAnswerForMultiInput } from "./answerForMultiInput";
 import { getAnswerForSelection, isSelection, setAnswerForSelection } from "./answerForSelection";
 import { isSelf, setAnswerForSelf } from "./answerForSelf";
-import { copyPage, isChecked, isCorrectProgram, random, wait, waitForTransition } from "@/utilitys";
+import { copyPage, isChecked, isCorrectProgram, log, random, wait, waitForTransition } from "@/utilitys";
 import { clickSubmitButton, clickFinishButton } from "../control/clickButton";
 import { arg, setControlingPage, status } from "@/classi";
 import { getStudyProgramName } from "../control/studyPrograms";
@@ -37,13 +37,13 @@ export async function getAnswer(page: Page, data: AnswerData, type: AnswerType |
             }
         }
     } catch (error) {
-        console.info(error)
+        log(error)
     }
     await wait()
 }
 
 export async function setAnswer(page: Page, data: AnswerData, type: AnswerType | undefined) {
-    console.info("答えをセットします")
+    log("答えをセットします")
     try {
         switch (type) {
             case "input": {
@@ -64,7 +64,7 @@ export async function setAnswer(page: Page, data: AnswerData, type: AnswerType |
             }
         }
     } catch (error) {
-        console.info(error)
+        log(error)
     }
     await wait()
 }
@@ -80,11 +80,11 @@ export async function getAnswerType(page: Page): Promise<AnswerType | undefined>
 export async function solveQuestion(page: Page, list: ElementHandle<HTMLElement>) {
     const name = await getStudyProgramName(list)
     if (await isChecked(list) && await isCorrectProgram(list)) {
-        console.info(`\n設問[name:${name}]は正解済みなのでスキップします\n`)
+        log(`\n設問[name:${name}]は正解済みなのでスキップします\n`)
         return
     }
 
-    console.info(`\n設問[name:${name}]の解答を開始`)
+    log(`\n設問[name:${name}]の解答を開始`)
     status.questionCount++
 
     await waitForTransition(page, list)
@@ -96,7 +96,7 @@ export async function solveQuestion(page: Page, list: ElementHandle<HTMLElement>
     await wait()
 
     const answerType = await getAnswerType(newPage)
-    console.info(`問題タイプ：${answerType}`)
+    log(`問題タイプ：${answerType}`)
 
     await clickSubmitButton(newPage)
     await wait()
@@ -112,11 +112,11 @@ export async function solveQuestion(page: Page, list: ElementHandle<HTMLElement>
     const rans = random(100) + 1
 
     if (rans <= arg.per) {
-        console.info(`(1d100<=${arg.per}) > ${rans} > 成功`)
+        log(`(1d100<=${arg.per}) > ${rans} > 成功`)
         status.correctAnswerFirstCount++
     } else {
-        console.info(`(1d100<=${arg.per}) > ${rans} > 失敗`)
-        console.info("初手の解答を不正解にします")
+        log(`(1d100<=${arg.per}) > ${rans} > 失敗`)
+        log("初手の解答を不正解にします")
         try {
             if (answerType === "self") {
                 await setAnswerForSelf(newPage, false)
@@ -124,11 +124,11 @@ export async function solveQuestion(page: Page, list: ElementHandle<HTMLElement>
             } else {
                 await clickFinishButton(newPage)
             }
-            console.info("初手の解答を終了しました")
+            log("初手の解答を終了しました")
             status.notCorrectAnswerFirstCount++
             await wait()
         } catch (error) {
-            console.info(error)
+            log(error)
         }
     }
 
@@ -148,10 +148,10 @@ export async function solveQuestion(page: Page, list: ElementHandle<HTMLElement>
             await wait()
 
         } catch (e) {
-            console.info(e)
+            log(e)
         }
 
-        console.info(`設問[name:${name}]の解答を終了`)
+        log(`設問[name:${name}]の解答を終了`)
         await clickFinishButton(page)
         await wait()
         return
@@ -163,6 +163,6 @@ export async function solveQuestion(page: Page, list: ElementHandle<HTMLElement>
     await wait()
 
     await clickFinishButton(page)
-    console.info(`設問[name:${name}]の解答を終了`)
+    log(`設問[name:${name}]の解答を終了`)
     await wait()
 }
