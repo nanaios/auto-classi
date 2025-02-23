@@ -1,5 +1,7 @@
 import * as esbuild from "esbuild"
 
+const isProduction = process.argv[2] === "production"
+
 esbuild.build({
     entryPoints: ["src/bin.ts"],
     outfile: "dist/bin.js",
@@ -11,4 +13,6 @@ esbuild.build({
     charset: "utf8",
     treeShaking: true,
     sourcemap: true,
+    dropLabels: isProduction ? ["DEV"] : [],
+    pure: ["console.log"]
 })
