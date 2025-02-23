@@ -11,8 +11,8 @@ export async function getElement<S extends string>(parent: Page | ElementHandle<
 
 export async function waitForClickTransition(page: Page, element: ElementHandle<HTMLElement>) {
     Promise.all([
-        element.click(),
-        page.waitForNavigation({ waitUntil: ['load', 'networkidle2'] })
+        await element.click(),
+        await page.waitForNavigation({ waitUntil: ['load', 'networkidle2', 'domcontentloaded'] })
     ])
 }
 

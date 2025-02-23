@@ -20,9 +20,9 @@ async function solveContent(page: Page, content: ElementHandle<HTMLElement>) {
     const name = await getContentName(content)
     console.log(`\n要素[name:${name}]の解答を開始`)
     if (await isVideoContent(content)) {
-        await solveStudyContent(page, content)
-    } else if (await isStudyContent(content)) {
 
+    } else if (await isStudyContent(content)) {
+        await solveStudyContent(page, content)
     }
     console.log(`要素[name:${name}]の解答を終了\n`)
 }
@@ -30,6 +30,6 @@ async function solveContent(page: Page, content: ElementHandle<HTMLElement>) {
 export async function solveContents(page: Page) {
     for await (const content of getContents(page)) {
         //要素の解答を開始
-        solveContent(page, content)
+        await solveContent(page, content)
     }
 }

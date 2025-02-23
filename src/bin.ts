@@ -12,4 +12,5 @@ const page = pages[0]
 
 const BASE_URL = page.url()
 
+console.log("AutoClassi起動")
 await solveTasks(page, BASE_URL)
