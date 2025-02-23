@@ -15,7 +15,7 @@ export async function getAnswerForListSelection(page: Page) {
         })
     })
     const formatAnswers = answerStrings.map(answer => formatClassiAns(answer))
-    console.log(`答え:${formatAnswers}`)
+    console.info(`答え:${formatAnswers}`)
     return formatAnswers
 }
 
@@ -35,7 +35,7 @@ async function setAnswerForUl(list: ElementHandle<HTMLElement>, answer: string) 
     const optionList = await list.$("li > div.image-select-box > ul.option-list")
     if (!optionList) throw new Error("optionListが存在しません!");
     const options = (await optionList.$$eval("li", elements => elements.map(element => element.innerText))).map(option => formatClassiAns(option))
-    //console.log(options)
+    //console.info(options)
     const lists = await optionList.$$("li")
     await lists[options.indexOf(answer)].click()
 }

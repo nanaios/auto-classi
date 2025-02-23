@@ -9,6 +9,6 @@ export async function inti() {
     setConfig("login-email", email)
     const password = await rl.question("Googleログイン用Password:")
     setConfig("login-password", password)
-    console.log("configをセットしました")
+    console.info("configをセットしました")
     process.exit(0)
 }

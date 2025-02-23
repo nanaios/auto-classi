@@ -7,7 +7,7 @@ import { getStudyPrograms, isStudyPrograms } from "./studyPrograms"
 
 export async function* getLectures(page: Page) {
     const lectures = await page.$$(".task-list > a")
-    console.log(`合計講義数：${lectures.length}個`)
+    console.info(`合計講義数：${lectures.length}個`)
     for (let i = 0; i < lectures.length; i++) {
         const lectures = await page.$$(".task-list > a")
         yield lectures[i]

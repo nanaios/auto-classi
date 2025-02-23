@@ -37,13 +37,13 @@ export async function getAnswer(page: Page, data: AnswerData, type: AnswerType |
             }
         }
     } catch (error) {
-        console.log(error)
+        console.info(error)
     }
     await wait()
 }
 
 export async function setAnswer(page: Page, data: AnswerData, type: AnswerType | undefined) {
-    console.log("答えをセットします")
+    console.info("答えをセットします")
     try {
         switch (type) {
             case "input": {
@@ -64,7 +64,7 @@ export async function setAnswer(page: Page, data: AnswerData, type: AnswerType |
             }
         }
     } catch (error) {
-        console.log(error)
+        console.info(error)
     }
     await wait()
 }
@@ -80,11 +80,11 @@ export async function getAnswerType(page: Page): Promise<AnswerType | undefined>
 export async function solveQuestion(page: Page, list: ElementHandle<HTMLElement>) {
     const name = await getStudyProgramName(list)
     if (await isChecked(list) && await isCorrectProgram(list)) {
-        console.log(`\n設問[name:${name}]は正解済みなのでスキップします\n`)
+        console.info(`\n設問[name:${name}]は正解済みなのでスキップします\n`)
         return
     }
 
-    console.log(`\n設問[name:${name}]の解答を開始`)
+    console.info(`\n設問[name:${name}]の解答を開始`)
     status.questionCount++
 
     await waitForTransition(page, list)
@@ -96,7 +96,7 @@ export async function solveQuestion(page: Page, list: ElementHandle<HTMLElement>
     await wait()
 
     const answerType = await getAnswerType(newPage)
-    console.log(`問題タイプ：${answerType}`)
+    console.info(`問題タイプ：${answerType}`)
 
     await clickSubmitButton(newPage)
     await wait()
@@ -112,11 +112,11 @@ export async function solveQuestion(page: Page, list: ElementHandle<HTMLElement>
     const rans = random(100) + 1
 
     if (rans <= arg.per) {
-        console.log(`(1d100<=${arg.per}) > ${rans} > 成功`)
+        console.info(`(1d100<=${arg.per}) > ${rans} > 成功`)
         status.correctAnswerFirstCount++
     } else {
-        console.log(`(1d100<=${arg.per}) > ${rans} > 失敗`)
-        console.log("初手の解答を不正解にします")
+        console.info(`(1d100<=${arg.per}) > ${rans} > 失敗`)
+        console.info("初手の解答を不正解にします")
         try {
             if (answerType === "self") {
                 await setAnswerForSelf(newPage, false)
@@ -124,11 +124,11 @@ export async function solveQuestion(page: Page, list: ElementHandle<HTMLElement>
             } else {
                 await clickFinishButton(newPage)
             }
-            console.log("初手の解答を終了しました")
+            console.info("初手の解答を終了しました")
             status.notCorrectAnswerFirstCount++
             await wait()
         } catch (error) {
-            console.log(error)
+            console.info(error)
         }
     }
 
@@ -148,10 +148,10 @@ export async function solveQuestion(page: Page, list: ElementHandle<HTMLElement>
             await wait()
 
         } catch (e) {
-            console.log(e)
+            console.info(e)
         }
 
-        console.log(`設問[name:${name}]の解答を終了`)
+        console.info(`設問[name:${name}]の解答を終了`)
         await clickFinishButton(page)
         await wait()
         return
@@ -163,6 +163,6 @@ export async function solveQuestion(page: Page, list: ElementHandle<HTMLElement>
     await wait()
 
     await clickFinishButton(page)
-    console.log(`設問[name:${name}]の解答を終了`)
+    console.info(`設問[name:${name}]の解答を終了`)
     await wait()
 }

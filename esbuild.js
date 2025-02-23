@@ -10,5 +10,5 @@ esbuild.build({
     minify: true,
     charset: "utf8",
     treeShaking: true,
-    sourcemap: true
+    sourcemap: true,
 })

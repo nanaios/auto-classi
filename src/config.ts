@@ -17,7 +17,7 @@ export function config(name: string, options: any) {
 }
 
 function showConfig(name: string) {
-    console.log(`${name}="${configJson[name]}"`)
+    console.info(`${name}="${configJson[name]}"`)
 }
 
 export function setConfig(name: string, value: string) {

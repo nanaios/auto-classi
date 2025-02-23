@@ -56,19 +56,19 @@ cli.name = "AutoClassi"
 try {
     cli.parse()
 } catch (error) {
-    console.log("Error:不明なコマンド及び引数")
+    console.info("Error:不明なコマンド及び引数")
     process.exit(1)
 }
 
 async function openChrome(arg: any) {
     const path = configJson["chrome-path"] || DEFAULT_CHROME_PATHS[process.platform]
     if (arg.dev) {
-        console.log(`chrome path="${path}"`)
+        console.info(`chrome path="${path}"`)
     }
 
     //@ts-ignore
     exec(`"${path}" --remote-debugging-port=9222`, { encoding: 'Shift_JIS' }, (_: any, __: any, stderr: Buffer) => {
-        console.log(iconv.decode(stderr, "Shift_JIS"))
+        console.info(iconv.decode(stderr, "Shift_JIS"))
         process.exit(1)
     }
     )

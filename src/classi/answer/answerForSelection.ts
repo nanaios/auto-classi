@@ -21,7 +21,7 @@ export async function getAnswerForSelection(page: Page) {
     const answer = await page.$$eval(".answer-inner > div.content > ul.spen-mod-label-text-list > li > dl.clearfix > dd", elements => {
         return elements.map(element => element.innerText)
     })
-    console.log(`答え:${answer}`)
+    console.info(`答え:${answer}`)
     return answer
 }
 

@@ -1,6 +1,8 @@
 import type { Page, ElementHandle } from "puppeteer";
 import { arg } from "@/classi";
 
+export const log = console.info
+
 export function wait(ms: number = arg.wait) {
     return new Promise<void>(res => {
         const id = setTimeout(() => {
@@ -25,13 +27,13 @@ export async function copyPage(page: Page) {
 }
 
 export async function isCorrectProgram(list: ElementHandle<HTMLElement>) {
-    if (arg.dev) return false
+    DEV: return false
     const correctIconSrc = await list.$eval("a > p > img", img => img.src)
     return !(correctIconSrc.includes("incorrect"))
 }
 
 export async function isChecked(list: ElementHandle<HTMLElement>) {
-    if (arg.dev) return false
+    DEV: return false
     const chekeMark = await list.$(".check-mark")
     return Boolean(chekeMark)
 }
@@ -48,11 +50,5 @@ export function checkElement<T extends HTMLElement>(element: ElementHandle<T> | 
         return element
     } else {
         throw new Error("elementが存在しません")
-    }
-}
-
-export function log(msg: string) {
-    if (arg.log || arg.dev) {
-        console.log(msg)
     }
 }

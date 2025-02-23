@@ -2,7 +2,7 @@ import type { Page, ElementHandle } from "puppeteer"
 
 export async function* getStudyPrograms(page: Page) {
     const lilsts = await page.$$(".spen-mod-item-list.is-column-1.spen.spen-util-mb-24.lecture-flow > li")
-    console.log(`合計問題数:${lilsts.length}`)
+    console.info(`合計問題数:${lilsts.length}`)
     for (let i = 0; i < lilsts.length; i++) {
         const lilsts = await page.$$(".spen-mod-item-list.is-column-1.spen.spen-util-mb-24.lecture-flow > li")
         yield lilsts[i]

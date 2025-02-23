@@ -1,5 +1,5 @@
 import puppeteer, { type Page } from "puppeteer";
-import { checkElement, log, wait } from "./utilitys";
+import { checkElement, wait } from "./utilitys";
 import { saveCookie } from "./cookie";
 import { configJson } from "./config";
 
@@ -37,7 +37,7 @@ export async function login() {
     const emailInput = checkElement(await popup.$("input[type=email]"))
 
     await emailInput.type(LOGIN_EMAIL)
-    log("メールアドレス入力")
+    console.info("メールアドレス入力")
     await emailInput.press("Enter")
 
     await popup.waitForSelector("input[type=password]")
@@ -46,18 +46,18 @@ export async function login() {
     const passwordInput = checkElement(await popup.$("input[type=password]"))
     await wait()
     await passwordInput.type(LOGIN_PASSWORD)
-    log("パスワード入力")
+    console.info("パスワード入力")
     await wait()
     await passwordInput.press("Enter")
 
     await page.bringToFront()
 
     await page.waitForNavigation({ waitUntil: ['load', 'networkidle2'] })
-    log("ログイン成功")
+    console.info("ログイン成功")
     await wait()
 
     await saveCookie(page)
-    log("cookie保存成功")
+    console.info("cookie保存成功")
     await wait()
 
     await page.close()

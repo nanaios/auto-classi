@@ -11,7 +11,7 @@ export async function getAnswerForMultiInput(page: Page) {
         return element.innerText
     }))
     const formatAnswers = answers.map(answer => formatClassiAns(answer))
-    console.log(`答え:${formatAnswers}`)
+    console.info(`答え:${formatAnswers}`)
     return formatAnswers
 }
 

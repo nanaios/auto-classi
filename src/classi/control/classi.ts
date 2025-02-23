@@ -29,7 +29,7 @@ export async function main(vewsion: string) {
     await page.goto(basePageUrl, { waitUntil: ['load', 'networkidle2'] })
     await wait()
 
-    console.log(`AutoClassi v${vewsion}`)
+    console.info(`AutoClassi v${vewsion}`)
     showProgramStatus()
 
     for await (const assignment of getAssignments(page)) {
@@ -43,9 +43,9 @@ export async function main(vewsion: string) {
         await wait()
     }
     status.isSearchFinish = true
-    console.log("\n全設問の探索が終了しました\n")
+    console.info("\n全設問の探索が終了しました\n")
     if (status.playingVideoCount !== 0) {
-        console.log("\n全てのビデオの再生終了を待機します\n")
+        console.info("\n全てのビデオの再生終了を待機します\n")
         while (status.playingVideoCount !== 0) {
             await clearVideoQueue()
             await wait(1000)
