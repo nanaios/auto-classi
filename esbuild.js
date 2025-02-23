@@ -14,5 +14,4 @@ esbuild.build({
     treeShaking: true,
     sourcemap: true,
     dropLabels: isProduction ? ["DEV"] : [],
-    pure: ["console.log"]
 })
