@@ -39,7 +39,7 @@ async function* getTasks(page: Page) {
 
 async function solveTask(page: Page, task: ElementHandle<HTMLElement>) {
     const name = await getTaskName(task)
-    console.log(`課題[name:${name}]の解答を開始`)
+    console.log(`\n課題[name:${name}]の解答を開始`)
 
     //課題の詳細ページへ遷移
     await waitForClickTransition(page, task)
@@ -51,6 +51,7 @@ async function solveTask(page: Page, task: ElementHandle<HTMLElement>) {
     await wait()
 
     await solveLectures(page)
+    console.log(`課題[name:${name}]の解答を終了\n`)
 }
 
 export async function solveTasks(page: Page, url: string) {
