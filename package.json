@@ -39,7 +39,6 @@
     "puppeteer": "24.2.1"
   },
   "devDependencies": {
-    "esbuild": "0.25.0",
-    "husky": "9.1.7"
+    "esbuild": "0.25.0"
   }
 }
