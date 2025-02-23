@@ -1,8 +1,7 @@
 import type { ElementHandle, Page } from "puppeteer";
-import { copyPage, isChecked, wait } from "@/utilitys";
+import { copyPage, isChecked, log, wait, waitForTransition } from "@/utilitys";
 import { addPlayingVideoCount } from "./classi";
 import { bringContorolPage } from "@/classi";
-import { waitForTransition } from "@/utilitys/utility";
 import { arg, status } from "../status";
 import { getStudyProgramName } from "./studyPrograms";
 
@@ -37,7 +36,7 @@ export async function clearVideoQueue() {
         await bringContorolPage()
 
         addPlayingVideoCount(-1)
-        console.log(`ビデオタブ[name:${data.name}]が正常に閉じられました`);
+        log(`ビデオタブ[name:${data.name}]が正常に閉じられました`);
         indexs.push(data.index)
     }
     finishVideoDatas.forEach((data, index) => {
@@ -51,11 +50,11 @@ export async function clearVideoQueue() {
 export async function playVideo(page: Page, index: number, list: ElementHandle<HTMLElement>) {
     const name = await getStudyProgramName(list)
     if (await isChecked(list) || arg.skipVideo) {
-        console.log(`\nビデオ[name:${name}]は再生済みのためスキップします\n`)
+        log(`\nビデオ[name:${name}]は再生済みのためスキップします\n`)
         return
     }
 
-    console.log(`\nビデオ[name:${name}]の再生を開始\n`)
+    log(`\nビデオ[name:${name}]の再生を開始\n`)
 
     await waitForTransition(page, list)
     await wait()
@@ -70,7 +69,7 @@ export async function playVideo(page: Page, index: number, list: ElementHandle<H
             index: index
         })
 
-        console.log(`\nビデオ[name:${name}]の再生が終了しました\n`);
+        log(`\nビデオ[name:${name}]の再生が終了しました\n`);
     });
 
     const videoArea = await newPage.$("#video_area")

@@ -1,5 +1,6 @@
 import fs from "fs"
 import path from "path"
+import { log } from "./utilitys"
 
 const configPath = path.join(process.argv[1], "../../", "config.json")
 export const configJson = JSON.parse(fs.readFileSync(configPath, "utf-8"))
@@ -17,7 +18,7 @@ export function config(name: string, options: any) {
 }
 
 function showConfig(name: string) {
-    console.log(`${name}="${configJson[name]}"`)
+    log(`${name}="${configJson[name]}"`)
 }
 
 export function setConfig(name: string, value: string) {
