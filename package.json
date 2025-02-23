@@ -21,11 +21,6 @@
     "build": "node esbuild.js",
     "prepublishOnly": "npm run clean && npm run build production"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run clean"
-    }
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/nanaios/auto-classi.git"
