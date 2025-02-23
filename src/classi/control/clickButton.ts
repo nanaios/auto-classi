@@ -1,4 +1,4 @@
-import { waitForTransition } from "@/utilitys/utility"
+import { waitForTransition } from "@/utilitys"
 import type { Page } from "puppeteer"
 
 export async function clickSubmitButton(page: Page) {

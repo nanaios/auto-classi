@@ -1,6 +1,8 @@
 import fs from "fs"
 import path from "path"
 
+console.log("cleaning json")
+
 const configPath = path.join(process.argv[1], "../", "config.json")
 const cookiePath = path.join(process.argv[1], "../", "cookie.json")
 

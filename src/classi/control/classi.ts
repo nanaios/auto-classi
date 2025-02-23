@@ -6,7 +6,7 @@ import { getAssignments, solveAssignment } from "./assignment";
 import { loadCookie } from "@/cookie";
 import { login } from "@/login";
 
-const basePageUrl = "https://video.classi.jp/student/challenge_delivery_history/challenge_delivery_history_school_in_studying"
+const BASE_PAGE_URL = "https://video.classi.jp/student/challenge_delivery_history/challenge_delivery_history_school_in_studying"
 
 export function addPlayingVideoCount(value: number) {
     status.playingVideoCount += value
@@ -16,7 +16,10 @@ export async function main(vewsion: string) {
     await login()
     await wait()
 
-    const browser = await puppeteer.launch({ headless: true })
+    let headless = true
+    DEV: headless = false
+
+    const browser = await puppeteer.launch({ headless: headless })
     const pageList = await browser.pages();
 
     const page = pageList[0];
@@ -26,7 +29,7 @@ export async function main(vewsion: string) {
     await loadCookie(page)
     await wait()
 
-    await page.goto(basePageUrl, { waitUntil: ['load', 'networkidle2'] })
+    await page.goto(BASE_PAGE_URL, { waitUntil: ['load', 'networkidle2'] })
     await wait()
 
     log(`AutoClassi v${vewsion}`)
@@ -39,7 +42,7 @@ export async function main(vewsion: string) {
         await solveAssignment(page)
         await wait()
 
-        await page.goto(basePageUrl, { waitUntil: ['load', 'networkidle2'] })
+        await page.goto(BASE_PAGE_URL, { waitUntil: ['load', 'networkidle2'] })
         await wait()
     }
     status.isSearchFinish = true
