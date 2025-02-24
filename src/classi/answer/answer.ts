@@ -1,8 +1,8 @@
 import type { Page } from "puppeteer";
 import { getCheckBoxAnswer, isCheckBox, setCheckBoxAnswer } from "./checkBox";
-import { getInputAnswer, isInput } from "./input";
+import { getInputAnswer, isInput, setInputAnswer } from "./input";
 import { getListAnswer, isList, setListAnswer } from "./list";
-import { detailedLog } from "@/utility";
+import { detailedLog, wait } from "@/utility";
 import { clickFinishButton } from "../study";
 import { setSelfAnswer } from "./self";
 
@@ -35,6 +35,7 @@ export async function getAnswer(page: Page, type: QuestionType) {
             break
         }
     }
+    await wait(100)
 }
 
 export async function setAnswer(page: Page, type: QuestionType) {
@@ -45,6 +46,7 @@ export async function setAnswer(page: Page, type: QuestionType) {
             break;
         }
         case "input": {
+            await setInputAnswer(page)
             break
         }
         case "checkBox": {
@@ -61,6 +63,7 @@ export async function setAnswer(page: Page, type: QuestionType) {
             console.log(`解答に成功しました`)
         } else {
             console.error(`解答に失敗しました`)
+            process.exit(1)
         }
     }
 }

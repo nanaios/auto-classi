@@ -1,6 +1,6 @@
 import type { ElementHandle, Page } from "puppeteer";
 import { formatAnswer } from "./answer";
-import { detailedLog } from "@/utility";
+import { detailedLog, wait } from "@/utility";
 
 let listAnswer: string[]
 
@@ -32,7 +32,7 @@ export async function setListAnswer(page: Page) {
         //選択肢の中で答えと一致する物の番号を取得する
         //この時、先頭の"選択してください"の部分は無視する必要があるので、indexを1ずらして対応
         const choiceIndex = choices.indexOf(listAnswer[i]) + 1
-        detailedLog(`リストの番号:${choiceIndex}`)
+        detailedLog(`リストの番号:${choiceIndex - 1}`)
 
         //答えの選択肢をクリック
         await choiceLists[choiceIndex].evaluate(li => li.click())

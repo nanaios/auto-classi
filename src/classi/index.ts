@@ -5,31 +5,30 @@ import { isDev, wait } from "@/utility";
 
 const BASE_URL = "https://video.classi.jp/student/challenge_delivery_history/challenge_delivery_history_school_complete"
 
-async function launchBrowser() {
+async function getCookie() {
     if (isDev) {
-        return puppeteer.connect({
+        const browser = await puppeteer.connect({
             browserURL: 'http://127.0.0.1:9222'
         })
+        return browser.cookies()
     } else {
-        const cookies = await login()
-        await wait()
-
-        const browser = await puppeteer.launch({ headless: false })
-
-        await browser.setCookie(...cookies)
-
-        return browser
+        return login()
     }
 }
 
 export async function run() {
 
-    const browser = await launchBrowser()
+    const cookies = await getCookie()
+    await wait()
+
+    const browser = await puppeteer.launch({ headless: true })
+
+    await browser.setCookie(...cookies)
 
     const pages = await browser.pages()
     const page = pages[0]
 
-    await page.goto(BASE_URL, { waitUntil: ['load', 'networkidle2', 'domcontentloaded'] })
+    await page.goto(BASE_URL, { waitUntil: ['load', 'networkidle0', 'domcontentloaded'] })
     await wait()
 
     console.log("AutoClassi起動")

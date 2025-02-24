@@ -14,11 +14,11 @@ export async function login() {
     const pages = await browser.pages()
     const page = pages[0]
 
-    await page.goto(LOGIN_URL, { waitUntil: ['load', 'networkidle2', 'domcontentloaded'] })
+    await page.goto(LOGIN_URL, { waitUntil: ['load', 'networkidle0', 'domcontentloaded'] })
     await wait()
 
     detailedLog("ログイン待機状態に移行")
-    await page.waitForNavigation({ timeout: 0, waitUntil: ['load', 'networkidle2', 'domcontentloaded'] })
+    await page.waitForNavigation({ timeout: 0, waitUntil: ['load', 'networkidle0', 'domcontentloaded'] })
     await wait()
 
     console.log("ログイン成功")

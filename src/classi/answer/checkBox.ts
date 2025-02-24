@@ -1,6 +1,6 @@
 import type { ElementHandle, Page } from "puppeteer";
 import { formatAnswer } from "./answer";
-import { getElement } from "@/utility";
+import { getElement, wait } from "@/utility";
 
 let checkBoxAnswer: string
 
@@ -22,10 +22,13 @@ export async function setCheckBoxAnswer(page: Page) {
     const choices = await getChoices(lists)
     console.log(`選択肢:${choices}`)
 
+    //チェックボックスを取得
     const checkBox = await getCheckBoxs(lists)
 
+    //答えと一致する選択肢の番号を取得
     const index = choices.indexOf(checkBoxAnswer)
 
+    //チェックボックスをクリック
     await checkBox[index].click()
 }
 

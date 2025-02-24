@@ -17,7 +17,7 @@ export async function getElement<S extends string>(parent: Page | ElementHandle<
 export async function waitForClickTransition(page: Page, element: ElementHandle<HTMLElement>) {
     await Promise.all([
         element.click(),
-        page.waitForNavigation({ waitUntil: ['load', 'networkidle2', 'domcontentloaded'] })
+        page.waitForNavigation({ waitUntil: ['load', 'networkidle0', 'domcontentloaded'] })
     ])
     await wait()
 }
@@ -28,12 +28,12 @@ export function detailedLog(data: any) {
     }
 }
 
-export async function wait(ms: number = 0) {
+export async function wait(ms: number = 500) {
     return new Promise<void>(res => {
         const id = setTimeout(() => {
             clearTimeout(id)
             res()
-        }, ms + 100)
+        }, ms)
     })
 }
 
@@ -44,6 +44,6 @@ export async function isSolved(element: ElementHandle<HTMLElement>) {
 }
 
 export async function goBack(page: Page) {
-    await page.goBack({ waitUntil: ['load', 'networkidle2', 'domcontentloaded'] })
+    await page.goBack({ waitUntil: ['load', 'networkidle0', 'domcontentloaded'] })
     await wait()
 }

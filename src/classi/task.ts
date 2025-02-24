@@ -4,6 +4,8 @@ import { solveLectures } from "./lecture";
 
 const solvedTaskNames: string[] = []
 
+let skip = true
+
 async function getTaskName(element: ElementHandle<HTMLElement>) {
     return element.$eval("p.subject", p => p.innerText)
 }
@@ -44,6 +46,13 @@ async function* getTasks(page: Page) {
 
 async function solveTask(page: Page, task: ElementHandle<HTMLElement>) {
     const name = await getTaskName(task)
+
+    if (name === process.argv[2]) {
+        skip = false
+    }
+
+    if (skip) return;
+
     console.log(`\n課題[name:${name}]の解答を開始`)
 
     //課題の詳細ページへ遷移
@@ -64,7 +73,7 @@ export async function solveTasks(page: Page, url: string) {
         await wait()
 
         //元のページへ戻る
-        await page.goto(url, { waitUntil: ['load', 'networkidle2'] })
+        await page.goto(url, { waitUntil: ['load', 'networkidle0'] })
         await wait()
     }
 }

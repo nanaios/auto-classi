@@ -13,12 +13,6 @@ export async function solveStudyContent(page: Page, content: ElementHandle<HTMLE
     const type = await getQuestionType(page)
     console.log(`問題タイプ:${type}`)
 
-    if (type === "self") {
-        const leftLectureButton = await getElement(page, "a.white-btn")
-        await waitForClickTransition(page, leftLectureButton)
-        return
-    }
-
     //一度答えを取得するために正答確認ページに行く
     await clickFinishButton(page)
     detailedLog(`正答確認ページに遷移`)
