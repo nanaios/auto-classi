@@ -10,10 +10,11 @@ export async function getElement<S extends string>(parent: Page | ElementHandle<
 }
 
 export async function waitForClickTransition(page: Page, element: ElementHandle<HTMLElement>) {
-    Promise.all([
-        await element.click(),
-        await page.waitForNavigation({ waitUntil: ['load', 'networkidle2', 'domcontentloaded'] })
+    await Promise.all([
+        element.click(),
+        page.waitForNavigation({ waitUntil: ['load', 'networkidle2', 'domcontentloaded'] })
     ])
+    await wait()
 }
 
 export function detailedLog(data: any) {
@@ -29,4 +30,14 @@ export async function wait(ms: number = 500) {
             res()
         }, ms)
     })
+}
+
+export async function isSolved(element: ElementHandle<HTMLElement>) {
+    const mark = await element.$(".check-mark")
+    return mark !== null
+}
+
+export async function goBack(page: Page) {
+    await page.goBack({ waitUntil: ['load', 'networkidle2', 'domcontentloaded'] })
+    await wait()
 }

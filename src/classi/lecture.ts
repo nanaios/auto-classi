@@ -22,7 +22,6 @@ async function solveLecture(page: Page, lecture: ElementHandle<HTMLElement>) {
 
     //講義の解答を開始
     await waitForClickTransition(page, lecture)
-    await wait()
 
     await solveContents(page)
     console.log(`講義[name:${name}]の解答を終了\n`)
@@ -36,6 +35,5 @@ export async function solveLectures(page: Page) {
         //"コース詳細へ戻る"ボタンを押す
         const leftLectureButton = await getElement(page, "a.white-btn")
         await waitForClickTransition(page, leftLectureButton)
-        await wait()
     }
 }

@@ -1,5 +1,5 @@
 import type { ElementHandle, Page } from "puppeteer";
-import { detailedLog, getElement, wait, waitForClickTransition } from "../utility";
+import { detailedLog, getElement, isSolved, wait, waitForClickTransition } from "../utility";
 import { solveLectures } from "./lecture";
 
 const solvedTaskNames: string[] = []
@@ -25,7 +25,7 @@ async function* getTasks(page: Page) {
         for (k = 0; k < tasks.length; k++) {
             const name = await getTaskName(tasks[k])
             if (solvedTaskNames.includes(name)) {
-                detailedLog(`課題[name:${name}]は回答済みなのでスキップします`)
+                detailedLog(`課題[name:${name}]は処理済みなのでスキップします`)
                 continue
             } else {
                 detailedLog(`\n未回答の課題[name:${name}]を発見しました\n`)
@@ -33,7 +33,12 @@ async function* getTasks(page: Page) {
                 break
             }
         }
-        yield tasks[k]
+        if (await isSolved(tasks[k])) {
+            const name = await getTaskName(tasks[k])
+            detailedLog(`課題[name:${name}]はすでに回答済みなのでスキップします`)
+        } else {
+            yield tasks[k]
+        }
     }
 }
 
@@ -43,12 +48,10 @@ async function solveTask(page: Page, task: ElementHandle<HTMLElement>) {
 
     //課題の詳細ページへ遷移
     await waitForClickTransition(page, task)
-    await wait()
 
     //"課題に取り組む"ボタンを押す
     const startTaskButton = await getElement(page, ".right > a.navy-btn")
     await waitForClickTransition(page, startTaskButton)
-    await wait()
 
     await solveLectures(page)
     console.log(`課題[name:${name}]の解答を終了\n`)
