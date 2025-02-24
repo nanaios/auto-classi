@@ -21,7 +21,7 @@ export async function run() {
     const cookies = await getCookie()
     await wait()
 
-    const browser = await puppeteer.launch({ headless: true })
+    const browser = await puppeteer.launch({ headless: false })
 
     await browser.setCookie(...cookies)
 

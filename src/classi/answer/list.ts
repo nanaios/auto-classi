@@ -30,8 +30,7 @@ export async function setListAnswer(page: Page) {
         const choiceLists = await list.$$("li")
 
         //選択肢の中で答えと一致する物の番号を取得する
-        //この時、先頭の"選択してください"の部分は無視する必要があるので、indexを1ずらして対応
-        const choiceIndex = choices.indexOf(listAnswer[i]) + 1
+        const choiceIndex = choices.indexOf(listAnswer[i])
         detailedLog(`リストの番号:${choiceIndex - 1}`)
 
         //答えの選択肢をクリック
@@ -40,6 +39,6 @@ export async function setListAnswer(page: Page) {
 }
 
 async function getChoices(elemet: ElementHandle<HTMLElement>) {
-    const answers = await elemet.$$eval("div.select-substance", divs => divs.map(div => div.innerText))
-    return answers.map(answer => formatAnswer(answer))
+    const answers = await elemet.$$eval("li", divs => divs.map(div => div.innerText))
+    return answers.map(answer => formatAnswer(answer).split(":")[1])
 }
