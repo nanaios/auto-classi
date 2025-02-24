@@ -1,6 +1,6 @@
 import { detailedLog, getElement, goBack, wait, waitForClickTransition } from "@/utility";
 import type { ElementHandle, Page } from "puppeteer";
-import { getAnswer, getQuestionType } from "./answer/answer";
+import { getAnswer, getQuestionType, setAnswer } from "./answer/answer";
 
 export async function isStudyContent(content: ElementHandle<HTMLElement>) {
     const mark = await content.$("i.fa-pencil-square-o")
@@ -28,8 +28,11 @@ export async function solveStudyContent(page: Page, content: ElementHandle<HTMLE
 
     //解答ページに戻る
     await goBack(page)
+    detailedLog("解答ページに戻る")
 
-    //await clickFinishButton(page)
+    await setAnswer(page, type)
+
+    await clickFinishButton(page)
 }
 
 export async function clickFinishButton(page: Page) {

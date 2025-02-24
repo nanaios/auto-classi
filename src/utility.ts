@@ -3,6 +3,11 @@ import { ElementHandle, Page } from "puppeteer";
 let isDetailedLog = false
 DEV: isDetailedLog = true
 
+let isDev = false
+DEV: isDev = true
+
+export { isDev }
+
 export async function getElement<S extends string>(parent: Page | ElementHandle<Element>, selector: S) {
     const element = await parent.$(selector)
     if (!element) throw new Error(`セレクター[${selector}]にマッチする要素がありません`);
@@ -23,16 +28,17 @@ export function detailedLog(data: any) {
     }
 }
 
-export async function wait(ms: number = 500) {
+export async function wait(ms: number = 0) {
     return new Promise<void>(res => {
         const id = setTimeout(() => {
             clearTimeout(id)
             res()
-        }, ms)
+        }, ms + 100)
     })
 }
 
 export async function isSolved(element: ElementHandle<HTMLElement>) {
+    if (isDev) return false;
     const mark = await element.$(".check-mark")
     return mark !== null
 }

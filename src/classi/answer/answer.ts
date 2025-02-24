@@ -1,8 +1,10 @@
 import type { Page } from "puppeteer";
-import { getCheckBoxAnswer, isCheckBox } from "./checkBox";
+import { getCheckBoxAnswer, isCheckBox, setCheckBoxAnswer } from "./checkBox";
 import { getInputAnswer, isInput } from "./input";
-import { getListAnswer, isList } from "./list";
+import { getListAnswer, isList, setListAnswer } from "./list";
 import { detailedLog } from "@/utility";
+import { clickFinishButton } from "../study";
+import { setSelfAnswer } from "./self";
 
 type QuestionType = "list" | "input" | "checkBox" | "self"
 
@@ -32,8 +34,38 @@ export async function getAnswer(page: Page, type: QuestionType) {
             await getCheckBoxAnswer(page)
             break
         }
-        case "self": {
+    }
+}
+
+export async function setAnswer(page: Page, type: QuestionType) {
+    detailedLog(`${type}形式の答えをセット`)
+    switch (type) {
+        case "list": {
+            await setListAnswer(page)
+            break;
+        }
+        case "input": {
+            break
+        }
+        case "checkBox": {
+            await setCheckBoxAnswer(page)
             break
         }
     }
+    await clickFinishButton(page)
+
+    if (type === "self") {
+        await setSelfAnswer(page, true)
+    } else {
+        if (await isCollect(page)) {
+            console.log(`解答に成功しました`)
+        } else {
+            console.error(`解答に失敗しました`)
+        }
+    }
+}
+
+export async function isCollect(page: Page) {
+    const mark = await page.$(".answer-correct")
+    return mark !== null
 }
