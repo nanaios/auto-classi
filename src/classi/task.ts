@@ -30,7 +30,7 @@ async function* getTasks(page: Page) {
                 detailedLog(`課題[name:${name}]は処理済みなのでスキップします`)
                 continue
             } else {
-                detailedLog(`\n未回答の課題[name:${name}]を発見しました\n`)
+                detailedLog(`未回答の課題[name:${name}]を発見しました`)
                 solvedTaskNames.push(name)
                 break
             }
@@ -53,7 +53,8 @@ async function solveTask(page: Page, task: ElementHandle<HTMLElement>) {
 
     if (skip) return;
 
-    console.log(`\n課題[name:${name}]の解答を開始`)
+    console.log(`課題[name:${name}]の解答を開始`)
+    console.group()
 
     //課題の詳細ページへ遷移
     await waitForClickTransition(page, task)
@@ -63,7 +64,8 @@ async function solveTask(page: Page, task: ElementHandle<HTMLElement>) {
     await waitForClickTransition(page, startTaskButton)
 
     await solveLectures(page)
-    console.log(`課題[name:${name}]の解答を終了\n`)
+    console.groupEnd()
+    console.log(`課題[name:${name}]の解答を終了`)
 }
 
 export async function solveTasks(page: Page, url: string) {

@@ -18,13 +18,15 @@ async function* getLectures(page: Page) {
 
 async function solveLecture(page: Page, lecture: ElementHandle<HTMLElement>) {
     const name = await getLectureName(lecture)
-    console.log(`\n講義[name:${name}]の解答を開始`)
+    console.log(`講義[name:${name}]の解答を開始`)
+    console.group()
 
     //講義の解答を開始
     await waitForClickTransition(page, lecture)
 
     await solveContents(page)
-    console.log(`講義[name:${name}]の解答を終了\n`)
+    console.groupEnd()
+    console.log(`講義[name:${name}]の解答を終了`)
 }
 
 export async function solveLectures(page: Page) {

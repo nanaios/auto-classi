@@ -18,13 +18,15 @@ async function* getContents(page: Page) {
 
 async function solveContent(page: Page, content: ElementHandle<HTMLElement>) {
     const name = await getContentName(content)
-    console.log(`\n要素[name:${name}]の解答を開始`)
+    console.log(`要素[name:${name}]の解答を開始`)
+    console.group()
     if (await isVideoContent(content)) {
 
     } else if (await isStudyContent(content)) {
         await solveStudyContent(page, content)
     }
-    console.log(`要素[name:${name}]の解答を終了\n`)
+    console.groupEnd()
+    console.log(`要素[name:${name}]の解答を終了`)
 }
 
 export async function solveContents(page: Page) {
