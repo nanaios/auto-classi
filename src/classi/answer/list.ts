@@ -31,14 +31,21 @@ export async function setListAnswer(page: Page) {
 
         //選択肢の中で答えと一致する物の番号を取得する
         const choiceIndex = choices.indexOf(listAnswer[i])
-        detailedLog(`リストの番号:${choiceIndex - 1}`)
+        detailedLog(`リストの番号:${choiceIndex}`)
 
         //答えの選択肢をクリック
-        await choiceLists[choiceIndex].evaluate(li => li.click())
+        //この時、実際のindexは先頭に"選択してください"が存在するため、indexを1ずらす必要がある
+        await choiceLists[choiceIndex + 1].evaluate(li => li.click())
     }
 }
 
 async function getChoices(elemet: ElementHandle<HTMLElement>) {
     const answers = await elemet.$$eval("li", divs => divs.map(div => div.innerText))
-    return answers.map(answer => formatAnswer(answer).split(":")[1])
+
+    //"選択してください"の部分もanswersに入ってしまうため、削除する
+    answers.shift()
+
+    //listを展開しない場合、innerTextに"0:"のような邪魔な部分が入ってしまう
+    //正規表現で先頭の部分を無くすことで正しい答えを得られるようにする
+    return answers.map(answer => formatAnswer(answer).replace(/\d+:/, ""))
 }
