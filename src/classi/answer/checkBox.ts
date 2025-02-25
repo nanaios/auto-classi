@@ -9,10 +9,19 @@ export async function isCheckBox(page: Page) {
     return check !== null
 }
 
+"https://platform.classi.jp/api/cbank/4f0ae4e0e2aafa1f11f28aef63a70c2cc92aa49c"
+"https://platform.classi.jp/api/cbank/4f0ae4e0e2aafa1f11f28aef63a70c2cc92aa49c"
+
 export async function getCheckBoxAnswer(page: Page) {
     const answer = await page.$eval(".spen-mod-label-text-list dd", dd => dd.innerText)
-    checkBoxAnswer = formatAnswer(answer)
-    console.log(`答え:${checkBoxAnswer}`)
+    if (answer) {
+        checkBoxAnswer = formatAnswer(answer)
+        console.log(`答え:${checkBoxAnswer}`)
+    } else {
+        const url = await page.$eval(".spen-mod-label-text-list img", img => img.src)
+        checkBoxAnswer = url
+        console.log(`答え:${checkBoxAnswer}`)
+    }
 }
 
 export async function setCheckBoxAnswer(page: Page) {
@@ -36,7 +45,11 @@ async function getChoices(elements: ElementHandle<HTMLElement>[]) {
     return Promise.all(
         elements.map(async element => {
             const choice = await element.$eval("div.select-substance", div => div.innerText)
-            return formatAnswer(choice)
+            if (choice) {
+                return formatAnswer(choice)
+            } else {
+                return element.$eval("img", img => img.src)
+            }
         }))
 }
 
