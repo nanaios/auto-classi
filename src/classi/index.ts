@@ -31,6 +31,13 @@ export async function run() {
     const pages = await browser.pages()
     const page = pages[0]
 
+    //webdriverというブラウザがbotかどうか判別できるプロパティを削除
+    await page.evaluateOnNewDocument(() => {
+        Object.defineProperty(navigator, 'webdriver', () => { });
+        //@ts-ignore
+        delete navigator.__proto__.webdriver;
+    });
+
     await page.goto(BASE_URL, { waitUntil: ['load', 'networkidle0', 'domcontentloaded'] })
     await wait()
 
