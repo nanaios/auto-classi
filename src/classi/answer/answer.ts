@@ -3,7 +3,7 @@ import { getCheckBoxAnswer, isCheckBox, setCheckBoxAnswer } from "./checkBox";
 import { getInputAnswer, isInput, setInputAnswer } from "./input";
 import { getListAnswer, isList, setListAnswer } from "./list";
 import { wait } from "@/utility";
-import { detailedLog } from "@/log";
+import { defaultLog, detailedLog } from "@/log";
 import { clickFinishButton } from "../study";
 import { setSelfAnswer } from "./self";
 
@@ -61,7 +61,7 @@ export async function setAnswer(page: Page, type: QuestionType) {
         await setSelfAnswer(page, true)
     } else {
         if (await isCollect(page)) {
-            console.log(`解答に成功しました`)
+            defaultLog(`解答に成功しました`)
         } else {
             console.error(`解答に失敗しました`)
             process.exit(1)

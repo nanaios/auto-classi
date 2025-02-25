@@ -1,5 +1,5 @@
 import { getElement, goBack, wait, waitForClickTransition } from "@/utility";
-import { detailedLog } from "@/log";
+import { defaultLog, detailedLog } from "@/log";
 import type { ElementHandle, Page } from "puppeteer";
 import { getAnswer, getQuestionType, setAnswer } from "./answer/answer";
 
@@ -12,7 +12,7 @@ export async function solveStudyContent(page: Page, content: ElementHandle<HTMLE
     await waitForClickTransition(page, content)
 
     const type = await getQuestionType(page)
-    console.log(`問題タイプ:${type}`)
+    defaultLog(`問題タイプ:${type}`)
 
     //一度答えを取得するために正答確認ページに行く
     await clickFinishButton(page)

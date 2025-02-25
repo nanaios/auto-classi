@@ -1,6 +1,7 @@
 import { getElement, wait, waitForClickTransition } from "@/utility";
 import type { ElementHandle, Page } from "puppeteer";
 import { solveContents } from "./content";
+import { defaultLog } from "@/log";
 
 async function getLectureName(element: ElementHandle<HTMLElement>) {
     return element.$eval("span.lecture_name", span => span.innerText)
@@ -8,7 +9,7 @@ async function getLectureName(element: ElementHandle<HTMLElement>) {
 
 async function* getLectures(page: Page) {
     const lectures = await page.$$(".task-list > a")
-    console.log(`合計講義数:${lectures.length}`)
+    defaultLog(`合計講義数:${lectures.length}`)
     let i: number
     for (i = 0; i < lectures.length; i++) {
         const lectures = await page.$$(".task-list > a")
@@ -18,7 +19,7 @@ async function* getLectures(page: Page) {
 
 async function solveLecture(page: Page, lecture: ElementHandle<HTMLElement>) {
     const name = await getLectureName(lecture)
-    console.log(`講義[name:${name}]の解答を開始`)
+    defaultLog(`講義[name:${name}]の解答を開始`)
     console.group()
 
     //講義の解答を開始
@@ -26,7 +27,7 @@ async function solveLecture(page: Page, lecture: ElementHandle<HTMLElement>) {
 
     await solveContents(page)
     console.groupEnd()
-    console.log(`講義[name:${name}]の解答を終了`)
+    defaultLog(`講義[name:${name}]の解答を終了`)
 }
 
 export async function solveLectures(page: Page) {

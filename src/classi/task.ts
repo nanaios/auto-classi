@@ -1,6 +1,6 @@
 import type { ElementHandle, Page } from "puppeteer";
 import { getElement, isSolved, wait, waitForClickTransition } from "../utility";
-import { detailedLog } from "@/log";
+import { defaultLog, detailedLog } from "@/log";
 import { solveLectures } from "./lecture";
 
 const solvedTaskNames: string[] = []
@@ -16,7 +16,7 @@ async function* getTasks(page: Page) {
     const tasks = await page.$$(".task-list > a")
     let i: number, k: number
 
-    console.log(`合計課題数:${tasks.length}`)
+    defaultLog(`合計課題数:${tasks.length}`)
 
     for (i = 0; i < tasks.length; i++) {
 
@@ -48,13 +48,13 @@ async function* getTasks(page: Page) {
 async function solveTask(page: Page, task: ElementHandle<HTMLElement>) {
     const name = await getTaskName(task)
 
-    if (name === process.argv[2]) {
+    if (name === process.argv[2] || !process.argv[2]) {
         skip = false
     }
 
     if (skip) return;
 
-    console.log(`課題[name:${name}]の解答を開始`)
+    defaultLog(`課題[name:${name}]の解答を開始`)
     console.group()
 
     //課題の詳細ページへ遷移
@@ -66,7 +66,7 @@ async function solveTask(page: Page, task: ElementHandle<HTMLElement>) {
 
     await solveLectures(page)
     console.groupEnd()
-    console.log(`課題[name:${name}]の解答を終了`)
+    defaultLog(`課題[name:${name}]の解答を終了`)
 }
 
 export async function solveTasks(page: Page, url: string) {

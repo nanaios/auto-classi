@@ -1,5 +1,5 @@
 import { wait } from "@/utility";
-import { detailedLog } from "@/log";
+import { defaultLog, detailedLog } from "@/log";
 import puppeteer from "puppeteer";
 
 const LOGIN_URL = "https://id.classi.jp/login/identifier"
@@ -22,7 +22,7 @@ export async function login() {
     await page.waitForNavigation({ timeout: 0, waitUntil: ['load', 'networkidle0', 'domcontentloaded'] })
     await wait()
 
-    console.log("ログイン成功")
+    defaultLog("ログイン成功")
 
     //cookieを取得
     const cookies = await browser.cookies()

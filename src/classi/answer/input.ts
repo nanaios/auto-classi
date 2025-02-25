@@ -1,6 +1,7 @@
 import { Page } from "puppeteer"
 import { formatAnswer } from "./answer"
 import { getElement, wait } from "@/utility"
+import { defaultLog } from "@/log"
 
 let inputAnswers: string[]
 
@@ -12,7 +13,7 @@ export async function isInput(page: Page) {
 export async function getInputAnswer(page: Page) {
     const answers = await page.$$eval(".answer-inner .correct-page-input dd", dds => dds.map(dd => dd.innerText))
     inputAnswers = answers.map(answer => formatAnswer(answer))
-    console.log(`答え:${inputAnswers}`)
+    defaultLog(`答え:${inputAnswers}`)
 }
 
 export async function setInputAnswer(page: Page) {
