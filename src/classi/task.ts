@@ -13,12 +13,14 @@ async function getTaskName(element: ElementHandle<HTMLElement>) {
 
 async function* getTasks(page: Page) {
     //最初に課題を取得するための変数
-    const tasks = await page.$$(".task-list > a")
+    const preTasks = await page.$$(".task-list > a")
     let i: number, k: number
 
-    defaultLog(`合計課題数:${tasks.length}`)
+    defaultLog(`合計課題数:${preTasks.length}`)
 
-    for (i = 0; i < tasks.length; i++) {
+    for (i = 0; i < preTasks.length; i++) {
+
+        defaultLog(`${i}/${preTasks.length}回目の探索を開始`)
 
         //ページの更新でtasksの参照が失われるので、ループの度に変数をセットしなおす
         const tasks = await page.$$(".task-list > a")
@@ -30,17 +32,15 @@ async function* getTasks(page: Page) {
             if (solvedTaskNames.includes(name)) {
                 detailedLog(`課題[name:${name}]は処理済みなのでスキップします`)
                 continue
+            } else if (await isSolved(tasks[k])) {
+                detailedLog(`課題[name:${name}]はすでに回答済みなのでスキップします`)
+                continue
             } else {
-                detailedLog(`未回答の課題[name:${name}]を発見しました`)
+                detailedLog(`未処理の課題[name:${name}]を発見しました`)
                 solvedTaskNames.push(name)
+                yield tasks[k]
                 break
             }
-        }
-        if (await isSolved(tasks[k])) {
-            const name = await getTaskName(tasks[k])
-            detailedLog(`課題[name:${name}]はすでに回答済みなのでスキップします`)
-        } else {
-            yield tasks[k]
         }
     }
 }
