@@ -1,5 +1,6 @@
 import type { ElementHandle, Page } from "puppeteer";
-import { detailedLog, getElement, isSolved, wait, waitForClickTransition } from "../utility";
+import { getElement, isSolved, wait, waitForClickTransition } from "../utility";
+import { detailedLog } from "@/log";
 import { solveLectures } from "./lecture";
 
 const solvedTaskNames: string[] = []

@@ -1,6 +1,7 @@
 import type { ElementHandle, Page } from "puppeteer";
 import { formatAnswer } from "./answer";
-import { detailedLog, wait } from "@/utility";
+import { wait } from "@/utility";
+import { detailedLog } from "@/log";
 
 let listAnswer: string[]
 

@@ -1,4 +1,5 @@
-import { detailedLog, getElement, goBack, wait, waitForClickTransition } from "@/utility";
+import { getElement, goBack, wait, waitForClickTransition } from "@/utility";
+import { detailedLog } from "@/log";
 import type { ElementHandle, Page } from "puppeteer";
 import { getAnswer, getQuestionType, setAnswer } from "./answer/answer";
 

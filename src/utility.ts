@@ -1,8 +1,5 @@
 import { ElementHandle, Page } from "puppeteer";
 
-let isDetailedLog = false
-DEV: isDetailedLog = true
-
 let isDev = false
 DEV: isDev = true
 
@@ -20,12 +17,6 @@ export async function waitForClickTransition(page: Page, element: ElementHandle<
         page.waitForNavigation({ waitUntil: ['load', 'networkidle0', 'domcontentloaded'] })
     ])
     await wait()
-}
-
-export function detailedLog(data: any) {
-    if (isDetailedLog) {
-        console.log(data)
-    }
 }
 
 export async function wait(ms: number = 500) {

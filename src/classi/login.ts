@@ -1,4 +1,5 @@
-import { detailedLog, wait } from "@/utility";
+import { wait } from "@/utility";
+import { detailedLog } from "@/log";
 import puppeteer from "puppeteer";
 
 const LOGIN_URL = "https://id.classi.jp/login/identifier"

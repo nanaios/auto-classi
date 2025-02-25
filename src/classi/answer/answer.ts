@@ -2,7 +2,8 @@ import type { Page } from "puppeteer";
 import { getCheckBoxAnswer, isCheckBox, setCheckBoxAnswer } from "./checkBox";
 import { getInputAnswer, isInput, setInputAnswer } from "./input";
 import { getListAnswer, isList, setListAnswer } from "./list";
-import { detailedLog, wait } from "@/utility";
+import { wait } from "@/utility";
+import { detailedLog } from "@/log";
 import { clickFinishButton } from "../study";
 import { setSelfAnswer } from "./self";
 
