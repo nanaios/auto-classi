@@ -1,4 +1,4 @@
-import { getElement, wait, waitForClickTransition } from "@/utility";
+import { getElement, waitForClickTransition } from "@/utility";
 import type { ElementHandle, Page } from "puppeteer";
 import { solveContents } from "./content";
 import { defaultLog } from "@/log";
@@ -6,7 +6,6 @@ import { defaultLog } from "@/log";
 async function getLectureName(element: ElementHandle<HTMLElement>) {
     return element.$eval("span.lecture_name", span => span.innerText)
 }
-
 async function* getLectures(page: Page) {
     const lectures = await page.$$(".task-list > a")
     defaultLog(`合計講義数:${lectures.length}`)

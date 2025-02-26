@@ -1,4 +1,4 @@
-import puppeteer from "puppeteer";
+import puppeteer, { type Page } from "puppeteer";
 import { solveTasks } from "./task";
 import { login } from "./login";
 import { isDev, wait } from "@/utility";
@@ -31,16 +31,23 @@ export async function run() {
     const pages = await browser.pages()
     const page = pages[0]
 
-    //webdriverというブラウザがbotかどうか判別できるプロパティを削除
-    await page.evaluateOnNewDocument(() => {
-        Object.defineProperty(navigator, 'webdriver', () => { });
-        //@ts-ignore
-        delete navigator.__proto__.webdriver;
-    });
+    await deleteWebdriver(page)
 
     await page.goto(BASE_URL, { waitUntil: ['load', 'networkidle0', 'domcontentloaded'] })
     await wait()
 
     defaultLog("AutoClassi起動")
     await solveTasks(page, BASE_URL)
+}
+
+/**
+ * Webdriverの値をを削除して、bot判定を回避する
+ * @param page 
+ */
+const deleteWebdriver = async (page: Page) => {
+    await page.evaluateOnNewDocument(() => {
+        Object.defineProperty(navigator, 'webdriver', () => { });
+        //@ts-ignore
+        delete navigator.__proto__.webdriver;
+    });
 }
