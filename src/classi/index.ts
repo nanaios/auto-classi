@@ -1,5 +1,5 @@
 import puppeteer, { type Page } from "puppeteer";
-import { solveTasks } from "./task";
+import { Task } from "./task";
 import { login } from "./login";
 import { isDev, wait } from "@/utility";
 import { defaultLog } from "@/log";
@@ -37,7 +37,8 @@ export async function run() {
     await wait()
 
     defaultLog("AutoClassi起動")
-    await solveTasks(page, BASE_URL)
+
+    await new Task(page, BASE_URL).solves()
 }
 
 /**

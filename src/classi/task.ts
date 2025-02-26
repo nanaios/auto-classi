@@ -1,83 +1,39 @@
-import type { ElementHandle, Page } from "puppeteer";
-import { getElement, isSolved, wait, waitForClickTransition } from "../utility";
-import { defaultLog, detailedLog } from "@/log";
+import type { Page } from "puppeteer";
+import { getElement, wait, waitForClickTransition } from "../utility";
+import { defaultLog } from "@/log";
 import { Lecture } from "./lecture";
+import { SolveBase } from "./SolveBase";
+export class Task extends SolveBase {
+    getElementSelector = ".task-list > a"
+    getNameSelector = "p.subject"
+    type = "課題"
+    url: string
 
-const solvedTaskNames: string[] = []
-
-let skip = true
-
-async function getTaskName(element: ElementHandle<HTMLElement>) {
-    return element.$eval("p.subject", p => p.innerText)
-}
-
-async function* getTasks(page: Page) {
-    //最初に課題を取得するための変数
-    const preTasks = await page.$$(".task-list > a")
-    let i: number, k: number
-
-    defaultLog(`合計課題数:${preTasks.length}`)
-
-    for (i = 0; i < preTasks.length; i++) {
-
-        defaultLog(`${i}/${preTasks.length}回目の探索を開始`)
-
-        //ページの更新でtasksの参照が失われるので、ループの度に変数をセットしなおす
-        const tasks = await page.$$(".task-list > a")
-
-        //ループの時点で存在する課題数分ループを回す
-        //万が一問題を解き損ねた課題があった場合に備えて、一度処理した課題は飛ばすようにする
-        for (k = 0; k < tasks.length; k++) {
-            const name = await getTaskName(tasks[k])
-            if (solvedTaskNames.includes(name)) {
-                detailedLog(`課題[name:${name}]は処理済みなのでスキップします`)
-                continue
-            } else if (await isSolved(tasks[k])) {
-                detailedLog(`課題[name:${name}]はすでに回答済みなのでスキップします`)
-                continue
-            } else {
-                detailedLog(`未処理の課題[name:${name}]を発見しました`)
-                solvedTaskNames.push(name)
-                yield tasks[k]
-                break
-            }
-        }
-    }
-}
-
-async function solveTask(page: Page, task: ElementHandle<HTMLElement>) {
-    const name = await getTaskName(task)
-
-    if (name === process.argv[2] || !process.argv[2]) {
-        skip = false
+    constructor(page: Page, url: string) {
+        super(page)
+        this.url = url
     }
 
-    if (skip) return;
+    async solve(): Promise<void> {
+        const name = await this.getName()
 
-    defaultLog(`課題[name:${name}]の解答を開始`)
-    console.group()
+        defaultLog(`課題[name:${name}]の解答を開始`)
+        console.group()
 
-    //課題の詳細ページへ遷移
-    await waitForClickTransition(page, task)
+        //課題の詳細ページへ遷移
+        await waitForClickTransition(this.page, this.element)
 
-    //"課題に取り組む"ボタンを押す
-    const startTaskButton = await getElement(page, ".right > a.navy-btn")
-    await waitForClickTransition(page, startTaskButton)
+        //"課題に取り組む"ボタンを押す
+        const startTaskButton = await getElement(this.page, ".right > a.navy-btn")
+        await waitForClickTransition(this.page, startTaskButton)
 
-    await new Lecture(page).solves()
+        await new Lecture(this.page).solves()
 
-    console.groupEnd()
-    defaultLog(`課題[name:${name}]の解答を終了`)
-}
-
-export async function solveTasks(page: Page, url: string) {
-    for await (const task of getTasks(page)) {
-        //課題の解答を開始
-        await solveTask(page, task);
-        await wait()
+        console.groupEnd()
+        defaultLog(`課題[name:${name}]の解答を終了`)
 
         //元のページへ戻る
-        await page.goto(url, { waitUntil: ['load', 'networkidle0'] })
+        await this.page.goto(this.url, { waitUntil: ['load', 'networkidle0'] })
         await wait()
     }
 }

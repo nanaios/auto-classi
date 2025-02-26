@@ -1,4 +1,5 @@
-import { defaultLog } from "@/log"
+import { defaultLog, detailedLog } from "@/log"
+import { isSolved } from "@/utility"
 import type { ElementHandle, Page } from "puppeteer"
 
 export abstract class SolveBase {
@@ -9,6 +10,7 @@ export abstract class SolveBase {
     getElementSelector: string
     page: Page
     type: string
+    solvedNames: string[] = []
     constructor(page: Page) {
         this.page = page
     }
@@ -28,12 +30,39 @@ export abstract class SolveBase {
     }
 
     async *getElements() {
-        const element = await this.page.$$(this.getElementSelector)
-        defaultLog(`合計${this.type}数:${element.length}`)
-        let i: number
-        for (i = 0; i < element.length; i++) {
-            const contents = await this.page.$$(this.getElementSelector)
-            yield contents[i] as ElementHandle<HTMLElement>
+        //最初に取得するための変数
+        const preElement = await this.page.$$(this.getElementSelector)
+        defaultLog(`合計${this.type}数:${preElement.length}`)
+
+        let i: number, k: number
+        for (i = 0; i < preElement.length; i++) {
+
+            detailedLog(`${i + 1}/${preElement.length}回目の探索を開始`)
+
+            //ページの更新でelementsの参照が失われるので、ループの度に変数をセットしなおす
+            const elements = await this.page.$$(this.getElementSelector) as ElementHandle<HTMLElement>[]
+
+            detailedLog(`${elements.length}件の${this.type}を取得`)
+
+            //ループの時点で存在するelement分ループを回す
+            //万が一問題を解き損ねた物があった場合に備えて、一度処理したelementは飛ばすようにする
+            SEARCH: for (k = 0; k < elements.length; k++) {
+                this.element = elements[k]
+                const name = await this.getName()
+                detailedLog(`${this.type}の名前:${name}`)
+                if (this.solvedNames.includes(name)) {
+                    detailedLog(`${this.type}[name:${name}]は処理済みなのでスキップします`)
+                    continue
+                } else if (await isSolved(elements[k])) {
+                    detailedLog(`${this.type}[name:${name}]はすでに処理済みなのでスキップします`)
+                    continue
+                } else {
+                    detailedLog(`未処理の${this.type}[name:${name}]を発見しました`)
+                    this.solvedNames.push(name)
+                    yield elements[k]
+                    break SEARCH
+                }
+            }
         }
     }
 }

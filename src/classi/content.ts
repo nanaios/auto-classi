@@ -3,7 +3,6 @@ import { isStudyContent, solveStudyContent } from "./study";
 import { defaultLog } from "@/log";
 import { SolveBase } from "./SolveBase";
 
-
 export class Content extends SolveBase {
     getElementSelector = "li.flow-single.student"
     getNameSelector = "a"
