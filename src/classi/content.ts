@@ -1,4 +1,4 @@
-import { isVideoContent } from "./video";
+import { isVideoContent, solveVideoContent } from "./video";
 import { isStudyContent, solveStudyContent } from "./study";
 import { defaultLog } from "@/log";
 import { SolveBase } from "./SolveBase";
@@ -12,7 +12,7 @@ export class Content extends SolveBase {
         defaultLog(`要素[name:${name}]の解答を開始`)
         console.group()
         if (await isVideoContent(this.element)) {
-
+            //await solveVideoContent(this.page, this.element)
         } else if (await isStudyContent(this.element)) {
             await solveStudyContent(this.page, this.element)
         }
