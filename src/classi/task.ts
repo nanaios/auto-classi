@@ -1,7 +1,7 @@
 import type { ElementHandle, Page } from "puppeteer";
 import { getElement, isSolved, wait, waitForClickTransition } from "../utility";
 import { defaultLog, detailedLog } from "@/log";
-import { solveLectures } from "./lecture";
+import { Lecture } from "./lecture";
 
 const solvedTaskNames: string[] = []
 
@@ -64,7 +64,8 @@ async function solveTask(page: Page, task: ElementHandle<HTMLElement>) {
     const startTaskButton = await getElement(page, ".right > a.navy-btn")
     await waitForClickTransition(page, startTaskButton)
 
-    await solveLectures(page)
+    await new Lecture(page).solves()
+
     console.groupEnd()
     defaultLog(`課題[name:${name}]の解答を終了`)
 }

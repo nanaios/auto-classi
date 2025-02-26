@@ -1,7 +1,7 @@
 import { ElementHandle, Page } from "puppeteer";
 
 let isDev = false
-//DEV: isDev = true
+DEV: isDev = true
 
 export { isDev }
 
