@@ -63,8 +63,7 @@ export async function setAnswer(page: Page, type: QuestionType) {
         if (await isCollect(page)) {
             defaultLog(`解答に成功しました`)
         } else {
-            console.error(`解答に失敗しました`)
-            process.exit(1)
+            throw new Error("解答に失敗しました")
         }
     }
 }

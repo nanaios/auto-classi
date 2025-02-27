@@ -9,7 +9,7 @@ esbuild.build({
     platform: "node",
     format: "esm",
     packages: "external",
-    minify: false,
+    minify: isProduction,
     charset: "utf8",
     treeShaking: true,
     sourcemap: true,

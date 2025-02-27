@@ -2,7 +2,6 @@ import { ElementHandle, Page } from "puppeteer";
 
 let isDev = false
 DEV: isDev = true
-
 export { isDev }
 
 export async function goTo(page: Page, url: string) {
@@ -34,7 +33,7 @@ export async function wait(ms: number = 500) {
 }
 
 export async function isSolved(element: ElementHandle<HTMLElement>) {
-    if (isDev) return false;
+    DEV: return false;
     const mark = await element.$(".check-mark")
     return mark !== null
 }

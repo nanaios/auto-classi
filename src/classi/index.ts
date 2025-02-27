@@ -7,14 +7,13 @@ import { defaultLog } from "@/log";
 const BASE_URL = "https://video.classi.jp/student/challenge_delivery_history/challenge_delivery_history_school_complete"
 
 async function getCookie() {
-    if (isDev) {
+    DEV: {
         const browser = await puppeteer.connect({
             browserURL: 'http://127.0.0.1:9222'
         })
         return browser.cookies()
-    } else {
-        return login()
     }
+    return login()
 }
 
 export async function run() {
@@ -23,7 +22,7 @@ export async function run() {
     await wait()
 
     const browser = await puppeteer.launch({
-        headless: true
+        headless: !isDev
     })
 
     await browser.setCookie(...cookies)
