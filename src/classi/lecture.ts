@@ -1,5 +1,5 @@
 import { waitForClickTransition } from "@/utility";
-import { Content } from "./content";
+import { Content } from "./Content";
 import { defaultLog } from "@/log";
 import { SolveBase } from "./SolveBase";
 

@@ -1,7 +1,7 @@
 import puppeteer, { type Page } from "puppeteer";
-import { Task } from "./task";
+import { Task } from "./Task";
 import { login } from "./login";
-import { isDev, wait } from "@/utility";
+import { goTo, isDev, wait } from "@/utility";
 import { defaultLog } from "@/log";
 
 const BASE_URL = "https://video.classi.jp/student/challenge_delivery_history/challenge_delivery_history_school_complete"
@@ -33,7 +33,7 @@ export async function run() {
 
     await deleteWebdriver(page)
 
-    await page.goto(BASE_URL, { waitUntil: ['load', 'networkidle0', 'domcontentloaded'] })
+    await goTo(page, BASE_URL)
     await wait()
 
     defaultLog("AutoClassi起動")

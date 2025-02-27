@@ -5,6 +5,11 @@ DEV: isDev = true
 
 export { isDev }
 
+export async function goTo(page: Page, url: string) {
+    await page.goto(url, { waitUntil: ['load', 'networkidle0', 'domcontentloaded'] })
+    await wait()
+}
+
 export async function getElement<S extends string>(parent: Page | ElementHandle<Element>, selector: S) {
     const element = await parent.$(selector)
     if (!element) throw new Error(`セレクター[${selector}]にマッチする要素がありません`);

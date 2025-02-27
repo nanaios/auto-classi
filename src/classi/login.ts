@@ -1,4 +1,4 @@
-import { wait } from "@/utility";
+import { goTo, wait } from "@/utility";
 import { defaultLog, detailedLog } from "@/log";
 import puppeteer from "puppeteer";
 
@@ -15,7 +15,7 @@ export async function login() {
     const pages = await browser.pages()
     const page = pages[0]
 
-    await page.goto(LOGIN_URL, { waitUntil: ['load', 'networkidle0', 'domcontentloaded'] })
+    await goTo(page, LOGIN_URL)
     await wait()
 
     detailedLog("ログイン待機状態に移行")

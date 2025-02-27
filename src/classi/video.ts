@@ -1,4 +1,4 @@
-import { getElement, wait, waitForClickTransition } from "@/utility";
+import { goTo, wait, waitForClickTransition } from "@/utility";
 import type { ElementHandle, Page } from "puppeteer";
 
 let videoIndex = 0
@@ -17,8 +17,7 @@ export async function solveVideoContent(page: Page, content: ElementHandle<HTMLE
         console.log(`end viode[index:${index}]`);
     });
 
-    await videoPage.goto(page.url(), { waitUntil: ['load', 'networkidle0', 'domcontentloaded'] })
-    await wait()
+    await goTo(page, page.url())
 
     await videoPage.click("div#video_area")
     await videoPage.waitForSelector("#video_area video")
@@ -35,5 +34,5 @@ export async function solveVideoContent(page: Page, content: ElementHandle<HTMLE
     await wait(5000)
 
     await page.bringToFront()
-    await page.goBack({ waitUntil: ['load', 'networkidle0', 'domcontentloaded'] })
+    await page.goBack()
 }

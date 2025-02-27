@@ -1,7 +1,7 @@
 import type { Page } from "puppeteer";
-import { getElement, wait, waitForClickTransition } from "../utility";
+import { getElement, goTo, wait, waitForClickTransition } from "../utility";
 import { defaultLog } from "@/log";
-import { Lecture } from "./lecture";
+import { Lecture } from "./Lecture";
 import { SolveBase } from "./SolveBase";
 export class Task extends SolveBase {
     getElementSelector = ".task-list > a"
@@ -33,7 +33,7 @@ export class Task extends SolveBase {
         defaultLog(`課題[name:${name}]の解答を終了`)
 
         //元のページへ戻る
-        await this.page.goto(this.url, { waitUntil: ['load', 'networkidle0'] })
+        await goTo(this.page, this.url)
         await wait()
     }
 }
