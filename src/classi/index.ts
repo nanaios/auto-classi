@@ -4,7 +4,8 @@ import { login } from "./login";
 import { goTo, isDev, wait } from "@/utility";
 import { defaultLog } from "@/log";
 
-const BASE_URL = "https://video.classi.jp/student/challenge_delivery_history/challenge_delivery_history_school_complete"
+let BASE_URL = "https://video.classi.jp/student/challenge_delivery_history/challenge_delivery_history_school_in_studying"
+DEV: BASE_URL = "https://video.classi.jp/student/challenge_delivery_history/challenge_delivery_history_school_complete"
 
 async function getCookie() {
     DEV: {
