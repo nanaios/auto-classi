@@ -1,9 +1,11 @@
-import { defaultLog } from "@/log";
+import { runCommandArgs } from "@/args";
+import { defaultLog, detailedLog } from "@/log";
 import { getElement, goTo, wait, waitForClickTransition } from "@/utility";
 import type { ElementHandle, Page } from "puppeteer";
 
 let videoIndex = 0
 const videoPages: Page[] = []
+const playVideoIndexs: number[] = []
 const finishVideoIndexQueue: number[] = []
 
 export async function isVideoContent(content: ElementHandle<HTMLElement>) {
@@ -44,11 +46,18 @@ export async function solveVideoContent(page: Page, content: ElementHandle<HTMLE
     //ページを新しく開く
     const videoPage = await page.browser().newPage()
 
-    //ブラウザ側で動画が再生終了したときに、nodejs側で処理するための関数定義
-    //ブラウザのwindowに関数をセットする
-    await videoPage.exposeFunction("onEndedVideo", (index: number) => {
+    //ブラウザ側で動画が再生開始したときに、nodejs側で処理するための関数定義
+    await videoPage.exposeFunction("onPlayVideo", (index: number) => {
+        detailedLog(`動画[index:${index}]の再生を確認`)
+        //インデックスを挿入し再生を開始したことを記録する
+        playVideoIndexs.push(index)
+    })
 
-        //キューに動画のインデックスをプッシュする
+
+    //ブラウザ側で動画が再生終了したときに、nodejs側で処理するための関数定義
+    await videoPage.exposeFunction("onEndedVideo", (index: number) => {
+        detailedLog(`動画[index:${index}]の再生終了を確認`)
+        //キューに動画のインデックスを挿入する
         finishVideoIndexQueue.push(index)
     });
 
@@ -63,12 +72,15 @@ export async function solveVideoContent(page: Page, content: ElementHandle<HTMLE
     await videoPage.waitForSelector("#video_area video")
 
     //videoタグにイベントリスナーをセットする
-    await videoPage.$eval("#video_area video", (video, index) => {
+    await videoPage.$eval("#video_area video", (video, index, rate) => {
         video.volume = 0
 
         //再生速度変更
         video.addEventListener("play", () => {
-            video.playbackRate = 10
+            video.playbackRate = rate
+
+            //上で定義した関数を呼び出し、nodejs側の処理を呼ぶ
+            window["onPlayVideo"](index)
         }, { once: true })
 
         //動画の再生終了時
@@ -77,7 +89,12 @@ export async function solveVideoContent(page: Page, content: ElementHandle<HTMLE
             //上で定義した関数を呼び出し、nodejs側の処理を呼ぶ
             window["onEndedVideo"](index)
         }, { once: true })
-    }, videoIndex)
+    }, videoIndex, runCommandArgs.rate)
+
+    //"onPlayVideo"が呼ばれて、インデックスが挿入されるまで待機
+    while (!playVideoIndexs.includes(videoIndex)) {
+        await wait()
+    }
 
     videoIndex++
 

@@ -34,7 +34,7 @@ export function defaultLog(data: any) {
 
 export function detailedLog(data: any) {
     const date = new Date()
-    logStream.write(`[${toISOStringWithTimezone(date)}]${data}\n`)
+    logStream.write(`[${toISOStringWithTimezone(date)}] 詳細ログ:${data}\n`)
     if (isDetailedLog) {
         console.log(data);
     }

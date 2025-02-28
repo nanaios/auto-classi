@@ -1,29 +1,37 @@
 import puppeteer, { type Page } from "puppeteer";
 import { Task } from "./Task";
 import { login } from "./login";
-import { goTo, isDev, wait } from "@/utility";
-import { defaultLog } from "@/log";
+import { goTo, wait } from "@/utility";
+import { defaultLog, detailedLog } from "@/log";
+import { setArgsForRunCommand, type RunCommandArgs } from "@/args";
 
 let BASE_URL = "https://video.classi.jp/student/challenge_delivery_history/challenge_delivery_history_school_in_studying"
 DEV: BASE_URL = "https://video.classi.jp/student/challenge_delivery_history/challenge_delivery_history_school_complete"
 
 async function getCookie() {
     DEV: {
-        const browser = await puppeteer.connect({
-            browserURL: 'http://127.0.0.1:9222'
-        })
-        return browser.cookies()
+        try {
+            const browser = await puppeteer.connect({
+                browserURL: 'http://127.0.0.1:9222'
+            })
+            const pages = await browser.pages()
+            const page = pages[0]
+            return page.cookies()
+        } catch (error) {
+            detailedLog(`Chromeへの接続に失敗`)
+        }
     }
     return login()
 }
 
-export async function run() {
+export async function run(args: RunCommandArgs) {
+    setArgsForRunCommand(args)
 
     const cookies = await getCookie()
     await wait()
 
     const browser = await puppeteer.launch({
-        headless: !isDev
+        headless: !args.nonHeadless
     })
 
     await browser.setCookie(...cookies)

@@ -25,7 +25,7 @@ export async function login() {
     defaultLog("ログイン成功")
 
     //cookieを取得
-    const cookies = await browser.cookies()
+    const cookies = await page.cookies()
     await browser.close()
     return cookies
 }
