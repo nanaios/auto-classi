@@ -30,7 +30,6 @@
 	},
 	"dependencies": {
 		"cac": "6.7.14",
-		"iconv-lite": "0.6.3",
 		"puppeteer": "24.2.1"
 	},
 	"devDependencies": {
