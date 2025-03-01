@@ -1,80 +1,37 @@
 #!/usr/bin/env -S node --enable-source-maps
-import { arg, main, setArg } from "@/classi";
-import { exec } from 'child_process';
+import path from "path"
+import cac from "cac";
+import { run } from "./classi";
 import packageJson from "../package.json"
-import { config, configJson } from "./config";
-import iconv from "iconv-lite";
-import cac from "cac"
-import { inti } from "./init";
-import { log } from "./utilitys";
+import { defaultLog, detailedLog, logFilePath } from "./log";
+import type { RunCommandArgs } from "./args";
 
-const DEFAULT_CHROME_PATHS: { [x in NodeJS.Platform]?: string } = {
-    win32: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
-    darwin: "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
-}
+const cli = cac("AutoClassi")
 
-const cli = cac()
+cli.option("--log", "詳細なログを有効にする", { default: false })
+	.option("--non-headless", "ヘッドレスモードを無効にする", { default: false })
 
-cli.option("--dev", "開発者モードでコマンドを実行する", { default: false })
-cli.option("--log", "詳細なログを出力します", { default: false })
+cli.command("run")
+	.option("--rate <rate>", "動画の再生倍率を設定する", { default: 1 })
+	.option("--per <per>", "初手正解率を設定する", { default: 100 })
+	.option("--non-cookie-cache", "cookieのキャッシュを無効にします", { default: false })
+	.option("--forced-cache", "cookieのキャッシュを永久保存モードで保存します", { default: true })
+	.option("--skip-video", "動画の再生をスキップする", { default: false })
+	.action(async (args: RunCommandArgs) => {
+		try {
+			await run(args)
+		} catch (error) {
+			console.error(error)
+			console.log(`詳細なログ:${path.join(import.meta.dirname, "../", logFilePath)}`)
+			process.exit(1)
+		}
+	})
 
-cli.command("run", "AutoClassiの起動")
-    .option("--rate <rate>", "ビデオの再生倍率", { default: 1 })
-    .option("--wait <wait>", "待機時間", { default: 500 })
-    .option("--per <per>", "推定初手正解率", { default: 100 })
-    .option("--skip-video", "ビデオを飛ばすかどうか", { default: false })
-    .option("--set-cookie", "cookieを保存するかどうか", { default: true })
-    .option("--load-cookie", "cookieを読み込むかどうか", { default: false })
-    .action(async (inputs) => {
-        setArg(inputs)
-        await main(packageJson.version)
-    })
-
-cli.command("open", "専用のChromeを開きます")
-    .option("--timeout <timeout>", "コマンド終了までの時間", { default: 2000 })
-    .action(async (input) => {
-        await openChrome(input)
-    })
-
-cli.command("config <name>", "configを操作します")
-    .option("--value <value>", "指定した名前のconfigに値をセットします", { default: undefined })
-    .option("--clear", "指定した名前のconfigをリセットします", { default: false })
-    .action((name, options) => {
-        config(name, options)
-    })
-
-cli.command("init", "初期設定をします")
-    .action(async () => {
-        await inti()
-    })
-
-
-cli.help()
-cli.version(packageJson.version);
-cli.name = "AutoClassi"
-
+cli.version(packageJson.version)
 
 try {
-    cli.parse()
+	cli.parse()
 } catch (error) {
-    log("Error:不明なコマンド及び引数")
-    process.exit(1)
-}
-
-async function openChrome(arg: any) {
-    const path = configJson["chrome-path"] || DEFAULT_CHROME_PATHS[process.platform]
-    if (arg.dev) {
-        log(`chrome path="${path}"`)
-    }
-
-    //@ts-ignore
-    exec(`"${path}" --remote-debugging-port=9222`, { encoding: 'Shift_JIS' }, (_: any, __: any, stderr: Buffer) => {
-        log(iconv.decode(stderr, "Shift_JIS"))
-        process.exit(1)
-    }
-    )
-
-    setTimeout(() => {
-        process.exit()
-    }, arg.timeout)
+	defaultLog("コマンドを展開できませんでした")
+	process.exit(1)
 }
