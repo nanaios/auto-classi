@@ -1,8 +1,9 @@
 #!/usr/bin/env -S node --enable-source-maps
+import path from "path"
 import cac from "cac";
 import { run } from "./classi";
 import packageJson from "../package.json"
-import { defaultLog, detailedLog } from "./log";
+import { defaultLog, detailedLog, logFilePath } from "./log";
 import type { RunCommandArgs } from "./args";
 
 const cli = cac("AutoClassi")
@@ -17,7 +18,13 @@ cli.command("run")
 	.option("--forced-cache", "cookieのキャッシュを永久保存モードで保存します", { default: true })
 	.option("--skip-video", "動画の再生をスキップする", { default: false })
 	.action(async (args: RunCommandArgs) => {
-		await run(args)
+		try {
+			await run(args)
+		} catch (error) {
+			console.error(error)
+			console.log(`詳細なログ:${path.join(import.meta.dirname, "../", logFilePath)}`)
+			process.exit(1)
+		}
 	})
 
 cli.version(packageJson.version)
