@@ -1,10 +1,19 @@
 #!/usr/bin/env -S node --enable-source-maps
+import updateNotifier from 'update-notifier';
 import path from "path"
 import cac from "cac";
 import { run } from "./classi";
 import packageJson from "../package.json"
-import { defaultLog, detailedLog, logFilePath } from "./log";
+import { defaultLog, logFilePath } from "./log";
 import type { RunCommandArgs } from "./args";
+
+const notifier = updateNotifier({ pkg: packageJson, updateCheckInterval: 1000 * 60 * 60 * 24 });
+
+if (notifier.update) {
+	defaultLog(`AutoClassiに更新が来ています`)
+	defaultLog(`${notifier.update.current} => ${notifier.update.latest}`)
+	defaultLog(`'npm install -g auto-classi'と入力して、更新してください`)
+}
 
 const cli = cac("AutoClassi")
 
@@ -27,6 +36,7 @@ cli.command("run")
 		}
 	})
 
+cli.help()
 cli.version(packageJson.version)
 
 try {
