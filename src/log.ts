@@ -33,8 +33,10 @@ export function defaultLog(data: any) {
 }
 
 export function detailedLog(data: any) {
+    const trace = new Error().stack
+    //console.log(trace)
     const date = new Date()
-    logStream.write(`[${toISOStringWithTimezone(date)}] 詳細ログ:${data}\n`)
+    logStream.write(`[${toISOStringWithTimezone(date)}]     詳細ログ:${data}\n`)
     if (isDetailedLog) {
         console.log(data);
     }

@@ -7,8 +7,7 @@ import type { RunCommandArgs } from "./args";
 
 const cli = cac("AutoClassi")
 
-cli
-    .option("--log", "詳細なログを有効にする", { default: false })
+cli.option("--log", "詳細なログを有効にする", { default: false })
     .option("--non-headless", "ヘッドレスモードを無効にする", { default: false })
 
 cli.command("run")
@@ -26,5 +25,3 @@ try {
     defaultLog("コマンドを展開できませんでした")
     process.exit(1)
 }
-
-//await run()

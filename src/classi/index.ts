@@ -4,11 +4,17 @@ import { login } from "./login";
 import { goTo, wait } from "@/utility";
 import { defaultLog, detailedLog } from "@/log";
 import { setArgsForRunCommand, type RunCommandArgs } from "@/args";
+import { isWithInExpirationDate, readCookies, writeCookies } from "@/cookie";
 
 let BASE_URL = "https://video.classi.jp/student/challenge_delivery_history/challenge_delivery_history_school_in_studying"
 DEV: BASE_URL = "https://video.classi.jp/student/challenge_delivery_history/challenge_delivery_history_school_complete"
 
 async function getCookie() {
+    if (isWithInExpirationDate()) {
+        detailedLog(`有効なcookieキャッシュを発見しました`)
+        return readCookies()
+    }
+
     DEV: {
         try {
             const browser = await puppeteer.connect({
@@ -29,6 +35,8 @@ export async function run(args: RunCommandArgs) {
 
     const cookies = await getCookie()
     await wait()
+
+    writeCookies(cookies)
 
     const browser = await puppeteer.launch({
         headless: !args.nonHeadless
