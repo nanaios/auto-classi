@@ -17,9 +17,8 @@
 		"autoclassi": "dist/bin.js"
 	},
 	"scripts": {
-		"clean": "node jsonClean.js",
 		"build": "node esbuild.js",
-		"prepublishOnly": "npm run clean && npm run build production"
+		"prepublishOnly": "npm run build production"
 	},
 	"repository": {
 		"type": "git",
