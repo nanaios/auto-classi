@@ -51,13 +51,13 @@ export abstract class SolveBase {
                 const name = await this.getName()
                 detailedLog(`${this.type}の名前:${name}`)
                 if (this.solvedNames.includes(name)) {
-                    detailedLog(`${this.type}[name:${name}]は処理済みなのでスキップします`)
+                    detailedLog(`${this.type}[name:"${name}"]は処理済みなのでスキップします`)
                     continue
                 } else if (await isSolved(elements[k])) {
-                    detailedLog(`${this.type}[name:${name}]はすでに処理済みなのでスキップします`)
+                    detailedLog(`${this.type}[name:"${name}"]はすでに処理済みなのでスキップします`)
                     continue
                 } else {
-                    detailedLog(`未処理の${this.type}[name:${name}]を発見しました`)
+                    detailedLog(`未処理の${this.type}[name:"${name}"]を発見しました`)
                     this.solvedNames.push(name)
                     yield elements[k]
                     break SEARCH

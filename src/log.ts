@@ -34,9 +34,14 @@ export function defaultLog(data: any) {
 
 export function detailedLog(data: any) {
     const trace = new Error().stack
-    //console.log(trace)
+    let callerFunctionData: string | undefined
+    if (trace) {
+        const callerLine = trace.split("\n")[2]
+        const callerData = callerLine.slice(callerLine.indexOf("at ") + 3)
+        callerFunctionData = callerData.split(" (")[0]
+    }
     const date = new Date()
-    logStream.write(`[${toISOStringWithTimezone(date)}]     詳細ログ:${data}\n`)
+    logStream.write(`[${toISOStringWithTimezone(date)}]     詳細ログ[caller:"${callerFunctionData}"]:${data}\n`)
     if (isDetailedLog) {
         console.log(data);
     }

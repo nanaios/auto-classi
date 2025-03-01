@@ -17,7 +17,7 @@ export class Task extends SolveBase {
     async solve(): Promise<void> {
         const name = await this.getName()
 
-        defaultLog(`課題[name:${name}]の解答を開始`)
+        defaultLog(`課題[name:"${name}"]の解答を開始`)
         console.group()
 
         //課題の詳細ページへ遷移
@@ -30,7 +30,7 @@ export class Task extends SolveBase {
         await new Lecture(this.page).solves()
 
         console.groupEnd()
-        defaultLog(`課題[name:${name}]の解答を終了`)
+        defaultLog(`課題[name:"${name}"]の解答を終了`)
 
         //元のページへ戻る
         await goTo(this.page, this.url)

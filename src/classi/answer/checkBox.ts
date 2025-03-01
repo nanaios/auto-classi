@@ -1,6 +1,6 @@
 import type { ElementHandle, Page } from "puppeteer";
 import { formatAnswer } from "./answer";
-import { getElement, wait } from "@/utility";
+import { getElement } from "@/utility";
 import { defaultLog } from "@/log";
 
 let checkBoxAnswer: string
@@ -17,11 +17,11 @@ export async function getCheckBoxAnswer(page: Page) {
     const answer = await page.$eval(".spen-mod-label-text-list dd", dd => dd.innerText)
     if (answer) {
         checkBoxAnswer = formatAnswer(answer)
-        defaultLog(`答え:${checkBoxAnswer}`)
+        defaultLog(`答え:"${checkBoxAnswer}"`)
     } else {
         const url = await page.$eval(".spen-mod-label-text-list img", img => img.src)
         checkBoxAnswer = url
-        defaultLog(`答え:${checkBoxAnswer}`)
+        defaultLog(`答え:"${checkBoxAnswer}"`)
     }
 }
 

@@ -33,7 +33,7 @@ export async function clearQueue() {
         await clickFinishButton(page)
 
         await page.close()
-        defaultLog(`動画タブ[name:${name}]を閉じました`)
+        defaultLog(`動画タブ[name:#"${name}"]を閉じました`)
 
         //キューから処理済みのインデックスを消去する
         finishVideoIndexQueue.shift()

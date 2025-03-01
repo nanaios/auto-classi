@@ -9,7 +9,7 @@ export class Lecture extends SolveBase {
     type = "講義"
     async solve(): Promise<void> {
         const name = await this.getName()
-        defaultLog(`講義[name:${name}]の解答を開始`)
+        defaultLog(`講義[name:"${name}"]の解答を開始`)
         console.group()
 
         //講義の解答を開始
@@ -18,6 +18,6 @@ export class Lecture extends SolveBase {
         await new Content(this.page).solves()
 
         console.groupEnd()
-        defaultLog(`講義[name:${name}]の解答を終了`)
+        defaultLog(`講義[name:"${name}"]の解答を終了`)
     }
 }

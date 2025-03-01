@@ -10,7 +10,7 @@ export class Content extends SolveBase {
     type = "要素"
     async solve(): Promise<void> {
         const name = await this.getName()
-        defaultLog(`要素[name:${name}]の解答を開始`)
+        defaultLog(`要素[name:"${name}"]の解答を開始`)
         const baseUrl = this.page.url()
         console.group()
 
@@ -22,14 +22,14 @@ export class Content extends SolveBase {
                 await solveStudyContent(this.page, this.element)
             } catch (error) {
                 defaultLog(`解答に失敗しました`)
-                detailedLog(`問題名:[name:${name}]`)
+                detailedLog(`問題名:[name:"${name}"]`)
 
                 await goTo(this.page, baseUrl)
             }
         }
 
         console.groupEnd()
-        defaultLog(`要素[name:${name}]の解答を終了`)
+        defaultLog(`要素[name:"${name}"]の解答を終了`)
 
         //再生終了した動画タブを閉じる
         await clearQueue()

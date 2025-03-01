@@ -2,7 +2,7 @@
 import cac from "cac";
 import { run } from "./classi";
 import packageJson from "../package.json"
-import { defaultLog } from "./log";
+import { defaultLog, detailedLog } from "./log";
 import type { RunCommandArgs } from "./args";
 
 const cli = cac("AutoClassi")

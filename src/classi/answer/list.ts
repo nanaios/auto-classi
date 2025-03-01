@@ -1,6 +1,5 @@
 import type { ElementHandle, Page } from "puppeteer";
 import { formatAnswer } from "./answer";
-import { wait } from "@/utility";
 import { defaultLog, detailedLog } from "@/log";
 
 let listAnswer: string[]
@@ -13,7 +12,7 @@ export async function isList(page: Page) {
 export async function getListAnswer(page: Page) {
     const answers = await page.$$eval(".answer-inner dd", answers => answers.map(answer => answer.innerText))
     listAnswer = answers.map(answer => formatAnswer(answer))
-    defaultLog(`答え:${listAnswer}`)
+    defaultLog(`答え:"${listAnswer}"`)
 }
 
 export async function setListAnswer(page: Page) {
@@ -22,7 +21,7 @@ export async function setListAnswer(page: Page) {
 
     //選択肢一覧を取得
     const choices = await getChoices(lists[0])
-    defaultLog(`選択肢:${choices}`)
+    defaultLog(`選択肢:"${choices}"`)
     let i: number
     for (i = 0; i < lists.length; i++) {
         const list = lists[i]
