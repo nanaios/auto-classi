@@ -3,6 +3,7 @@ import { defaultLog, detailedLog } from "@/log";
 import type { ElementHandle, Page } from "puppeteer";
 import { getAnswer, getQuestionType, setAnswer } from "./answer/answer";
 import { runCommandArgs } from "@/args";
+import { setSelfAnswer } from "./answer/self";
 
 export async function isStudyContent(content: ElementHandle<HTMLElement>) {
 	const mark = await content.$("i.fa-pencil-square-o")
@@ -27,11 +28,17 @@ export async function solveStudyContent(page: Page, content: ElementHandle<HTMLE
 	const randomPer = random(100)
 
 	if (randomPer <= per) {
-		defaultLog(`(1d100<=${per}) > ${randomPer} > 成功`)
+		defaultLog(`( 1d100 <= ${per} ) > ${randomPer} > 成功`)
 		defaultLog("初手解答を正解にする処理を実行")
 	} else {
-		defaultLog(`(1d100<=${per}) > ${randomPer} > 失敗`)
+		defaultLog(`( 1d100 <= ${per} ) > ${randomPer} > 失敗`)
 		defaultLog("初手解答を不正解にする処理を実行")
+
+		//自己採点問題は、正否をセットした状態出ないとフィニッシュボタンが押せないためあらかじめ答えをセットしておく
+		if (type === "self") {
+			await setSelfAnswer(page, false)
+		}
+
 		await clickFinishButton(page)
 		await goBack(page)
 	}
