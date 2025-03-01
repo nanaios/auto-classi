@@ -4,6 +4,12 @@ let isDev = false
 DEV: isDev = true
 export { isDev }
 
+/**
+ * 1~maxの範囲の乱数を返す  
+ * @param max 整数にしないとバグの元になる可能性がある
+ */
+export const random = (max: number) => Math.floor(Math.random() * max) + 1;
+
 export function getCaller() {
 	const trace = new Error().stack
 	if (trace) {

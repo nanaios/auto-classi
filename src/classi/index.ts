@@ -10,51 +10,51 @@ let BASE_URL = "https://video.classi.jp/student/challenge_delivery_history/chall
 DEV: BASE_URL = "https://video.classi.jp/student/challenge_delivery_history/challenge_delivery_history_school_complete"
 
 async function getCookie() {
-    if (isWithInExpirationDate()) {
-        detailedLog(`有効なcookieキャッシュを発見しました`)
-        return readCookies()
-    }
+	if (isWithInExpirationDate()) {
+		detailedLog(`有効なcookieキャッシュを発見しました`)
+		return readCookies()
+	}
 
-    DEV: {
-        try {
-            const browser = await puppeteer.connect({
-                browserURL: 'http://127.0.0.1:9222'
-            })
-            const pages = await browser.pages()
-            const page = pages[0]
-            return page.cookies()
-        } catch (error) {
-            detailedLog(`Chromeへの接続に失敗`)
-        }
-    }
-    return login()
+	DEV: {
+		try {
+			const browser = await puppeteer.connect({
+				browserURL: 'http://127.0.0.1:9222'
+			})
+			const pages = await browser.pages()
+			const page = pages[0]
+			return page.cookies()
+		} catch (error) {
+			detailedLog(`Chromeへの接続に失敗`)
+		}
+	}
+	return login()
 }
 
 export async function run(args: RunCommandArgs) {
-    setArgsForRunCommand(args)
+	setArgsForRunCommand(args)
 
-    const cookies = await getCookie()
-    await wait()
+	const cookies = await getCookie()
+	await wait()
 
-    writeCookies(cookies)
+	writeCookies(cookies)
 
-    const browser = await puppeteer.launch({
-        headless: !args.nonHeadless
-    })
+	const browser = await puppeteer.launch({
+		headless: !args.nonHeadless
+	})
 
-    await browser.setCookie(...cookies)
+	await browser.setCookie(...cookies)
 
-    const pages = await browser.pages()
-    const page = pages[0]
+	const pages = await browser.pages()
+	const page = pages[0]
 
-    await deleteWebdriver(page)
+	await deleteWebdriver(page)
 
-    await goTo(page, BASE_URL)
-    await wait()
+	await goTo(page, BASE_URL)
+	await wait()
 
-    defaultLog("AutoClassi起動")
+	defaultLog("AutoClassi起動")
 
-    await new Task(page, BASE_URL).solves()
+	await new Task(page, BASE_URL).solves()
 }
 
 /**
@@ -62,9 +62,9 @@ export async function run(args: RunCommandArgs) {
  * @param page 
  */
 const deleteWebdriver = async (page: Page) => {
-    await page.evaluateOnNewDocument(() => {
-        Object.defineProperty(navigator, 'webdriver', () => { });
-        //@ts-ignore
-        delete navigator.__proto__.webdriver;
-    });
+	await page.evaluateOnNewDocument(() => {
+		Object.defineProperty(navigator, 'webdriver', () => { });
+		//@ts-ignore
+		delete navigator.__proto__.webdriver;
+	});
 }

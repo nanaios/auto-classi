@@ -27,13 +27,13 @@ fs.writeFileSync(logFilePath, "")
 
 const logStream = fs.createWriteStream(logFilePath)
 
-export function defaultLog(data: any) {
+export function defaultLog(data: string) {
 	const date = new Date()
 	logStream.write(`[ ${toISOStringWithTimezone(date)} ] ${data}	[ caller: "${getCaller()}" ] \n`)
 	console.log(data);
 }
 
-export function detailedLog(data: any) {
+export function detailedLog(data: string) {
 	const date = new Date()
 	logStream.write(`[ ${toISOStringWithTimezone(date)} ]	詳細ログ : ${data}	[ caller: "${getCaller()}" ] \n`)
 	if (isDetailedLog) {
