@@ -1,4 +1,5 @@
 import puppeteer, { type Page } from "puppeteer";
+import packageJson from "../../package.json"
 import { Task } from "./Task";
 import { login } from "./login";
 import { goTo, wait } from "@/utility";
@@ -53,7 +54,7 @@ export async function run(args: RunCommandArgs) {
 	await goTo(page, BASE_URL)
 	await wait()
 
-	defaultLog("AutoClassi起動")
+	defaultLog(`AutoClassi v${packageJson.version}起動`)
 
 	await new Task(page, BASE_URL).solves()
 }
@@ -63,6 +64,7 @@ export async function run(args: RunCommandArgs) {
  * @param page 
  */
 const deleteWebdriver = async (page: Page) => {
+	detailedLog(`"webdriverを削除"`)
 	await page.evaluateOnNewDocument(() => {
 		Object.defineProperty(navigator, 'webdriver', () => { });
 		//@ts-ignore
