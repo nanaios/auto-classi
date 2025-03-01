@@ -9,10 +9,9 @@
 
 ## 使い方
 1. コンソール（PowerShell等）を開き、`npm install -g auto-classi`を入力し実行します。  
-2. `autoclassi init`を実行して、Googleログインに使うメールアドレスとパスワードをセットしてください。
-3. `autoclassi run`で自動操作が始まります。
+2. `autoclassi run`でClassiのログイン画面が開きます。開かれたブラウザでClassiにログインしてください。
+3. ログインに成功すると、自動でブラウザが閉じます。同時に、バックグラウンドでClassiの自動操作が始まります。
 
-## configについて
-AutoClassiでは、`autoclassi config`コマンドで各設定の値を表示、変更できます。<br>
-例：`autoclassi config chrome-path` =>　コンフィグの"chrome-path"の値を表示<br>
-例：`autoclassi config chrome-path --value="your\chrome\path"` =>　コンフィグの"chrome-path"の値を変更
+## 質問と解答
+Q. Mac対応してる？ A.対応しているはずです。動作しない場合、Githubにissueを立ててください。  
+Q. Chromeを閉じる必要ある？ A.必要なくなりました。
