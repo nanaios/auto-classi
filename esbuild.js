@@ -9,10 +9,9 @@ esbuild.build({
     platform: "node",
     format: "esm",
     packages: "external",
-    minify: true,
+    minify: isProduction,
     charset: "utf8",
     treeShaking: true,
     sourcemap: true,
     dropLabels: isProduction ? ["DEV"] : [],
-    pure: ["console.log"]
 })
