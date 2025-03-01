@@ -19,7 +19,7 @@ export const isWithInExpirationDate = () => {
     const cookies = readCookies()
 
     for (const { expires, name } of cookies) {
-        detailedLog(`cookie[name:${name}]の有効期限を調査`)
+        detailedLog(`cookie[name:"${name}"]の有効期限を調査`)
 
         //"expires"が-1の時、cookieはセッション終了時に削除される設定なので復元が可能
         //したがって、有効期限内と判断する
@@ -28,9 +28,9 @@ export const isWithInExpirationDate = () => {
             const floorExpires = Math.floor(expires)
             detailedLog(`有効期限(タイムスタンプ):${floorExpires}`)
             if (now < floorExpires) {
-                detailedLog(`cookie[name:${name}]は有効期限内です`)
+                detailedLog(`cookie[name:"${name}"]は有効期限内です`)
             } else {
-                detailedLog(`cookie[name:${name}]は有効期限外です`)
+                detailedLog(`cookie[name:"${name}"]は有効期限外です`)
                 return false
             }
         }

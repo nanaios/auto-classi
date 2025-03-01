@@ -49,7 +49,7 @@ export abstract class SolveBase {
             SEARCH: for (k = 0; k < elements.length; k++) {
                 this.element = elements[k]
                 const name = await this.getName()
-                detailedLog(`${this.type}の名前:${name}`)
+                detailedLog(`${this.type}の名前:"${name}"`)
                 if (this.solvedNames.includes(name)) {
                     detailedLog(`${this.type}[name:"${name}"]は処理済みなのでスキップします`)
                     continue
