@@ -1,6 +1,5 @@
 #!/usr/bin/env -S node --enable-source-maps
 import updateNotifier from 'update-notifier';
-import path from "path"
 import cac from "cac";
 import { run } from "./classi";
 import packageJson from "../package.json"
@@ -31,7 +30,7 @@ cli.command("run")
 			await run(args)
 		} catch (error) {
 			console.error(error)
-			console.log(`詳細なログ:${path.join(import.meta.dirname, "../", logFilePath)}`)
+			console.log(`詳細なログ:${logFilePath}`)
 			process.exit(1)
 		}
 	})
