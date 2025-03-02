@@ -1,4 +1,5 @@
 import fs from "fs"
+import path from "path"
 import type { Cookie } from "puppeteer"
 import { detailedLog } from "./log"
 import { runCommandArgs } from "./args"
@@ -7,7 +8,7 @@ let cookiesJsonPath = "./json/cookie.json"
 DEV: cookiesJsonPath = "./json/cookie.dev.json"
 
 export function readCookies() {
-	const json = fs.readFileSync(cookiesJsonPath, "utf-8")
+	const json = fs.readFileSync(path.join(import.meta.dirname, "../", cookiesJsonPath), "utf-8")
 	return JSON.parse(json) as Cookie[]
 }
 
