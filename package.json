@@ -1,6 +1,6 @@
 {
 	"name": "auto-classi",
-	"version": "7.0.2",
+	"version": "7.0.3",
 	"description": "Classiを自動で解いてくれるプログラムです。",
 	"license": "MIT",
 	"author": "nanaios",
