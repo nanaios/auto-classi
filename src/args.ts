@@ -1,6 +1,11 @@
 import { defaultLog } from "./log"
 
 export let runCommandArgs: RunCommandArgs
+export let globalCommandArgs: GlobalCommandArgs
+
+function setArgs(args: GlobalCommandArgs) {
+	globalCommandArgs = args
+}
 
 export function setArgsForRunCommand(args: RunCommandArgs) {
 	defaultLog(`詳細なログ:${args.log}`)
@@ -9,6 +14,7 @@ export function setArgsForRunCommand(args: RunCommandArgs) {
 	defaultLog(`キャッシュされたcookieを無効にする:${args.nonCookieCache}`)
 	defaultLog(`キャッシュされたcookieで強制的にログインする:${args.forcedCache}`)
 	defaultLog(`動画をスキップする:${args.skipVideo}`)
+	setArgs(args)
 	runCommandArgs = args
 }
 

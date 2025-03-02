@@ -1,8 +1,7 @@
 import fs from "fs"
 import path from "path"
 import { getCaller } from "./utility";
-
-let isDetailedLog = false
+import { globalCommandArgs } from "./args";
 
 function toISOStringWithTimezone(date: Date): string {
 	const pad = function (str: string): string {
@@ -36,7 +35,7 @@ export function defaultLog(data: string) {
 export function detailedLog(data: string) {
 	const date = new Date()
 	logStream.write(`[ ${toISOStringWithTimezone(date)} ]	詳細ログ : ${data}	[ caller: "${getCaller()}" ] \n`)
-	if (isDetailedLog) {
+	if (globalCommandArgs.log) {
 		console.log(data);
 	}
 }
