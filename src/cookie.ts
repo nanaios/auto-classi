@@ -1,7 +1,7 @@
 import fs from "fs"
 import path from "path"
 import type { Cookie } from "puppeteer"
-import { detailedLog } from "./log"
+import { defaultLog, detailedLog } from "./log"
 import { runCommandArgs } from "./args"
 
 let cookiesJsonFileName = "cookie.json"
@@ -30,7 +30,9 @@ export const isWithInExpirationDate = () => {
 		//"expires"が-1の時、cookieはセッション終了時に削除される設定なので復元が可能
 		//したがって、有効期限内と判断する
 		//逆に、-1出ないときは調査が必要なので処理をする
-		if (expires !== -1) {
+		if (expires === -1) {
+			defaultLog(`cookie[name:"${name}"]はセッションcookieです`)
+		} else {
 			const floorExpires = Math.floor(expires)
 			detailedLog(`有効期限(タイムスタンプ):${floorExpires}`)
 			if (now < floorExpires) {
