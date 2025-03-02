@@ -2,11 +2,13 @@
 import updateNotifier from 'update-notifier';
 import cac from "cac";
 import { run } from "./classi";
-import packageJson from "../package.json"
+import packageJson from "../package.json" with {type: "json"}
 import { defaultLog, logFilePath } from "./log";
 import type { RunCommandArgs } from "./args";
 
-const notifier = updateNotifier({ pkg: packageJson, updateCheckInterval: 1000 * 60 * 60 * 24 });
+const notifier = updateNotifier({ pkg: packageJson });
+
+notifier.check()
 
 if (notifier.update) {
 	defaultLog(`AutoClassiに更新が来ています`)
