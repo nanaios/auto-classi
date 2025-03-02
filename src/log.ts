@@ -21,8 +21,7 @@ function toISOStringWithTimezone(date: Date): string {
 
 	return `${year}-${month}-${day}T${hour}:${min}:${sec}${sign}${tzHour}:${tzMin}`;
 }
-
-export const logFilePath = path.join("log", `${Date.now()}.log`)
+export const logFilePath = path.join(import.meta.dirname, "../", "log", `${Date.now()}.log`)
 
 fs.writeFileSync(logFilePath, "")
 
