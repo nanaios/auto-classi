@@ -11,22 +11,9 @@ let BASE_URL = "https://video.classi.jp/student/challenge_delivery_history/chall
 DEV: BASE_URL = "https://video.classi.jp/student/challenge_delivery_history/challenge_delivery_history_school_complete"
 
 async function getCookie() {
-	if (!runCommandArgs.nonCookieCache || isWithInExpirationDate()) {
+	if (!runCommandArgs.nonCookieCache && isWithInExpirationDate()) {
 		detailedLog(`有効なcookieキャッシュを発見しました`)
 		return readCookies()
-	}
-
-	DEV: {
-		try {
-			const browser = await puppeteer.connect({
-				browserURL: 'http://127.0.0.1:9222'
-			})
-			const pages = await browser.pages()
-			const page = pages[0]
-			return page.cookies()
-		} catch (error) {
-			detailedLog(`Chromeへの接続に失敗`)
-		}
 	}
 	return login()
 }
