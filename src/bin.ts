@@ -1,4 +1,4 @@
-#!/usr/bin/env -S node --enable-source-maps
+#!/usr/bin/env
 import updateNotifier from 'update-notifier';
 import cac from "cac";
 import { run } from "./classi";
