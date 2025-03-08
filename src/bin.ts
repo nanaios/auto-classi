@@ -1,4 +1,4 @@
-#!/usr/bin/env
+#!/usr/bin/env node
 import updateNotifier from 'update-notifier';
 import cac from "cac";
 import { run } from "./classi";

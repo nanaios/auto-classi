@@ -3,37 +3,43 @@ import { getElement, goTo, wait, waitForClickTransition } from "../utility";
 import { defaultLog } from "@/log";
 import { Lecture } from "./Lecture";
 import { SolveBase } from "./SolveBase";
+
 export class Task extends SolveBase {
-    getElementSelector = ".task-list > a"
-    getNameSelector = "p.subject"
-    type = "課題"
-    url: string
+	getElementSelector = ".task-list > a"
+	getNameSelector = "p.subject"
+	type = "課題"
+	url: string
 
-    constructor(page: Page, url: string) {
-        super(page)
-        this.url = url
-    }
+	constructor(page: Page, url: string) {
+		super(page)
+		this.url = url
+	}
 
-    async solve(): Promise<void> {
-        const name = await this.getName()
+	async solve(): Promise<void> {
+		const name = await this.getName()
 
-        defaultLog(`課題[name:"${name}"]の解答を開始`)
-        console.group()
+		/* if (isSkip || name === "2年1回スタディーサポート英語_事前学習") {
+			isSkip = true
+			return
+		}; */
 
-        //課題の詳細ページへ遷移
-        await waitForClickTransition(this.page, this.element)
+		defaultLog(`課題[name:"${name}"]の解答を開始`)
+		console.group()
 
-        //"課題に取り組む"ボタンを押す
-        const startTaskButton = await getElement(this.page, ".right > a.navy-btn")
-        await waitForClickTransition(this.page, startTaskButton)
+		//課題の詳細ページへ遷移
+		await waitForClickTransition(this.page, this.element)
 
-        await new Lecture(this.page).solves()
+		//"課題に取り組む"ボタンを押す
+		const startTaskButton = await getElement(this.page, ".right > a.navy-btn")
+		await waitForClickTransition(this.page, startTaskButton)
 
-        console.groupEnd()
-        defaultLog(`課題[name:"${name}"]の解答を終了`)
+		await new Lecture(this.page).solves()
 
-        //元のページへ戻る
-        await goTo(this.page, this.url)
-        await wait()
-    }
+		console.groupEnd()
+		defaultLog(`課題[name:"${name}"]の解答を終了`)
+
+		//元のページへ戻る
+		await goTo(this.page, this.url)
+		await wait()
+	}
 }
