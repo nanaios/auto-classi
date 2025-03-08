@@ -6,6 +6,7 @@ import { goTo, wait } from "@/utility";
 import { defaultLog, detailedLog } from "@/log";
 import { runCommandArgs, setArgsForRunCommand, type RunCommandArgs } from "@/args";
 import { isWithInExpirationDate, readCookies, writeCookies } from "@/cookie";
+import { clearQueue, playVideoIndex } from "./video";
 
 let BASE_URL = "https://video.classi.jp/student/challenge_delivery_history/challenge_delivery_history_school_in_studying"
 DEV: BASE_URL = "https://video.classi.jp/student/challenge_delivery_history/challenge_delivery_history_school_complete"
@@ -28,7 +29,8 @@ export async function run(args: RunCommandArgs) {
 
 	const browser = await puppeteer.launch({
 		headless: !args.nonHeadless,
-		slowMo: 10
+		timeout: 0
+		//slowMo: 10
 	})
 
 	await browser.setCookie(...cookies)
@@ -44,6 +46,19 @@ export async function run(args: RunCommandArgs) {
 	defaultLog(`AutoClassi v${packageJson.version}起動`)
 
 	await new Task(page, BASE_URL).solves()
+	defaultLog("全講義の探索が終了しました")
+	detailedLog(`再生中の動画の数: ${playVideoIndex}`)
+
+	while (playVideoIndex > 0) {
+		await wait()
+	}
+	defaultLog(`全動画の再生が終了`)
+
+	await clearQueue()
+
+	await browser.close()
+
+	return
 }
 
 /**
