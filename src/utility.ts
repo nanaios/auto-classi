@@ -20,7 +20,7 @@ export function getCaller() {
 }
 
 export async function goTo(page: Page, url: string) {
-	await page.goto(url, { waitUntil: ['load', 'networkidle0', 'domcontentloaded'] })
+	await page.goto(url, { waitUntil: ['load', 'networkidle0', 'domcontentloaded'], timeout: -1 })
 	await wait()
 }
 
