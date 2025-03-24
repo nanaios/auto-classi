@@ -29,7 +29,7 @@ export async function run(args: RunCommandArgs) {
 
 	const browser = await puppeteer.launch({
 		headless: !args.nonHeadless,
-		timeout: 0
+		timeout: -1
 		//slowMo: 10
 	})
 
