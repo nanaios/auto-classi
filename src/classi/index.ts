@@ -51,6 +51,7 @@ export async function run(args: RunCommandArgs) {
 
 	while (playVideoIndex > 0) {
 		await wait()
+		await clearQueue()
 	}
 	defaultLog(`全動画の再生が終了`)
 
