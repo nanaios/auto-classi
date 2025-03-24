@@ -9,7 +9,7 @@ import { isWithInExpirationDate, readCookies, writeCookies } from "@/cookie";
 import { clearQueue, playVideoIndex } from "./video";
 
 let BASE_URL = "https://video.classi.jp/student/challenge_delivery_history/challenge_delivery_history_school_in_studying"
-DEV: BASE_URL = "https://video.classi.jp/student/challenge_delivery_history/challenge_delivery_history_school_complete"
+//DEV: BASE_URL = "https://video.classi.jp/student/challenge_delivery_history/challenge_delivery_history_school_complete"
 
 async function getCookie() {
 	if (!runCommandArgs.nonCookieCache && isWithInExpirationDate()) {
