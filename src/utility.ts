@@ -9,6 +9,16 @@ export { isDev }
  * @param max 整数にしないとバグの元になる可能性がある
  */
 export const random = (max: number) => Math.floor(Math.random() * max) + 1;
+/**
+ * min~maxの範囲の乱数を返す 
+ * @param min 整数にしないとバグの元になる可能性がある
+ * @param max 整数にしないとバグの元になる可能性がある
+ */
+export const random2 = (min: number, max: number) => {
+	const diff = max - min + 1
+	return Math.floor(Math.random() * diff) + min;
+}
+
 
 export function getCaller() {
 	const trace = new Error().stack

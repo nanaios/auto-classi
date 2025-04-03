@@ -22,11 +22,14 @@ cli.option("--log", "詳細なログを有効にする", { default: false })
 	.option("--non-headless", "ヘッドレスモードを無効にする", { default: false })
 
 cli.command("run")
-	.option("--rate <rate>", "動画の再生倍率を設定する", { default: 1 })
-	.option("--per <per>", "初手正解率を設定する", { default: 100 })
+	.option("--rate <rate>", "動画の再生倍率を設定します", { default: 1 })
+	.option("--per <per>", "初手正解率を設定します", { default: 100 })
 	.option("--non-cookie-cache", "cookieのキャッシュを無効にします", { default: false })
 	.option("--forced-cache", "cookieのキャッシュを永久保存モードで保存します", { default: false })
-	.option("--skip-video", "動画の再生をスキップする", { default: false })
+	.option("--skip-video", "動画の再生をスキップします", { default: false })
+	.option("--fake-human", "解答時や正答確認時にランダムな待機時間を発生させます", { default: false })
+	.option("--max-wait-for-fake", "fake-humanオプションでの最小待機時間を設定", { default: 120 })
+	.option("--min-wait-for-fake", "fake-humanオプションでの最小待機時間を設定", { default: 30 })
 	.action(async (args: RunCommandArgs) => {
 		try {
 			await run(args)

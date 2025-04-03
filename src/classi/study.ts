@@ -1,4 +1,4 @@
-import { getElement, goBack, random, wait, waitForClickTransition } from "@/utility";
+import { getElement, goBack, random, random2, wait, waitForClickTransition } from "@/utility";
 import { defaultLog, detailedLog } from "@/log";
 import type { ElementHandle, Page } from "puppeteer";
 import { getAnswer, getQuestionType, setAnswer } from "./answer/answer";
@@ -11,11 +11,17 @@ export async function isStudyContent(content: ElementHandle<HTMLElement>) {
 }
 
 export async function solveStudyContent(page: Page, content: ElementHandle<HTMLElement>) {
-	const { per } = runCommandArgs
+	const { per, fakeHuman, maxWaitForFake, minWaitForFake } = runCommandArgs
 	await waitForClickTransition(page, content)
 
 	const type = await getQuestionType(page)
 	defaultLog(`問題タイプ:${type}`)
+
+	if (fakeHuman) {
+		const rans = random2(minWaitForFake, maxWaitForFake)
+		defaultLog(`${rans}秒偽装待機`)
+		await wait(rans)
+	}
 
 	//一度答えを取得するために正答確認ページに行く
 	await clickFinishButton(page)
@@ -38,6 +44,11 @@ export async function solveStudyContent(page: Page, content: ElementHandle<HTMLE
 		if (type === "self") {
 			await setSelfAnswer(page, false)
 		}
+		if (fakeHuman) {
+			const rans = random2(minWaitForFake, maxWaitForFake)
+			defaultLog(`${rans}秒偽装待機`)
+			await wait(rans)
+		}
 
 		await clickFinishButton(page)
 		await goBack(page)
@@ -47,8 +58,19 @@ export async function solveStudyContent(page: Page, content: ElementHandle<HTMLE
 	await goBack(page)
 	detailedLog("解答ページに戻る")
 
+	if (fakeHuman && randomPer > per) {
+		const rans = random2(minWaitForFake, maxWaitForFake)
+		defaultLog(`${rans}秒偽装待機`)
+		await wait(rans)
+	}
+
 	//答えをセットし、再び正答確認ページに行く
 	await setAnswer(page, type)
+	if (fakeHuman) {
+		const rans = random2(minWaitForFake, maxWaitForFake)
+		defaultLog(`${rans}秒偽装待機`)
+		await wait(rans)
+	}
 
 	//最初のページに戻る
 	await clickFinishButton(page)

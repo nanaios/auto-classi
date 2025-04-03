@@ -14,6 +14,9 @@ export function setArgsForRunCommand(args: RunCommandArgs) {
 	defaultLog(`キャッシュされたcookieを無効にする:${args.nonCookieCache}`)
 	defaultLog(`キャッシュされたcookieで強制的にログインする:${args.forcedCache}`)
 	defaultLog(`動画をスキップする:${args.skipVideo}`)
+	defaultLog(`待機時間を偽装する:${args.fakeHuman}`)
+	defaultLog(`偽装時の最大待機時間:${args.maxWaitForFake}`)
+	defaultLog(`偽装時の最小待機時間:${args.minWaitForFake}`)
 	setArgs(args)
 	runCommandArgs = args
 }
@@ -29,4 +32,7 @@ export interface RunCommandArgs extends GlobalCommandArgs {
 	nonCookieCache: boolean
 	forcedCache: boolean
 	skipVideo: boolean
+	fakeHuman: boolean
+	maxWaitForFake: number
+	minWaitForFake: number
 }
